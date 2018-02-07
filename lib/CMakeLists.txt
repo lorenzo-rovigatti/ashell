@@ -1,0 +1,4 @@
+# compile python bindings
+ADD_LIBRARY(system SHARED System.cpp)
+TARGET_LINK_LIBRARIES(system ${Boost_LIBRARIES} ${PYTHON_LIBRARIES})
+SET_TARGET_PROPERTIES(system PROPERTIES PREFIX "")
