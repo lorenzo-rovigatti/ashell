@@ -32,7 +32,7 @@ ENDIF()
 FIND_PACKAGE( PythonLibs 2.7 REQUIRED )
 INCLUDE_DIRECTORIES( ${PYTHON_INCLUDE_DIRS} )
 
-FIND_PACKAGE( Boost COMPONENTS python REQUIRED )
+FIND_PACKAGE( Boost COMPONENTS python log REQUIRED )
 INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIR} )
 
 # get the current git revision, if git is installed. Avoid warnings if it isn't
@@ -63,4 +63,4 @@ ADD_DEFINITIONS(-D'GIT_VERSION="${revision}"' -D'BUILD_TIME="${today}"')
 SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 
 ADD_SUBDIRECTORY(lib)
-ADD_SUBDIRECTORY(exec)
+#ADD_SUBDIRECTORY(exec)
