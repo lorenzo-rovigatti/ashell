@@ -1,7 +1,11 @@
 SET(ashell_lib_SOURCES
+	boxes/Box.cpp
+	integrators/Integrator.cpp
+	Particles.cpp
+	System.cpp
+	SystemProperties.cpp
 	utils/parse_input.cpp
 	utils/Timings.cpp
-	System.cpp
 )
 
 ADD_LIBRARY(_ashell SHARED ${ashell_lib_SOURCES})

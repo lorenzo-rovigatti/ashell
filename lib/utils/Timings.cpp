@@ -12,11 +12,11 @@
 
 #include <algorithm>
 
-#ifdef NOCUDA
-#define SYNCHRONIZE()
-#else
+#ifdef CUDA
 #include <cuda_runtime_api.h>
 #define SYNCHRONIZE() cudaDeviceSynchronize()
+#else
+#define SYNCHRONIZE()
 #endif
 
 #ifdef MOSIX

@@ -5,7 +5,10 @@
  *      Author: lorenzo
  */
 
-#include "../lib/System.h"
+#include "System.h"
+
+#include "SystemProperties.h"
+#include "integrators/Integrator.h"
 
 #include <iostream>
 #include <boost/python.hpp>
@@ -16,7 +19,7 @@ using namespace std;
 using namespace boost::python;
 
 System::System() {
-
+	_sys_props = std::shared_ptr<SystemProperties>(new SystemProperties());
 }
 
 System::~System() {
@@ -25,7 +28,7 @@ System::~System() {
 
 void System::run(long long int steps) {
 	for(int i = 0; i < steps; i++) {
-		cout << "Step " << i << endl;
+		_sys_props->integrator->step();
 	}
 }
 
