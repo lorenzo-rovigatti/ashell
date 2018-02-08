@@ -2,6 +2,7 @@ SET(ashell_lib_SOURCES
 	ashell.cpp
 	boxes/Box.cpp
 	boxes/Cuboid.cpp
+	Initialiser.cpp
 	integrators/Integrator.cpp
 	Particles.cpp
 	System.cpp

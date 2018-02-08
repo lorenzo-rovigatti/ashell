@@ -20,6 +20,8 @@ public:
 	Cuboid(double Lx, double Ly, double Lz);
 	virtual ~Cuboid();
 
+	virtual vec3 random_point_in_box();
+
 protected:
 	vec3 _box;
 };

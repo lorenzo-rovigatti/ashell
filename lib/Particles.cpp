@@ -7,6 +7,8 @@
 
 #include "Particles.h"
 
+#include <boost/python.hpp>
+
 namespace ashell {
 
 Particles::Particles(int N) :
@@ -18,6 +20,12 @@ Particles::Particles(int N) :
 
 Particles::~Particles() {
 
+}
+
+using namespace boost::python;
+void export_particles() {
+	class_<Particles>("Particles", init<int>())
+			.add_property("N", &Particles::N, &Particles::set_N);
 }
 
 } /* namespace ashell */

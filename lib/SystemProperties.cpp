@@ -19,6 +19,7 @@ namespace ashell {
 
 SystemProperties::SystemProperties() {
 	_box = std::shared_ptr<Box>(new Cuboid(10., 10., 10.));
+	_particles = std::shared_ptr<Particles>(new Particles(100));
 }
 
 SystemProperties::~SystemProperties() {

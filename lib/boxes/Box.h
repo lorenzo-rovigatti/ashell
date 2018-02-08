@@ -8,6 +8,8 @@
 #ifndef LIB_BOXES_BOX_H_
 #define LIB_BOXES_BOX_H_
 
+#include "../math_defs.h"
+
 #include <boost/signals2.hpp>
 
 namespace ashell {
@@ -25,6 +27,7 @@ public:
 	virtual ~Box();
 
 	virtual void register_to_box_changes(BoxCallbackSlot slot);
+	virtual vec3 random_point_in_box() = 0;
 
 private:
 	BoxSignal _changed_signal;

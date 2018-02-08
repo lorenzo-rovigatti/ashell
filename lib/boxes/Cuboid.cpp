@@ -27,6 +27,11 @@ Cuboid::~Cuboid() {
 
 }
 
+vec3 Cuboid::random_point_in_box() {
+	// Random() returns numbers between -1 and 1
+	return _box.cwiseProduct(0.5 * (vec3::Random() + vec3(1., 1., 1.)));
+}
+
 using namespace boost::python;
 void export_cuboid() {
 	// Cuboid inherits from a noncopyable parent (Box) and hence we have to

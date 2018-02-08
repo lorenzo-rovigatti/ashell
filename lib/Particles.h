@@ -19,6 +19,15 @@ public:
 	Particles(int N);
 	virtual ~Particles();
 
+	int N() const {
+		return _N;
+	}
+
+	void set_N(int nN) {
+		_N = nN;
+	}
+
+
 private:
 	int _N;
 	vector_vec3 _poss;
