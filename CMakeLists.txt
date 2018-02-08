@@ -26,6 +26,8 @@ ELSE()
 	SET(CMAKE_CXX_STANDARD_REQUIRED ON)
 ENDIF()
 
+# the BOOST_LOG_DYN_LINK definition is required in order to build a python-readable
+# dynamic library
 ADD_DEFINITIONS(-Wall -DBOOST_LOG_DYN_LINK)
 
 IF(NOT CMAKE_BUILD_TYPE MATCHES Debug)
@@ -36,10 +38,12 @@ IF(NOT CMAKE_BUILD_TYPE MATCHES Debug)
 	ENDIF(INTEL)
 ENDIF()
 
+INCLUDE_DIRECTORIES( ${PROJECT_SOURCE_DIR}/extern )
+
 FIND_PACKAGE( PythonLibs 2.7 REQUIRED )
 INCLUDE_DIRECTORIES( ${PYTHON_INCLUDE_DIRS} )
 
-FIND_PACKAGE( Boost COMPONENTS python log REQUIRED )
+FIND_PACKAGE( Boost COMPONENTS python log signals REQUIRED )
 INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIR} )
 
 # get the current git revision, if git is installed. Avoid warnings if it isn't

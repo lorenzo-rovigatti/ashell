@@ -17,4 +17,8 @@ Box::~Box() {
 
 }
 
+void Box::register_to_box_changes(BoxCallbackSlot slot) {
+	_changed_signal.connect(slot);
+}
+
 } /* namespace ashell */

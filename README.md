@@ -10,6 +10,7 @@
 * A few Boost modules:
     * Boost Python (libboost-python-dev on debian-derived distros)
     * Boost Log (libboost-log-dev) 
+    * Boost Signals2 (libboost-signals-dev)
 
 ### Compilation
 
@@ -30,3 +31,8 @@ Here is a list of options that can be passed to cmake during the pre-compilation
 * `-DDebug=ON`				Compiles with debug symbols and without optimisation flags
 * `-DG=ON`					Compiles with debug symbols + optimisation flags
 * `-DINTEL=ON`				Uses INTEL's compiler suite
+
+## Acknowledgements
+
+* The structure of ashell has been inspired by [HOOMD-blue](http://glotzerlab.engin.umich.edu/hoomd-blue/)
+* Eigen 3.3.4 is included in the source 

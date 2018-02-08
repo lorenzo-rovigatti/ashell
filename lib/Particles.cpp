@@ -9,7 +9,10 @@
 
 namespace ashell {
 
-Particles::Particles() {
+Particles::Particles(int N) :
+				_N(N),
+				_poss(N, vec3(0., 0., 0.)),
+				_vels(N, vec3(0., 0., 0.)) {
 
 }
 

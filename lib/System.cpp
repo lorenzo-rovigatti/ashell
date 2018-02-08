@@ -10,13 +10,9 @@
 #include "SystemProperties.h"
 #include "integrators/Integrator.h"
 
-#include <iostream>
 #include <boost/python.hpp>
 
 namespace ashell {
-
-using namespace std;
-using namespace boost::python;
 
 System::System() {
 	_sys_props = std::shared_ptr<SystemProperties>(new SystemProperties());
@@ -28,12 +24,12 @@ System::~System() {
 
 void System::run(long long int steps) {
 	for(int i = 0; i < steps; i++) {
-		_sys_props->integrator->step();
+		_sys_props->integrator()->step();
 	}
 }
 
-BOOST_PYTHON_MODULE(system) {
-	class_<System>("System")
+void export_system() {
+	boost::python::class_<System>("System")
 			.def("run", &System::run);
 }
 

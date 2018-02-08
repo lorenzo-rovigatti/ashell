@@ -1,5 +1,7 @@
 SET(ashell_lib_SOURCES
+	ashell.cpp
 	boxes/Box.cpp
+	boxes/Cuboid.cpp
 	integrators/Integrator.cpp
 	Particles.cpp
 	System.cpp
@@ -15,6 +17,6 @@ SET_TARGET_PROPERTIES(_ashell PROPERTIES PREFIX "")
 
 # by default, libraries have extension ".dylib" on Mac OS X, but these are
 # not recognized by python as modules
-if(APPLE)
+IF(APPLE)
     SET_TARGET_PROPERTIES(_ashell PROPERTIES SUFFIX ".so")
-endif(APPLE)
+ENDIF(APPLE)

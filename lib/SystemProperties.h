@@ -21,9 +21,20 @@ public:
 	SystemProperties();
 	virtual ~SystemProperties();
 
-	std::shared_ptr<Box> box;
-	std::shared_ptr<Integrator> integrator;
-	std::shared_ptr<Particles> particles;
+	std::shared_ptr<Box> box() const {
+		return _box;
+	}
+	std::shared_ptr<Integrator> integrator() const {
+		return _integrator;
+	}
+	std::shared_ptr<Particles> particles() const {
+		return _particles;
+	}
+
+private:
+	std::shared_ptr<Box> _box;
+	std::shared_ptr<Integrator> _integrator;
+	std::shared_ptr<Particles> _particles;
 };
 
 } /* namespace ashell */

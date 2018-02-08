@@ -8,12 +8,21 @@
 #ifndef LIB_PARTICLES_H_
 #define LIB_PARTICLES_H_
 
+#include "math_defs.h"
+
+#include <vector>
+
 namespace ashell {
 
 class Particles {
 public:
-	Particles();
+	Particles(int N);
 	virtual ~Particles();
+
+private:
+	int _N;
+	vector_vec3 _poss;
+	vector_vec3 _vels;
 };
 
 } /* namespace ashell */

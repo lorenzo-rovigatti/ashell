@@ -8,12 +8,26 @@
 #ifndef LIB_BOXES_BOX_H_
 #define LIB_BOXES_BOX_H_
 
+#include <boost/signals2.hpp>
+
 namespace ashell {
 
-class Box {
+using BoxSignal = boost::signals2::signal<void ()>;
+using BoxCallbackSlot = BoxSignal::slot_type;
+
+/**
+ * The box class has a signal as a memeber. As a result, it cannot be copied
+ * and hence inherits from boost::noncopyable
+ */
+class Box: public boost::noncopyable {
 public:
 	Box();
 	virtual ~Box();
+
+	virtual void register_to_box_changes(BoxCallbackSlot slot);
+
+private:
+	BoxSignal _changed_signal;
 };
 
 } /* namespace ashell */
