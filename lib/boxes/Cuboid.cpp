@@ -34,9 +34,8 @@ vec3 Cuboid::random_point_in_box() {
 
 using namespace boost::python;
 void export_cuboid() {
-	// Cuboid inherits from a noncopyable parent (Box) and hence we have to
-	// tell it to class_
-	class_<Cuboid, bases<Box>, boost::noncopyable>("Cuboid", init<double>())
+	// Cuboid inherits from a noncopyable parent (Box), which means is non-copyable itself
+	class_<Cuboid, std::shared_ptr<Cuboid>, bases<Box>, boost::noncopyable>("Cuboid", init<double>())
 			.def(init<double, double, double>());
 }
 

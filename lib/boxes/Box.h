@@ -27,7 +27,7 @@ public:
 	virtual ~Box();
 
 	virtual void register_to_box_changes(BoxCallbackSlot slot);
-	virtual vec3 random_point_in_box() = 0;
+	virtual vec3 random_point_in_box();
 
 private:
 	BoxSignal _changed_signal;

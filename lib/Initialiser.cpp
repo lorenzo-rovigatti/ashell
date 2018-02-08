@@ -32,7 +32,7 @@ std::shared_ptr<Particles> Initialiser::make_random(int N, std::shared_ptr<Box> 
 
 using namespace boost::python;
 void export_initialiser() {
-	class_<Initialiser>("Initialiser", no_init)
+	class_<Initialiser, std::shared_ptr<Initialiser> >("Initialiser", no_init)
 			.def("make_random", &Initialiser::make_random).staticmethod("make_random");
 }
 

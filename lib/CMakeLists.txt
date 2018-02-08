@@ -4,6 +4,7 @@ SET(ashell_lib_SOURCES
 	boxes/Cuboid.cpp
 	Initialiser.cpp
 	integrators/Integrator.cpp
+	integrators/VelocityVerlet.cpp
 	Particles.cpp
 	System.cpp
 	SystemProperties.cpp

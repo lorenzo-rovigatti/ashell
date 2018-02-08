@@ -29,8 +29,9 @@ void System::run(long long int steps) {
 }
 
 void export_system() {
-	boost::python::class_<System>("System")
-			.def("run", &System::run);
+	boost::python::class_<System, std::shared_ptr<System> >("System")
+			.def("run", &System::run)
+			.def("system_properties", &System::system_properties);
 }
 
 } /* namespace ashell */

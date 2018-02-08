@@ -13,6 +13,12 @@
 
 #include <boost/python.hpp>
 
+namespace boost {
+   template<class T> T* get_pointer(std::shared_ptr<T> p){
+	   return p.get();
+   }
+}
+
 namespace ashell {
 
 void export_box();

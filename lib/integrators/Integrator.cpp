@@ -8,11 +8,11 @@
 #include "Integrator.h"
 
 #include <boost/log/trivial.hpp>
+#include <boost/python.hpp>
 
 namespace ashell {
 
-Integrator::Integrator(std::shared_ptr<SystemProperties> sys_props) :
-				_sys_props(sys_props) {
+Integrator::Integrator() {
 
 }
 
@@ -21,7 +21,12 @@ Integrator::~Integrator() {
 }
 
 void Integrator::step() {
-	BOOST_LOG_TRIVIAL(info) << "Performing a step";
+	throw std::runtime_error("Integrator::step() should never be called");
+}
+
+using namespace boost::python;
+void export_integrator() {
+	class_<Integrator, std::shared_ptr<Integrator> >("Integrator");
 }
 
 } /* namespace ashell */

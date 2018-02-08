@@ -24,7 +24,7 @@ Particles::~Particles() {
 
 using namespace boost::python;
 void export_particles() {
-	class_<Particles>("Particles", init<int>())
+	class_<Particles, std::shared_ptr<Particles> >("Particles", init<int>())
 			.add_property("N", &Particles::N, &Particles::set_N);
 }
 

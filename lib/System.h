@@ -21,6 +21,10 @@ public:
 
 	void run(long long int steps);
 
+	std::shared_ptr<SystemProperties> system_properties() const {
+		return _sys_props;
+	}
+
 protected:
 	std::shared_ptr<SystemProperties> _sys_props;
 };

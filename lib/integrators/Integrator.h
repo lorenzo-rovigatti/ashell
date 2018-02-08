@@ -14,13 +14,10 @@ namespace ashell {
 
 class Integrator {
 public:
-	Integrator(std::shared_ptr<SystemProperties> sys_props);
+	Integrator();
 	virtual ~Integrator();
 
-	void step();
-
-protected:
-	const std::shared_ptr<SystemProperties> _sys_props;
+	virtual void step();
 };
 
 } /* namespace ashell */

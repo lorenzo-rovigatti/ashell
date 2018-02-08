@@ -23,16 +23,14 @@ void Box::register_to_box_changes(BoxCallbackSlot slot) {
 	_changed_signal.connect(slot);
 }
 
-// this is needed to expose a virtual class
-class BoxWrap: public Box, public boost::python::wrapper<Box> {
-	vec3 random_point_in_box() {
-		return this->get_override("random_point_in_box")();
-	}
-};
+vec3 Box::random_point_in_box() {
+	throw std::runtime_error("Box::random_point_in_box() should never be called");
+	return vec3();
+}
 
 void export_box() {
-	boost::python::class_<BoxWrap, boost::noncopyable>("Box")
-			.def("random_point_in_box", boost::python::pure_virtual(&Box::random_point_in_box));
+	boost::python::class_<Box, std::shared_ptr<Box>, boost::noncopyable>("Box")
+				.def("random_point_in_box", boost::python::pure_virtual(&Box::random_point_in_box));
 }
 
 } /* namespace ashell */
