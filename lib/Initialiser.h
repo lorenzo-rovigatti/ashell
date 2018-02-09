@@ -19,7 +19,7 @@ class Initialiser {
 public:
 	virtual ~Initialiser();
 
-	static std::shared_ptr<Particles> make_random(int N, std::shared_ptr<Box> box);
+	static std::shared_ptr<Particles> make_random_N2(int N, std::shared_ptr<Box> box);
 
 private:
 	Initialiser();

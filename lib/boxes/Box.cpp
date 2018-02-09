@@ -28,7 +28,7 @@ vec3 Box::random_point_in_box() {
 	return vec3();
 }
 
-vec3 Box::minimum_image(vec3 p, vec3 q) {
+vec3 Box::minimum_image(const vec3 &p, const vec3 &q) {
 	throw std::runtime_error("Box::minimum_image(vec3, vec3) should never be called");
 	return vec3();
 }

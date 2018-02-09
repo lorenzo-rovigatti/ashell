@@ -19,7 +19,7 @@ public:
 	virtual ~Cuboid();
 
 	virtual vec3 random_point_in_box();
-	virtual vec3 minimum_image(vec3 p, vec3 q);
+	virtual vec3 minimum_image(const vec3 &p, const vec3 &q);
 
 protected:
 	vec3 _box;

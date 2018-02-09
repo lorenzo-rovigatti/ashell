@@ -10,6 +10,7 @@
 
 #include "../defs.h"
 #include "../Particles.h"
+#include "../SystemProperties.h"
 
 #include <memory>
 
@@ -23,6 +24,7 @@ public:
 	virtual void step(ullint step);
 
 protected:
+	std::shared_ptr<SystemProperties> _sys_props;
 	std::shared_ptr<Particles> _particles;
 };
 

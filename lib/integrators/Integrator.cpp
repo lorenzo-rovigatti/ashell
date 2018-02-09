@@ -10,12 +10,11 @@
 #include "../defs_to_python.h"
 #include "../World.h"
 
-#include <boost/log/trivial.hpp>
-
 namespace ashell {
 
 Integrator::Integrator() {
-	_particles = World::current_system()->system_properties()->particles();
+	_sys_props = World::current_system()->system_properties();
+	_particles = _sys_props->particles();
 }
 
 Integrator::~Integrator() {

@@ -19,7 +19,6 @@ public:
 	Particles(int N);
 	Particles(int N, const vector_vec3 &poss);
 	Particles(int N, const vector_vec3 &poss, const vector_vec3 &vels);
-	Particles(int N, const vector_vec3 &poss, const vector_vec3 &vels, const vector_vec3 &forces);
 	virtual ~Particles();
 
 	int N() const {
@@ -45,20 +44,10 @@ public:
 		return _vels;
 	}
 
-	const vector_vec3 &forces() const {
-			return _forces;
-	}
-
-	vector_vec3 &forces_mutable() {
-			return _forces;
-	}
-
 private:
 	int _N;
 	vector_vec3 _poss;
 	vector_vec3 _vels;
-
-	vector_vec3 _forces;
 };
 
 } /* namespace ashell */

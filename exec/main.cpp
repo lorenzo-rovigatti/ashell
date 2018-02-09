@@ -10,7 +10,7 @@
 int main(int argc, char *argv[]) {
 	auto system = ashell::World::new_system();
 
-	system->run(10);
+	system->run(100);
 
 	return 0;
 }

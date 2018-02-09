@@ -8,6 +8,7 @@
 #include "System.h"
 
 #include "boxes/Cuboid.h"
+#include "consumers/ForceTwoBodyIsotropic.h"
 #include "Initialiser.h"
 #include "integrators/VelocityVerlet.h"
 #include "SystemProperties.h"
@@ -27,9 +28,11 @@ void System::init() {
 	_sys_props = std::shared_ptr<SystemProperties>(new SystemProperties());
 
 	_sys_props->set_box(std::shared_ptr<Box>(new Cuboid(10., 10., 10.)));
-	_sys_props->set_particles(Initialiser::make_random(100, _sys_props->box()));
+	_sys_props->set_particles(Initialiser::make_random_N2(100, _sys_props->box()));
 	_sys_props->set_integrator(std::shared_ptr<Integrator>(new VelocityVerlet(0.001)));
 	_sys_props->set_T(1.0);
+
+	_sys_props->add_pair_force(std::shared_ptr<LennardJonesForce>(new LennardJonesForce));
 }
 
 void System::run(ullint steps) {

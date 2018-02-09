@@ -8,34 +8,36 @@
 #ifndef LIB_SYSTEMPROPERTIES_H_
 #define LIB_SYSTEMPROPERTIES_H_
 
+#include "boxes/Box.h"
+#include "Particles.h"
+
 #include <memory>
 
 namespace ashell {
 
-class Box;
+class ForceComputer;
 class Integrator;
-class Particles;
 
 class SystemProperties {
 public:
 	SystemProperties();
 	virtual ~SystemProperties();
 
-	std::shared_ptr<Box> box() const {
+	auto box() const {
 		return _box;
 	}
 	void set_box(std::shared_ptr<Box> n_box) {
 		_box = n_box;
 	}
 
-	std::shared_ptr<Integrator> integrator() const {
+	auto integrator() const {
 		return _integrator;
 	}
 	void set_integrator(std::shared_ptr<Integrator> n_integrator) {
 		_integrator = n_integrator;
 	}
 
-	std::shared_ptr<Particles> particles() const {
+	auto particles() const {
 		return _particles;
 	}
 
@@ -51,10 +53,19 @@ public:
 		_T = nT;
 	}
 
+	void add_pair_force(const std::shared_ptr<ForceComputer> &n_force) {
+		_pair_forces.push_back(n_force);
+	}
+
+	const auto &pair_forces() const {
+		return _pair_forces;
+	}
+
 private:
 	std::shared_ptr<Box> _box;
 	std::shared_ptr<Integrator> _integrator;
 	std::shared_ptr<Particles> _particles;
+	std::vector<std::shared_ptr<ForceComputer> > _pair_forces;
 
 	double _T;
 };

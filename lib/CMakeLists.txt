@@ -2,6 +2,9 @@ SET(ashell_lib_SOURCES
 	ashell.cpp
 	boxes/Box.cpp
 	boxes/Cuboid.cpp
+	consumers/Consumer.cpp
+	consumers/ForceComputer.cpp
+	consumers/ForceTwoBodyIsotropic.cpp
 	Initialiser.cpp
 	integrators/Integrator.cpp
 	integrators/VelocityVerlet.cpp

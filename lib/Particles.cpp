@@ -12,34 +12,19 @@
 namespace ashell {
 
 Particles::Particles(int N) :
-				Particles(N,
-						vector_vec3(N, vec3(0., 0., 0.)),
-						vector_vec3(N, vec3(0., 0., 0.)),
-						vector_vec3(N, vec3(0., 0., 0.))) {
+				Particles(N, vector_vec3(N, vec3(0., 0., 0.)), vector_vec3(N, vec3(0., 0., 0.))) {
 
 }
 
 Particles::Particles(int N, const vector_vec3 &poss) :
-				Particles(N,
-						poss,
-						vector_vec3(N, vec3(0., 0., 0.)),
-						vector_vec3(N, vec3(0., 0., 0.))) {
+				Particles(N, poss, vector_vec3(N, vec3(0., 0., 0.))) {
 
 }
 
 Particles::Particles(int N, const vector_vec3 &poss, const vector_vec3 &vels) :
-				Particles(N,
-						poss,
-						vels,
-						vector_vec3(N, vec3(0., 0., 0.))) {
-
-}
-
-Particles::Particles(int N, const vector_vec3 &poss, const vector_vec3 &vels, const vector_vec3 &forces) :
 				_N(N),
 				_poss(poss),
-				_vels(vels),
-				_forces(forces) {
+				_vels(vels) {
 
 }
 
@@ -49,8 +34,7 @@ Particles::~Particles() {
 
 using namespace boost::python;
 void export_particles() {
-	class_<Particles, std::shared_ptr<Particles> >("Particles", init<int>())
-			.add_property("N", &Particles::N, &Particles::set_N);
+	class_<Particles, std::shared_ptr<Particles> >("Particles", init<int>()).add_property("N", &Particles::N, &Particles::set_N);
 //			.add_property("positions", &Particles::positions)
 //			.add_property("velocities", &Particles::velocities)
 //			.add_property("forces", &Particles::forces);

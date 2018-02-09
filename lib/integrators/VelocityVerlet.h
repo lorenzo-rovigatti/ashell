@@ -22,6 +22,8 @@ public:
 protected:
 	double _dt;
 	double _dt_half;
+
+	vector_vec3 _forces;
 };
 
 } /* namespace ashell */

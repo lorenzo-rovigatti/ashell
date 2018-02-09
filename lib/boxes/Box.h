@@ -28,7 +28,7 @@ public:
 
 	virtual void register_to_box_changes(BoxCallbackSlot slot);
 	virtual vec3 random_point_in_box();
-	virtual vec3 minimum_image(vec3 p, vec3 q);
+	virtual vec3 minimum_image(const vec3 &p, const vec3 &q);
 
 private:
 	BoxSignal _changed_signal;

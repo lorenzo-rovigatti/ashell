@@ -7,7 +7,8 @@
 
 #include "SystemProperties.h"
 
-#include "boxes/Box.h"
+#include "consumers/ForceComputer.h"
+#include "integrators/Integrator.h"
 #include "Particles.h"
 #include "defs_to_python.h"
 

@@ -5,13 +5,6 @@
  *      Author: lorenzo
  */
 
-#include "boxes/Cuboid.h"
-#include "Initialiser.h"
-#include "Particles.h"
-#include "System.h"
-#include "SystemProperties.h"
-#include "World.h"
-
 #include <boost/python.hpp>
 
 namespace boost {
@@ -22,7 +15,9 @@ namespace boost {
 
 namespace ashell {
 
+// forward declarations
 void export_box();
+void export_consumer();
 void export_cuboid();
 void export_initialiser();
 void export_particles();
@@ -32,6 +27,7 @@ void export_world();
 
 BOOST_PYTHON_MODULE(_ashell) {
 	export_box();
+	export_consumer();
 	export_cuboid();
 	export_initialiser();
 	export_particles();
