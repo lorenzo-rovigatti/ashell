@@ -31,10 +31,20 @@ public:
 		return _particles;
 	}
 
+	double T() {
+		return _T;
+	}
+
+	void set_T(double nT) {
+		_T = nT;
+	}
+
 private:
 	std::shared_ptr<Box> _box;
 	std::shared_ptr<Integrator> _integrator;
 	std::shared_ptr<Particles> _particles;
+
+	double _T;
 };
 
 } /* namespace ashell */

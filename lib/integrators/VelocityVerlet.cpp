@@ -22,7 +22,7 @@ VelocityVerlet::~VelocityVerlet() {
 
 }
 
-void VelocityVerlet::step() {
+void VelocityVerlet::step(ullint step) {
 	std::cout << "Step" << std::endl;
 }
 

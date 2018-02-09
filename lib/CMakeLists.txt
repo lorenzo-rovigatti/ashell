@@ -10,6 +10,7 @@ SET(ashell_lib_SOURCES
 	SystemProperties.cpp
 	utils/parse_input.cpp
 	utils/Timings.cpp
+	World.cpp
 )
 
 ADD_LIBRARY(_ashell SHARED ${ashell_lib_SOURCES})
@@ -22,3 +23,10 @@ SET_TARGET_PROPERTIES(_ashell PROPERTIES PREFIX "")
 IF(APPLE)
     SET_TARGET_PROPERTIES(_ashell PROPERTIES SUFFIX ".so")
 ENDIF(APPLE)
+
+ADD_CUSTOM_COMMAND(
+        TARGET _ashell POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy
+                ${CMAKE_SOURCE_DIR}/tests/test.py
+                ${CMAKE_CURRENT_BINARY_DIR})
+                

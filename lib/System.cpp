@@ -22,9 +22,9 @@ System::~System() {
 
 }
 
-void System::run(long long int steps) {
-	for(int i = 0; i < steps; i++) {
-		_sys_props->integrator()->step();
+void System::run(ullint steps) {
+	for(ullint i = 0; i < steps; i++) {
+		_sys_props->integrator()->step(i);
 	}
 }
 

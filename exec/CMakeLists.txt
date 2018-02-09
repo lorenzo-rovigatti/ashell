@@ -10,3 +10,4 @@ SET(ashell_SOURCES
 )
 
 ADD_EXECUTABLE(${exe_name} ${ashell_SOURCES})
+TARGET_LINK_LIBRARIES(${exe_name} _ashell)

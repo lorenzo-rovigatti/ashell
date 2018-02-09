@@ -14,7 +14,8 @@ namespace ashell {
 Particles::Particles(int N) :
 				_N(N),
 				_poss(N, vec3(0., 0., 0.)),
-				_vels(N, vec3(0., 0., 0.)) {
+				_vels(N, vec3(0., 0., 0.)),
+				_forces(N, vec3(0., 0., 0.)) {
 
 }
 
@@ -26,6 +27,9 @@ using namespace boost::python;
 void export_particles() {
 	class_<Particles, std::shared_ptr<Particles> >("Particles", init<int>())
 			.add_property("N", &Particles::N, &Particles::set_N);
+//			.add_property("positions", &Particles::positions)
+//			.add_property("velocities", &Particles::velocities)
+//			.add_property("forces", &Particles::forces);
 }
 
 } /* namespace ashell */

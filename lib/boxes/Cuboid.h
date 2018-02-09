@@ -10,8 +10,6 @@
 
 #include "Box.h"
 
-#include "../math_defs.h"
-
 namespace ashell {
 
 class Cuboid: public Box {
@@ -21,6 +19,7 @@ public:
 	virtual ~Cuboid();
 
 	virtual vec3 random_point_in_box();
+	virtual vec3 minimum_image(vec3 p, vec3 q);
 
 protected:
 	vec3 _box;

@@ -28,6 +28,11 @@ vec3 Box::random_point_in_box() {
 	return vec3();
 }
 
+vec3 Box::minimum_image(vec3 p, vec3 q) {
+	throw std::runtime_error("Box::minimum_image(vec3, vec3) should never be called");
+	return vec3();
+}
+
 void export_box() {
 	boost::python::class_<Box, std::shared_ptr<Box>, boost::noncopyable>("Box")
 				.def("random_point_in_box", boost::python::pure_virtual(&Box::random_point_in_box));

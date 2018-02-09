@@ -20,7 +20,7 @@ Integrator::~Integrator() {
 
 }
 
-void Integrator::step() {
+void Integrator::step(ullint step) {
 	throw std::runtime_error("Integrator::step() should never be called");
 }
 

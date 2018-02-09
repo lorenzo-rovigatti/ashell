@@ -8,7 +8,7 @@
 #ifndef LIB_BOXES_BOX_H_
 #define LIB_BOXES_BOX_H_
 
-#include "../math_defs.h"
+#include "../defs.h"
 
 #include <boost/signals2.hpp>
 
@@ -28,6 +28,7 @@ public:
 
 	virtual void register_to_box_changes(BoxCallbackSlot slot);
 	virtual vec3 random_point_in_box();
+	virtual vec3 minimum_image(vec3 p, vec3 q);
 
 private:
 	BoxSignal _changed_signal;

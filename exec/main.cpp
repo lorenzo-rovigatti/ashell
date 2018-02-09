@@ -5,10 +5,12 @@
  *      Author: lorenzo
  */
 
+#include "../lib/World.h"
+
 int main(int argc, char *argv[]) {
+	auto system = ashell::World::new_system();
+
+	system->run(10);
+
 	return 0;
-}
-
-void prova() {
-
 }

@@ -8,6 +8,8 @@
 #ifndef LIB_SYSTEM_H_
 #define LIB_SYSTEM_H_
 
+#include "defs.h"
+
 #include <memory>
 
 namespace ashell {
@@ -19,7 +21,7 @@ public:
 	System();
 	virtual ~System();
 
-	void run(long long int steps);
+	void run(ullint steps);
 
 	std::shared_ptr<SystemProperties> system_properties() const {
 		return _sys_props;

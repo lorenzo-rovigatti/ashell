@@ -8,7 +8,7 @@
 #ifndef LIB_INTEGRATORS_INTEGRATOR_H_
 #define LIB_INTEGRATORS_INTEGRATOR_H_
 
-#include "../SystemProperties.h"
+#include "../defs.h"
 
 namespace ashell {
 
@@ -17,7 +17,7 @@ public:
 	Integrator();
 	virtual ~Integrator();
 
-	virtual void step();
+	virtual void step(ullint step);
 };
 
 } /* namespace ashell */
