@@ -21,6 +21,7 @@ public:
 
 protected:
 	double _dt;
+	double _dt_half;
 };
 
 } /* namespace ashell */

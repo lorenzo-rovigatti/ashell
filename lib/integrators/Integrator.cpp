@@ -7,13 +7,15 @@
 
 #include "Integrator.h"
 
+#include "../defs_to_python.h"
+#include "../World.h"
+
 #include <boost/log/trivial.hpp>
-#include <boost/python.hpp>
 
 namespace ashell {
 
 Integrator::Integrator() {
-
+	_particles = World::current_system()->system_properties()->particles();
 }
 
 Integrator::~Integrator() {
@@ -24,9 +26,8 @@ void Integrator::step(ullint step) {
 	throw std::runtime_error("Integrator::step() should never be called");
 }
 
-using namespace boost::python;
 void export_integrator() {
-	class_<Integrator, std::shared_ptr<Integrator> >("Integrator");
+	bpy::class_<Integrator, std::shared_ptr<Integrator> >("Integrator");
 }
 
 } /* namespace ashell */

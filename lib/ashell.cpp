@@ -10,6 +10,7 @@
 #include "Particles.h"
 #include "System.h"
 #include "SystemProperties.h"
+#include "World.h"
 
 #include <boost/python.hpp>
 
@@ -27,6 +28,7 @@ void export_initialiser();
 void export_particles();
 void export_system();
 void export_system_properties();
+void export_world();
 
 BOOST_PYTHON_MODULE(_ashell) {
 	export_box();
@@ -35,6 +37,7 @@ BOOST_PYTHON_MODULE(_ashell) {
 	export_particles();
 	export_system();
 	export_system_properties();
+	export_world();
 }
 
 }

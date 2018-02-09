@@ -7,8 +7,9 @@
 
 #include "Cuboid.h"
 
+#include "../defs_to_python.h"
+
 #include <Eigen/Eigen>
-#include <boost/python.hpp>
 
 namespace ashell {
 
@@ -38,11 +39,10 @@ vec3 Cuboid::minimum_image(vec3 p, vec3 q) {
 	return diff - ((diff.array() / _box.array()).round() * _box.array()).matrix();
 }
 
-using namespace boost::python;
 void export_cuboid() {
 	// Cuboid inherits from a noncopyable parent (Box), which means it is non-copyable itself
-	class_<Cuboid, std::shared_ptr<Cuboid>, bases<Box>, boost::noncopyable>("Cuboid", init<double>())
-			.def(init<double, double, double>());
+	bpy::class_<Cuboid, std::shared_ptr<Cuboid>, bpy::bases<Box>, boost::noncopyable>("Cuboid", bpy::init<double>())
+			.def(bpy::init<double, double, double>());
 }
 
 } /* namespace ashell */

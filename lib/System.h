@@ -9,18 +9,18 @@
 #define LIB_SYSTEM_H_
 
 #include "defs.h"
+#include "SystemProperties.h"
 
 #include <memory>
 
 namespace ashell {
-
-class SystemProperties;
 
 class System {
 public:
 	System();
 	virtual ~System();
 
+	void init();
 	void run(ullint steps);
 
 	std::shared_ptr<SystemProperties> system_properties() const {

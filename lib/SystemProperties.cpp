@@ -8,21 +8,17 @@
 #include "SystemProperties.h"
 
 #include "boxes/Box.h"
-#include "Initialiser.h"
-#include "integrators/VelocityVerlet.h"
 #include "Particles.h"
-
-#include "boxes/Cuboid.h"
-
-#include <boost/python.hpp>
+#include "defs_to_python.h"
 
 namespace ashell {
 
-SystemProperties::SystemProperties() {
-	_box = std::shared_ptr<Box>(new Cuboid(10., 10., 10.));
-	_integrator = std::shared_ptr<Integrator>(new VelocityVerlet(0.001));
-	_particles = Initialiser::make_random(100, _box);
-	_T = 1.0;
+SystemProperties::SystemProperties() :
+				_box(nullptr),
+				_integrator(nullptr),
+				_particles(nullptr),
+				_T(1.0) {
+
 }
 
 SystemProperties::~SystemProperties() {
@@ -30,10 +26,10 @@ SystemProperties::~SystemProperties() {
 }
 
 void export_system_properties() {
-	boost::python::class_<SystemProperties, std::shared_ptr<SystemProperties> >("SystemProperties")
-			.add_property("box", &SystemProperties::box)
-			.add_property("integrator", &SystemProperties::integrator)
-			.add_property("particles", &SystemProperties::particles)
+	bpy::class_<SystemProperties, std::shared_ptr<SystemProperties> >("SystemProperties")
+			.add_property("box", &SystemProperties::box, &SystemProperties::set_box)
+			.add_property("integrator", &SystemProperties::integrator, &SystemProperties::set_integrator)
+			.add_property("particles", &SystemProperties::particles, &SystemProperties::set_particles)
 			.add_property("T", &SystemProperties::T, &SystemProperties::set_T);
 }
 

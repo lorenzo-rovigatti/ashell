@@ -7,6 +7,8 @@
 
 #include "World.h"
 
+#include "defs_to_python.h"
+
 #include <algorithm>
 
 namespace ashell {
@@ -31,9 +33,11 @@ std::shared_ptr<System> World::current_system() {
 }
 
 std::shared_ptr<System> World::new_system() {
-	auto new_syst = std::shared_ptr<System>(new System);
+	auto new_syst = std::shared_ptr<System>(new System());
 	_current_system = new_syst;
 	_systems.push_back(new_syst);
+
+	new_syst->init();
 
 	return new_syst;
 }
@@ -46,6 +50,13 @@ void World::remove_system(std::shared_ptr<System> syst) {
 	else {
 		throw std::runtime_error("World: trying to remove a system that was not initialised");
 	}
+}
+
+void export_world() {
+	bpy::class_<World, std::shared_ptr<World> >("World", bpy::no_init)
+			.def("current_system", &World::current_system).staticmethod("current_system")
+			.def("new_system", &World::new_system).staticmethod("new_system")
+			.def("remove_system", &World::remove_system).staticmethod("remove_system");
 }
 
 } /* namespace ashell */

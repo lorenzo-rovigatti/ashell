@@ -7,15 +7,39 @@
 
 #include "Particles.h"
 
-#include <boost/python.hpp>
+#include "defs_to_python.h"
 
 namespace ashell {
 
 Particles::Particles(int N) :
+				Particles(N,
+						vector_vec3(N, vec3(0., 0., 0.)),
+						vector_vec3(N, vec3(0., 0., 0.)),
+						vector_vec3(N, vec3(0., 0., 0.))) {
+
+}
+
+Particles::Particles(int N, const vector_vec3 &poss) :
+				Particles(N,
+						poss,
+						vector_vec3(N, vec3(0., 0., 0.)),
+						vector_vec3(N, vec3(0., 0., 0.))) {
+
+}
+
+Particles::Particles(int N, const vector_vec3 &poss, const vector_vec3 &vels) :
+				Particles(N,
+						poss,
+						vels,
+						vector_vec3(N, vec3(0., 0., 0.))) {
+
+}
+
+Particles::Particles(int N, const vector_vec3 &poss, const vector_vec3 &vels, const vector_vec3 &forces) :
 				_N(N),
-				_poss(N, vec3(0., 0., 0.)),
-				_vels(N, vec3(0., 0., 0.)),
-				_forces(N, vec3(0., 0., 0.)) {
+				_poss(poss),
+				_vels(vels),
+				_forces(forces) {
 
 }
 

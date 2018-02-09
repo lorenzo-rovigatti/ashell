@@ -7,7 +7,7 @@
 
 #include "Box.h"
 
-#include <boost/python.hpp>
+#include "../defs_to_python.h"
 
 namespace ashell {
 
@@ -34,8 +34,8 @@ vec3 Box::minimum_image(vec3 p, vec3 q) {
 }
 
 void export_box() {
-	boost::python::class_<Box, std::shared_ptr<Box>, boost::noncopyable>("Box")
-				.def("random_point_in_box", boost::python::pure_virtual(&Box::random_point_in_box));
+	bpy::class_<Box, std::shared_ptr<Box>, boost::noncopyable>("Box")
+				.def("random_point_in_box", &Box::random_point_in_box);
 }
 
 } /* namespace ashell */

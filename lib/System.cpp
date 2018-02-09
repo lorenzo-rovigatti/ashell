@@ -7,29 +7,43 @@
 
 #include "System.h"
 
+#include "boxes/Cuboid.h"
+#include "Initialiser.h"
+#include "integrators/VelocityVerlet.h"
 #include "SystemProperties.h"
-#include "integrators/Integrator.h"
-
-#include <boost/python.hpp>
+#include "defs_to_python.h"
 
 namespace ashell {
 
 System::System() {
-	_sys_props = std::shared_ptr<SystemProperties>(new SystemProperties());
+	_sys_props = nullptr;
 }
 
 System::~System() {
 
 }
 
+void System::init() {
+	_sys_props = std::shared_ptr<SystemProperties>(new SystemProperties());
+
+	_sys_props->set_box(std::shared_ptr<Box>(new Cuboid(10., 10., 10.)));
+	_sys_props->set_particles(Initialiser::make_random(100, _sys_props->box()));
+	_sys_props->set_integrator(std::shared_ptr<Integrator>(new VelocityVerlet(0.001)));
+	_sys_props->set_T(1.0);
+}
+
 void System::run(ullint steps) {
+	if(_sys_props == nullptr) {
+		throw std::runtime_error("System::init should be called before System::run");
+	}
 	for(ullint i = 0; i < steps; i++) {
 		_sys_props->integrator()->step(i);
 	}
 }
 
 void export_system() {
-	boost::python::class_<System, std::shared_ptr<System> >("System")
+	bpy::class_<System, std::shared_ptr<System> >("System")
+			.def("init", &System::init)
 			.def("run", &System::run)
 			.def("system_properties", &System::system_properties);
 }

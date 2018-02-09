@@ -24,11 +24,23 @@ public:
 	std::shared_ptr<Box> box() const {
 		return _box;
 	}
+	void set_box(std::shared_ptr<Box> n_box) {
+		_box = n_box;
+	}
+
 	std::shared_ptr<Integrator> integrator() const {
 		return _integrator;
 	}
+	void set_integrator(std::shared_ptr<Integrator> n_integrator) {
+		_integrator = n_integrator;
+	}
+
 	std::shared_ptr<Particles> particles() const {
 		return _particles;
+	}
+
+	void set_particles(std::shared_ptr<Particles> n_particles) {
+		_particles = n_particles;
 	}
 
 	double T() {

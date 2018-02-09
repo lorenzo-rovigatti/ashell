@@ -2,5 +2,6 @@
 
 import _ashell as ash
 
-s = ash.System()
+s = ash.World.new_system()
+s.init()
 s.run(10)

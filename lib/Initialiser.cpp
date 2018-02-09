@@ -7,7 +7,7 @@
 
 #include "Initialiser.h"
 
-#include <boost/python.hpp>
+#include "defs_to_python.h"
 
 namespace ashell {
 
@@ -25,14 +25,13 @@ std::shared_ptr<Particles> Initialiser::make_random(int N, std::shared_ptr<Box> 
 		pos = box->random_point_in_box();
 	}
 
-	std::shared_ptr<Particles> particles(new Particles(N));
+	std::shared_ptr<Particles> particles(new Particles(N, poss));
 
 	return particles;
 }
 
-using namespace boost::python;
 void export_initialiser() {
-	class_<Initialiser, std::shared_ptr<Initialiser> >("Initialiser", no_init)
+	bpy::class_<Initialiser, std::shared_ptr<Initialiser> >("Initialiser", bpy::no_init)
 			.def("make_random", &Initialiser::make_random).staticmethod("make_random");
 }
 
