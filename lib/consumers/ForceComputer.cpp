@@ -9,8 +9,8 @@
 
 namespace ashell {
 
-ForceComputer::ForceComputer() :
-				Consumer(),
+ForceComputer::ForceComputer(std::string name) :
+				Consumer(name),
 				_energy(0.),
 				_energies(_particles->N(), 0.),
 				_forces(_particles->N(), vec3(0., 0., 0.)) {

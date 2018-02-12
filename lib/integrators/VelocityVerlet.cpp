@@ -34,6 +34,7 @@ void VelocityVerlet::step(ullint step) {
 	for(int i = 0; i < N; i++) {
 		vels[i] += _forces[i] * _dt_half;
 		poss[i] += vels[i] * _dt;
+		_forces[i] = vec3(0., 0., 0.);
 	}
 
 	double energy = 0.;
@@ -50,8 +51,6 @@ void VelocityVerlet::step(ullint step) {
 	for(int i = 0; i < N; i++) {
 		vels[i] += _forces[i] * _dt_half;
 	}
-
-	std::cout << "step " << step << " " << energy << std::endl;
 }
 
 using namespace boost::python;

@@ -5,9 +5,15 @@ SET(ashell_lib_SOURCES
 	consumers/Consumer.cpp
 	consumers/ForceComputer.cpp
 	consumers/ForceTwoBodyIsotropic.cpp
+	consumers/observables/Observable.cpp
+	consumers/observables/KineticEnergy.cpp
+	consumers/observables/PotentialEnergy.cpp
+	consumers/observables/TotalEnergy.cpp
+	consumers/observables/Step.cpp
 	Initialiser.cpp
 	integrators/Integrator.cpp
 	integrators/VelocityVerlet.cpp
+	OutputObservable.cpp
 	Particles.cpp
 	System.cpp
 	SystemProperties.cpp

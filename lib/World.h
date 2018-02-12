@@ -16,6 +16,7 @@ namespace ashell {
 
 class World {
 public:
+	World() = delete;
 	virtual ~World();
 
 	static std::shared_ptr<System> current_system();
@@ -24,8 +25,6 @@ public:
 	static void remove_system(std::shared_ptr<System> syst);
 
 private:
-	World();
-
 	static std::shared_ptr<System> _current_system;
 	static std::vector<std::shared_ptr<System> > _systems;
 };

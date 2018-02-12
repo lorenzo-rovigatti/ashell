@@ -12,9 +12,10 @@
 
 namespace ashell {
 
-Consumer::Consumer() :
+Consumer::Consumer(std::string name) :
 				_ever_consumed(false),
-				_last_step(0) {
+				_last_step(0),
+				_name(name) {
 	_sys_props = World::current_system()->system_properties();
 	_particles = _sys_props->particles();
 }
@@ -39,7 +40,7 @@ bool Consumer::should_consume(ullint step) {
 }
 
 void Consumer::consume(ullint step) {
-	throw std::runtime_error("Calling un unimplemented Consumer::consume() method");
+	throw std::runtime_error("Calling an unimplemented Consumer::consume() method");
 }
 
 void export_consumer() {

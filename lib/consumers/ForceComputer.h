@@ -14,7 +14,7 @@ namespace ashell {
 
 class ForceComputer: public Consumer {
 public:
-	ForceComputer();
+	ForceComputer(std::string name="force_computer");
 	virtual ~ForceComputer();
 
 	double energy() {

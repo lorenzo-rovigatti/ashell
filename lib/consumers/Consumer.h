@@ -15,17 +15,22 @@ namespace ashell {
 
 class Consumer {
 public:
-	Consumer();
+	Consumer(std::string n_name="consumer");
 	virtual ~Consumer();
 
 	virtual bool should_consume(ullint step);
 	virtual void consume(ullint step);
+
+	virtual const std::string &name() const {
+		return _name;
+	}
 
 protected:
 	bool _ever_consumed;
 	ullint _last_step;
 	std::shared_ptr<SystemProperties> _sys_props;
 	std::shared_ptr<Particles> _particles;
+	std::string _name;
 };
 
 } /* namespace ashell */

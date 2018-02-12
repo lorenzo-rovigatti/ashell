@@ -12,8 +12,8 @@
 namespace ashell {
 
 template<class potential>
-ForceTwoBodyIsotropic<potential>::ForceTwoBodyIsotropic() :
-				ForceComputer(),
+ForceTwoBodyIsotropic<potential>::ForceTwoBodyIsotropic(std::string name) :
+				ForceComputer(name),
 				_potential(2.5) {
 
 }

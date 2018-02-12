@@ -15,7 +15,7 @@ namespace ashell {
 template<class potential>
 class ForceTwoBodyIsotropic: public ForceComputer {
 public:
-	ForceTwoBodyIsotropic();
+	ForceTwoBodyIsotropic(std::string name="force_two_body_isotropic");
 	virtual ~ForceTwoBodyIsotropic();
 
 	virtual void consume(ullint step);

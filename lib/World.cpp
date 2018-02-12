@@ -16,10 +16,6 @@ namespace ashell {
 std::shared_ptr<System> World::_current_system;
 std::vector<std::shared_ptr<System> > World::_systems;
 
-World::World() {
-
-}
-
 World::~World() {
 
 }

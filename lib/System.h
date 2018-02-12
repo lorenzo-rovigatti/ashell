@@ -9,6 +9,7 @@
 #define LIB_SYSTEM_H_
 
 #include "defs.h"
+#include "OutputObservable.h"
 #include "SystemProperties.h"
 
 #include <memory>
@@ -29,6 +30,7 @@ public:
 
 protected:
 	std::shared_ptr<SystemProperties> _sys_props;
+	std::vector<std::shared_ptr<OutputObservable> > _outputs;
 };
 
 } /* namespace ashell */
