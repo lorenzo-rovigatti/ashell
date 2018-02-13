@@ -17,6 +17,8 @@ public:
 	ForceComputer(std::string name="force_computer");
 	virtual ~ForceComputer();
 
+	virtual void consume(ullint step);
+
 	double energy() {
 		return _energy;
 	}
@@ -26,6 +28,8 @@ public:
 	}
 
 protected:
+	virtual void _compute_forces(ullint step);
+
 	double _energy;
 	vector_scalar _energies;
 	vector_vec3 _forces;

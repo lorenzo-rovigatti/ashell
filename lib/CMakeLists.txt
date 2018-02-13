@@ -4,6 +4,7 @@ SET(ashell_lib_SOURCES
 	boxes/Cuboid.cpp
 	consumers/Consumer.cpp
 	consumers/ForceComputer.cpp
+	consumers/ForceLink.cpp
 	consumers/ForceTwoBodyIsotropic.cpp
 	consumers/observables/Observable.cpp
 	consumers/observables/KineticEnergy.cpp
@@ -17,6 +18,7 @@ SET(ashell_lib_SOURCES
 	Particles.cpp
 	System.cpp
 	SystemProperties.cpp
+	Topology.cpp
 	utils/parse_input.cpp
 	utils/Timings.cpp
 	World.cpp

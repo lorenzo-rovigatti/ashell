@@ -10,6 +10,7 @@
 
 #include "boxes/Box.h"
 #include "Particles.h"
+#include "Topology.h"
 
 #include <memory>
 
@@ -53,19 +54,47 @@ public:
 		_T = nT;
 	}
 
-	void add_pair_force(const std::shared_ptr<ForceComputer> &n_force) {
-		_pair_forces.push_back(n_force);
+	void add_force(const std::shared_ptr<ForceComputer> n_force) {
+		_forces.push_back(n_force);
 	}
 
-	const auto &pair_forces() const {
-		return _pair_forces;
+	void add_link(std::shared_ptr<TopologyLink<2>> n_l) {
+		_links.push_back(n_l);
+	}
+
+	void add_angle(std::shared_ptr<TopologyLink<3>> n_a) {
+		_angles.push_back(n_a);
+	}
+
+	void add_dihedral(std::shared_ptr<TopologyLink<4>> n_d) {
+		_dihedrals.push_back(n_d);
+	}
+
+	const auto &forces() const {
+		return _forces;
+	}
+
+	const auto &links() const {
+		return _links;
+	}
+
+	const auto &angles() const {
+		return _angles;
+	}
+
+	const auto &dihedrals() const {
+		return _dihedrals;
 	}
 
 private:
 	std::shared_ptr<Box> _box;
 	std::shared_ptr<Integrator> _integrator;
 	std::shared_ptr<Particles> _particles;
-	std::vector<std::shared_ptr<ForceComputer> > _pair_forces;
+	std::vector<std::shared_ptr<ForceComputer>> _forces;
+
+	std::vector<std::shared_ptr<TopologyLink<2>>> _links;
+	std::vector<std::shared_ptr<TopologyLink<3>>> _angles;
+	std::vector<std::shared_ptr<TopologyLink<4>>> _dihedrals;
 
 	double _T;
 };

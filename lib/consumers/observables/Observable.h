@@ -22,9 +22,9 @@ public:
 	virtual std::string as_string();
 
 protected:
-	ullint _last_step;
-
 	virtual void _observe(ullint step);
+
+	ullint _last_step;
 };
 
 } /* namespace ashell */

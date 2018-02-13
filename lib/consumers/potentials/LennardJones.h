@@ -10,13 +10,22 @@
 
 #include "../../defs.h"
 
+#include <boost/format.hpp>
+
 namespace ashell {
 
 class LennardJones {
 public:
-	LennardJones(double rcut) : _rcut_sqr(SQR(rcut)) {
-
+	LennardJones(std::initializer_list<double> params) {
+		if(params.size() != 1) {
+			throw std::runtime_error(boost::str(boost::format("LennardJones expects a parameter list of length 1, not %u") % params.size()));
+		}
+		_rcut_sqr = SQR(*params.begin());
+		double inv_rcut_sqr = 1. / _rcut_sqr;
+		double part = CUB(inv_rcut_sqr);
+		_E_cut = 4. * (SQR(part) - part);
 	}
+
 	virtual ~LennardJones() {
 
 	}
@@ -28,7 +37,7 @@ public:
 
 		double inv_r_sqr = 1. / r_sqr;
 		double part = CUB(inv_r_sqr);
-		energy = 4. * (SQR(part) - part);
+		energy = 4. * (SQR(part) - part) - _E_cut;
 		force_over_r = -24. * (part - 2. * SQR(part)) / r_sqr;
 
 		return true;
@@ -36,6 +45,7 @@ public:
 
 private:
 	double _rcut_sqr;
+	double _E_cut;
 };
 
 } /* namespace ashell */

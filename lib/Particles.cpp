@@ -11,17 +11,17 @@
 
 namespace ashell {
 
-Particles::Particles(int N) :
+Particles::Particles(uint N) :
 				Particles(N, vector_vec3(N, vec3(0., 0., 0.)), vector_vec3(N, vec3(0., 0., 0.))) {
 
 }
 
-Particles::Particles(int N, const vector_vec3 &poss) :
+Particles::Particles(uint N, const vector_vec3 &poss) :
 				Particles(N, poss, vector_vec3(N, vec3(0., 0., 0.))) {
 
 }
 
-Particles::Particles(int N, const vector_vec3 &poss, const vector_vec3 &vels) :
+Particles::Particles(uint N, const vector_vec3 &poss, const vector_vec3 &vels) :
 				_N(N),
 				_poss(poss),
 				_vels(vels) {

@@ -16,16 +16,16 @@ namespace ashell {
 
 class Particles {
 public:
-	Particles(int N);
-	Particles(int N, const vector_vec3 &poss);
-	Particles(int N, const vector_vec3 &poss, const vector_vec3 &vels);
+	Particles(uint N);
+	Particles(uint N, const vector_vec3 &poss);
+	Particles(uint N, const vector_vec3 &poss, const vector_vec3 &vels);
 	virtual ~Particles();
 
-	int N() const {
+	uint N() const {
 		return _N;
 	}
 
-	void set_N(int nN) {
+	void set_N(uint nN) {
 		_N = nN;
 	}
 
@@ -45,7 +45,7 @@ public:
 	}
 
 private:
-	int _N;
+	uint _N;
 	vector_vec3 _poss;
 	vector_vec3 _vels;
 };

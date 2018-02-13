@@ -18,9 +18,9 @@ public:
 	ForceTwoBodyIsotropic(std::string name="force_two_body_isotropic");
 	virtual ~ForceTwoBodyIsotropic();
 
-	virtual void consume(ullint step);
-
 private:
+	virtual void _compute_forces(ullint step);
+
 	potential _potential;
 };
 

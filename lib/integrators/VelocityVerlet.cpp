@@ -38,8 +38,7 @@ void VelocityVerlet::step(ullint step) {
 	}
 
 	double energy = 0.;
-	auto pair_force_computers = _sys_props->pair_forces();
-	for(auto &pair_force_computer : pair_force_computers) {
+	for(auto &pair_force_computer : _sys_props->forces()) {
 		pair_force_computer->consume(step);
 		energy +=  pair_force_computer->energy();
 		auto computer_forces = pair_force_computer->forces();

@@ -25,7 +25,7 @@ double PotentialEnergy::as_scalar() {
 
 void PotentialEnergy::_observe(ullint step) {
 	_energy = 0.;
-	for(auto &force: _sys_props->pair_forces()) {
+	for(auto &force: _sys_props->forces()) {
 		_energy += force->energy();
 	}
 }

@@ -22,6 +22,7 @@ using mat3 = Eigen::Matrix3d;
 using vector_vec3 = std::vector<vec3, Eigen::aligned_allocator<vec3> >;
 using vector_scalar = std::vector<double>;
 
+using uint = unsigned int;
 using ullint = unsigned long long int;
 
 #endif /* LIB_DEFS_H_ */
