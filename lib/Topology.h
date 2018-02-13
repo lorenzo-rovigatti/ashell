@@ -28,7 +28,7 @@ struct TopologyLink {
 		if(l.size() != link_size) {
 			throw std::runtime_error(boost::str(boost::format("Invalid initialisation of a topological link of size %u (got %u parameters instead)") % link_size % l.size()));
 		}
-		std::copy(l.begin(), l.end(), members);
+		std::copy(l.begin(), l.end(), members.begin());
 	}
 
 	uint type;
