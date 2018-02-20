@@ -5,7 +5,7 @@
  *      Author: lorenzo
  */
 
-#include "KineticEnergy.h"
+#include "../../computers/observables/KineticEnergy.h"
 
 #include <boost/format.hpp>
 

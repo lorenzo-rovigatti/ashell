@@ -5,10 +5,10 @@
  *      Author: lorenzo
  */
 
-#ifndef LIB_CONSUMERS_OBSERVABLES_KINETICENERGY_H_
-#define LIB_CONSUMERS_OBSERVABLES_KINETICENERGY_H_
+#ifndef LIB_COMPUTERS_OBSERVABLES_KINETICENERGY_H_
+#define LIB_COMPUTERS_OBSERVABLES_KINETICENERGY_H_
 
-#include "Observable.h"
+#include "../../computers/observables/Observable.h"
 
 namespace ashell {
 
@@ -27,4 +27,4 @@ protected:
 
 } /* namespace ashell */
 
-#endif /* LIB_CONSUMERS_OBSERVABLES_KINETICENERGY_H_ */
+#endif /* LIB_COMPUTERS_OBSERVABLES_KINETICENERGY_H_ */

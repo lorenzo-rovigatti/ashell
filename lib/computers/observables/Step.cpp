@@ -5,7 +5,7 @@
  *      Author: lorenzo
  */
 
-#include "Step.h"
+#include "../../computers/observables/Step.h"
 
 #include <boost/format.hpp>
 

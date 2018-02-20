@@ -6,10 +6,10 @@
  */
 
 #include "VelocityVerlet.h"
-#include "../consumers/ForceComputer.h"
 #include "../defs_to_python.h"
 
 #include <iostream>
+#include "../computers/ForceComputer.h"
 
 namespace ashell {
 

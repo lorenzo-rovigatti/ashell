@@ -5,8 +5,8 @@
  *      Author: lorenzo
  */
 
-#ifndef LIB_CONSUMERS_POTENTIALS_FENE_H_
-#define LIB_CONSUMERS_POTENTIALS_FENE_H_
+#ifndef LIB_COMPUTERS_POTENTIALS_FENE_H_
+#define LIB_COMPUTERS_POTENTIALS_FENE_H_
 
 #include "../../defs.h"
 
@@ -41,4 +41,4 @@ private:
 
 } /* namespace ashell */
 
-#endif /* LIB_CONSUMERS_POTENTIALS_FENE_H_ */
+#endif /* LIB_COMPUTERS_POTENTIALS_FENE_H_ */

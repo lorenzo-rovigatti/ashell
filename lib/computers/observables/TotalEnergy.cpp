@@ -5,7 +5,7 @@
  *      Author: lorenzo
  */
 
-#include "TotalEnergy.h"
+#include "../../computers/observables/TotalEnergy.h"
 
 #include <boost/format.hpp>
 

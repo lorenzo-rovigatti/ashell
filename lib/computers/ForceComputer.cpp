@@ -5,12 +5,12 @@
  *      Author: lorenzo
  */
 
-#include "ForceComputer.h"
+#include "../computers/ForceComputer.h"
 
 namespace ashell {
 
 ForceComputer::ForceComputer(std::string name) :
-				Consumer(name),
+				Computer(name),
 				_energy(0.),
 				_energies(_particles->N(), 0.),
 				_forces(_particles->N(), vec3(0., 0., 0.)) {

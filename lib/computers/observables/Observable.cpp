@@ -5,7 +5,7 @@
  *      Author: lorenzo
  */
 
-#include "Observable.h"
+#include "../../computers/observables/Observable.h"
 
 #include <boost/format.hpp>
 
@@ -14,7 +14,7 @@ namespace ashell {
 using std::string;
 
 Observable::Observable(std::string n_name) :
-				Consumer(n_name),
+				Computer(n_name),
 				_last_step(0) {
 
 }

@@ -5,10 +5,10 @@
  *      Author: lorenzo
  */
 
-#ifndef LIB_CONSUMERS_FORCELINK_H_
-#define LIB_CONSUMERS_FORCELINK_H_
+#ifndef LIB_COMPUTERS_FORCELINK_H_
+#define LIB_COMPUTERS_FORCELINK_H_
 
-#include "ForceComputer.h"
+#include "../computers/ForceComputer.h"
 
 namespace ashell {
 
@@ -26,8 +26,8 @@ protected:
 
 } /* namespace ashell */
 
-#include "potentials/FENE.h"
+#include "../computers/potentials/FENE.h"
 template class ashell::ForceLink<ashell::FENE>;
 using FENEForce = ashell::ForceLink<ashell::FENE>;
 
-#endif /* LIB_CONSUMERS_FORCELINK_H_ */
+#endif /* LIB_COMPUTERS_FORCELINK_H_ */

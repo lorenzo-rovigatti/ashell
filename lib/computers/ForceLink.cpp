@@ -5,7 +5,7 @@
  *      Author: lorenzo
  */
 
-#include "ForceLink.h"
+#include "../computers/ForceLink.h"
 
 namespace ashell {
 

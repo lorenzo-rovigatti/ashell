@@ -5,18 +5,18 @@
  *      Author: lorenzo
  */
 
-#ifndef LIB_CONSUMERS_CONSUMER_H_
-#define LIB_CONSUMERS_CONSUMER_H_
+#ifndef LIB_COMPUTERS_COMPUTER_H_
+#define LIB_COMPUTERS_COMPUTER_H_
 
 #include "../SystemProperties.h"
 #include "../defs.h"
 
 namespace ashell {
 
-class Consumer {
+class Computer {
 public:
-	Consumer(std::string n_name="consumer");
-	virtual ~Consumer();
+	Computer(std::string n_name="computer");
+	virtual ~Computer();
 
 	virtual bool should_consume(ullint step);
 	virtual void consume(ullint step);
@@ -35,4 +35,4 @@ protected:
 
 } /* namespace ashell */
 
-#endif /* LIB_CONSUMERS_CONSUMER_H_ */
+#endif /* LIB_COMPUTERS_COMPUTER_H_ */

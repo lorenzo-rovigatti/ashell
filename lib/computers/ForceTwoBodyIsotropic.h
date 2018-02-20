@@ -5,10 +5,10 @@
  *      Author: lorenzo
  */
 
-#ifndef LIB_CONSUMERS_FORCETWOBODYISOTROPIC_H_
-#define LIB_CONSUMERS_FORCETWOBODYISOTROPIC_H_
+#ifndef LIB_COMPUTERS_FORCETWOBODYISOTROPIC_H_
+#define LIB_COMPUTERS_FORCETWOBODYISOTROPIC_H_
 
-#include "ForceComputer.h"
+#include "../computers/ForceComputer.h"
 
 namespace ashell {
 
@@ -26,8 +26,8 @@ private:
 
 } /* namespace ashell */
 
-#include "potentials/LennardJones.h"
+#include "../computers/potentials/LennardJones.h"
 template class ashell::ForceTwoBodyIsotropic<ashell::LennardJones>;
 using LennardJonesForce = ashell::ForceTwoBodyIsotropic<ashell::LennardJones>;
 
-#endif /* LIB_CONSUMERS_FORCETWOBODYISOTROPIC_H_ */
+#endif /* LIB_COMPUTERS_FORCETWOBODYISOTROPIC_H_ */

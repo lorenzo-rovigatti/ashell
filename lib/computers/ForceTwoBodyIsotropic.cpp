@@ -5,7 +5,7 @@
  *      Author: lorenzo
  */
 
-#include "ForceTwoBodyIsotropic.h"
+#include "../computers/ForceTwoBodyIsotropic.h"
 
 #include "../defs_to_python.h"
 

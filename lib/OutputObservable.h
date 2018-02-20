@@ -8,11 +8,10 @@
 #ifndef LIB_OUTPUTOBSERVABLE_H_
 #define LIB_OUTPUTOBSERVABLE_H_
 
-#include "consumers/observables/Observable.h"
-
 #include <vector>
 #include <fstream>
 #include <memory>
+#include "computers/observables/Observable.h"
 
 namespace ashell {
 

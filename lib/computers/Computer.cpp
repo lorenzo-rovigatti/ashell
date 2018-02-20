@@ -5,14 +5,14 @@
  *      Author: lorenzo
  */
 
-#include "Consumer.h"
+#include "../computers/Computer.h"
 
 #include "../World.h"
 #include "../defs_to_python.h"
 
 namespace ashell {
 
-Consumer::Consumer(std::string name) :
+Computer::Computer(std::string name) :
 				_ever_consumed(false),
 				_last_step(0),
 				_name(name) {
@@ -20,11 +20,11 @@ Consumer::Consumer(std::string name) :
 	_particles = _sys_props->particles();
 }
 
-Consumer::~Consumer() {
+Computer::~Computer() {
 
 }
 
-bool Consumer::should_consume(ullint step) {
+bool Computer::should_consume(ullint step) {
 	if(!_ever_consumed) {
 		_ever_consumed = true;
 		_last_step = step;
@@ -39,12 +39,12 @@ bool Consumer::should_consume(ullint step) {
 	return false;
 }
 
-void Consumer::consume(ullint step) {
+void Computer::consume(ullint step) {
 	throw std::runtime_error("Calling an unimplemented Consumer::consume() method");
 }
 
 void export_consumer() {
-	bpy::class_<Consumer>("Consumer").def("should_consume", &Consumer::should_consume).def("consume", &Consumer::consume);
+	bpy::class_<Computer>("Consumer").def("should_consume", &Computer::should_consume).def("consume", &Computer::consume);
 }
 
 } /* namespace ashell */

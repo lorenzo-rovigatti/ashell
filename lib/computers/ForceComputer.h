@@ -5,14 +5,14 @@
  *      Author: lorenzo
  */
 
-#ifndef LIB_CONSUMERS_FORCECOMPUTER_H_
-#define LIB_CONSUMERS_FORCECOMPUTER_H_
+#ifndef LIB_COMPUTERS_FORCECOMPUTER_H_
+#define LIB_COMPUTERS_FORCECOMPUTER_H_
 
-#include "Consumer.h"
+#include "../computers/Computer.h"
 
 namespace ashell {
 
-class ForceComputer: public Consumer {
+class ForceComputer: public Computer {
 public:
 	ForceComputer(std::string name="force_computer");
 	virtual ~ForceComputer();
@@ -37,4 +37,4 @@ protected:
 
 } /* namespace ashell */
 
-#endif /* LIB_CONSUMERS_FORCECOMPUTER_H_ */
+#endif /* LIB_COMPUTERS_FORCECOMPUTER_H_ */

@@ -35,4 +35,4 @@ Here is a list of options that can be passed to cmake during the pre-compilation
 ## Acknowledgements
 
 * The structure of ashell has been inspired by [HOOMD-blue](http://glotzerlab.engin.umich.edu/hoomd-blue/)
-* Eigen 3.3.4 is included in the source 
+* Eigen 3.3.4 is included in the source tree

@@ -5,12 +5,12 @@
  *      Author: lorenzo
  */
 
-#ifndef LIB_CONSUMERS_OBSERVABLES_TOTALENERGY_H_
-#define LIB_CONSUMERS_OBSERVABLES_TOTALENERGY_H_
+#ifndef LIB_COMPUTERS_OBSERVABLES_TOTALENERGY_H_
+#define LIB_COMPUTERS_OBSERVABLES_TOTALENERGY_H_
 
-#include "Observable.h"
-#include "PotentialEnergy.h"
-#include "KineticEnergy.h"
+#include "../../computers/observables/KineticEnergy.h"
+#include "../../computers/observables/Observable.h"
+#include "../../computers/observables/PotentialEnergy.h"
 
 namespace ashell {
 
@@ -30,4 +30,4 @@ protected:
 
 } /* namespace ashell */
 
-#endif /* LIB_CONSUMERS_OBSERVABLES_TOTALENERGY_H_ */
+#endif /* LIB_COMPUTERS_OBSERVABLES_TOTALENERGY_H_ */

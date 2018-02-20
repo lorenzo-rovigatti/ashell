@@ -8,9 +8,9 @@
 #include "System.h"
 
 #include "boxes/Cuboid.h"
-#include "consumers/ForceLink.h"
-#include "consumers/ForceTwoBodyIsotropic.h"
-#include "consumers/observables/TotalEnergy.h"
+#include "computers/ForceLink.h"
+#include "computers/ForceTwoBodyIsotropic.h"
+#include "computers/observables/TotalEnergy.h"
 #include "Initialiser.h"
 #include "integrators/VelocityVerlet.h"
 #include "SystemProperties.h"

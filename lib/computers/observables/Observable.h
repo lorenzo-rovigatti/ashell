@@ -5,14 +5,14 @@
  *      Author: lorenzo
  */
 
-#ifndef LIB_CONSUMERS_OBSERVABLES_OBSERVABLE_H_
-#define LIB_CONSUMERS_OBSERVABLES_OBSERVABLE_H_
+#ifndef LIB_COMPUTERS_OBSERVABLES_OBSERVABLE_H_
+#define LIB_COMPUTERS_OBSERVABLES_OBSERVABLE_H_
 
-#include "../Consumer.h"
+#include "../../computers/Computer.h"
 
 namespace ashell {
 
-class Observable : public Consumer {
+class Observable : public Computer {
 public:
 	Observable(std::string n_name="consumer");
 	virtual ~Observable();
@@ -29,4 +29,4 @@ protected:
 
 } /* namespace ashell */
 
-#endif /* LIB_CONSUMERS_OBSERVABLES_OBSERVABLE_H_ */
+#endif /* LIB_COMPUTERS_OBSERVABLES_OBSERVABLE_H_ */

@@ -2,15 +2,15 @@ SET(ashell_lib_SOURCES
 	ashell.cpp
 	boxes/Box.cpp
 	boxes/Cuboid.cpp
-	consumers/Consumer.cpp
-	consumers/ForceComputer.cpp
-	consumers/ForceLink.cpp
-	consumers/ForceTwoBodyIsotropic.cpp
-	consumers/observables/Observable.cpp
-	consumers/observables/KineticEnergy.cpp
-	consumers/observables/PotentialEnergy.cpp
-	consumers/observables/TotalEnergy.cpp
-	consumers/observables/Step.cpp
+	computers/Computer.cpp
+	computers/ForceComputer.cpp
+	computers/ForceLink.cpp
+	computers/ForceTwoBodyIsotropic.cpp
+	computers/observables/Observable.cpp
+	computers/observables/KineticEnergy.cpp
+	computers/observables/PotentialEnergy.cpp
+	computers/observables/TotalEnergy.cpp
+	computers/observables/Step.cpp
 	Initialiser.cpp
 	integrators/Integrator.cpp
 	integrators/VelocityVerlet.cpp
