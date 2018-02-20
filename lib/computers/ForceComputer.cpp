@@ -21,8 +21,8 @@ ForceComputer::~ForceComputer() {
 
 }
 
-void ForceComputer::consume(ullint step) {
-	if(!should_consume(step)) return;
+void ForceComputer::compute(ullint step) {
+	if(!should_compute(step)) return;
 
 	int N = _particles->N();
 	if(N != (int) _energies.size()) {
@@ -38,7 +38,7 @@ void ForceComputer::consume(ullint step) {
 }
 
 void ForceComputer::_compute_forces(ullint step) {
-	throw std::runtime_error("Calling an unimplemented Consumer::_compute_forces() method");
+	throw std::runtime_error("Calling an unimplemented ForceComputer::_compute_forces() method");
 }
 
 } /* namespace ashell */

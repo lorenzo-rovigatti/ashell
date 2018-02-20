@@ -6,7 +6,7 @@
 
 * CMake >= 2.8
 * make
-* c++11-compliant compiler (tested with GCC 5.4)
+* A c++11-compliant compiler (tested with GCC 5.4)
 * A few Boost modules:
     * Boost Python (libboost-python-dev on debian-derived distros)
     * Boost Log (libboost-log-dev) 

@@ -29,8 +29,8 @@ std::string TotalEnergy::as_string() {
 }
 
 void TotalEnergy::_observe(ullint step) {
-	_potential_obs->consume(step);
-	_kinetic_obs->consume(step);
+	_potential_obs->compute(step);
+	_kinetic_obs->compute(step);
 }
 
 } /* namespace ashell */

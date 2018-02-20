@@ -13,7 +13,7 @@
 namespace ashell {
 
 Computer::Computer(std::string name) :
-				_ever_consumed(false),
+				_ever_computed(false),
 				_last_step(0),
 				_name(name) {
 	_sys_props = World::current_system()->system_properties();
@@ -24,9 +24,9 @@ Computer::~Computer() {
 
 }
 
-bool Computer::should_consume(ullint step) {
-	if(!_ever_consumed) {
-		_ever_consumed = true;
+bool Computer::should_compute(ullint step) {
+	if(!_ever_computed) {
+		_ever_computed = true;
 		_last_step = step;
 		return true;
 	}
@@ -39,12 +39,12 @@ bool Computer::should_consume(ullint step) {
 	return false;
 }
 
-void Computer::consume(ullint step) {
-	throw std::runtime_error("Calling an unimplemented Consumer::consume() method");
+void Computer::compute(ullint step) {
+	throw std::runtime_error("Calling an unimplemented Computer::compute() method");
 }
 
-void export_consumer() {
-	bpy::class_<Computer>("Consumer").def("should_consume", &Computer::should_consume).def("consume", &Computer::consume);
+void export_computer() {
+	bpy::class_<Computer>("Computer").def("should_compute", &Computer::should_compute).def("compute", &Computer::compute);
 }
 
 } /* namespace ashell */

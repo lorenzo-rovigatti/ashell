@@ -52,7 +52,7 @@ bool OutputObservable::is_ready(ullint step) {
 void OutputObservable::print_output(ullint step) {
 	stringstream ss;
 	for(auto obs : _observables) {
-		obs->consume(step);
+		obs->compute(step);
 		if(ss.tellp() > 0) ss << " ";
 		ss << obs->as_string();
 	}

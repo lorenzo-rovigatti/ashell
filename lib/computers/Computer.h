@@ -18,15 +18,15 @@ public:
 	Computer(std::string n_name="computer");
 	virtual ~Computer();
 
-	virtual bool should_consume(ullint step);
-	virtual void consume(ullint step);
+	virtual bool should_compute(ullint step);
+	virtual void compute(ullint step);
 
 	virtual const std::string &name() const {
 		return _name;
 	}
 
 protected:
-	bool _ever_consumed;
+	bool _ever_computed;
 	ullint _last_step;
 	std::shared_ptr<SystemProperties> _sys_props;
 	std::shared_ptr<Particles> _particles;

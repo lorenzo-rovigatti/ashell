@@ -17,7 +17,7 @@ namespace ashell {
 
 // forward declarations
 void export_box();
-void export_consumer();
+void export_computer();
 void export_cuboid();
 void export_initialiser();
 void export_particles();
@@ -27,7 +27,7 @@ void export_world();
 
 BOOST_PYTHON_MODULE(_ashell) {
 	export_box();
-	export_consumer();
+	export_computer();
 	export_cuboid();
 	export_initialiser();
 	export_particles();

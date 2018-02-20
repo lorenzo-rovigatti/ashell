@@ -14,10 +14,10 @@ namespace ashell {
 
 class Observable : public Computer {
 public:
-	Observable(std::string n_name="consumer");
+	Observable(std::string n_name="observable");
 	virtual ~Observable();
 
-	virtual void consume(ullint step);
+	virtual void compute(ullint step);
 	virtual double as_scalar();
 	virtual std::string as_string();
 

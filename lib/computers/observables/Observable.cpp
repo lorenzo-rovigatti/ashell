@@ -23,8 +23,8 @@ Observable::~Observable() {
 
 }
 
-void Observable::consume(ullint step) {
-	if(!should_consume(step)) return;
+void Observable::compute(ullint step) {
+	if(!should_compute(step)) return;
 	_observe(step);
 }
 

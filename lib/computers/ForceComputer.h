@@ -17,7 +17,7 @@ public:
 	ForceComputer(std::string name="force_computer");
 	virtual ~ForceComputer();
 
-	virtual void consume(ullint step);
+	virtual void compute(ullint step);
 
 	double energy() {
 		return _energy;
