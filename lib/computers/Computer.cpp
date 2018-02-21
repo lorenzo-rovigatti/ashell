@@ -8,7 +8,6 @@
 #include "../computers/Computer.h"
 
 #include "../World.h"
-#include "../defs_to_python.h"
 
 namespace ashell {
 
@@ -43,8 +42,16 @@ void Computer::compute(ullint step) {
 	throw std::runtime_error("Calling an unimplemented Computer::compute() method");
 }
 
+} /* namespace ashell */
+
+#ifdef ASHELL_PYTHON
+#include "../defs_to_python.h"
+
+namespace ashell {
+
 void export_computer() {
 	bpy::class_<Computer>("Computer").def("should_compute", &Computer::should_compute).def("compute", &Computer::compute);
 }
 
-} /* namespace ashell */
+}
+#endif

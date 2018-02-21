@@ -10,7 +10,6 @@
 #include "computers/ForceComputer.h"
 #include "integrators/Integrator.h"
 #include "Particles.h"
-#include "defs_to_python.h"
 
 namespace ashell {
 
@@ -26,6 +25,13 @@ SystemProperties::~SystemProperties() {
 
 }
 
+} /* namespace ashell */
+
+#ifdef ASHELL_PYTHON
+#include "defs_to_python.h"
+
+namespace ashell {
+
 void export_system_properties() {
 	bpy::class_<SystemProperties, std::shared_ptr<SystemProperties> >("SystemProperties")
 			.add_property("box", &SystemProperties::box, &SystemProperties::set_box)
@@ -34,4 +40,5 @@ void export_system_properties() {
 			.add_property("T", &SystemProperties::T, &SystemProperties::set_T);
 }
 
-} /* namespace ashell */
+}
+#endif

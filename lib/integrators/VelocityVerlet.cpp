@@ -6,7 +6,6 @@
  */
 
 #include "VelocityVerlet.h"
-#include "../defs_to_python.h"
 
 #include <iostream>
 #include "../computers/ForceComputer.h"
@@ -38,10 +37,10 @@ void VelocityVerlet::step(ullint step) {
 	}
 
 	double energy = 0.;
-	for(auto &pair_force_computer : _sys_props->forces()) {
-		pair_force_computer->compute(step);
-		energy +=  pair_force_computer->energy();
-		auto computer_forces = pair_force_computer->forces();
+	for(auto &force_computer : _sys_props->forces()) {
+		force_computer->compute(step);
+		energy +=  force_computer->energy();
+		auto computer_forces = force_computer->forces();
 		for(int i = 0; i < N; i++) {
 			_forces[i] += computer_forces[i];
 		}
@@ -52,9 +51,17 @@ void VelocityVerlet::step(ullint step) {
 	}
 }
 
+} /* namespace ashell */
+
+#ifdef ASHELL_PYTHON
+#include "../defs_to_python.h"
+
+namespace ashell {
+
 using namespace boost::python;
 void export_velocity_verlet() {
 	class_<VelocityVerlet, std::shared_ptr<VelocityVerlet>, bases<Integrator>, boost::noncopyable>("VelocityVerlet", init<double>());
 }
 
-} /* namespace ashell */
+}
+#endif

@@ -7,8 +7,6 @@
 
 #include "../computers/ForceTwoBodyIsotropic.h"
 
-#include "../defs_to_python.h"
-
 namespace ashell {
 
 template<class potential>

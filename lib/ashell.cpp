@@ -5,6 +5,7 @@
  *      Author: lorenzo
  */
 
+#ifdef ASHELL_PYTHON
 #include <boost/python.hpp>
 
 namespace boost {
@@ -37,3 +38,4 @@ BOOST_PYTHON_MODULE(_ashell) {
 }
 
 }
+#endif

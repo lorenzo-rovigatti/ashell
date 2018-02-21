@@ -16,8 +16,6 @@
 #include "SystemProperties.h"
 #include "Topology.h"
 
-#include "defs_to_python.h"
-
 namespace ashell {
 
 System::System() {
@@ -55,8 +53,16 @@ void System::run(ullint steps) {
 	}
 }
 
+} /* namespace ashell */
+
+#ifdef ASHELL_PYTHON
+#include "defs_to_python.h"
+
+namespace ashell {
+
 void export_system() {
 	bpy::class_<System, std::shared_ptr<System> >("System").def("init", &System::init).def("run", &System::run).def("system_properties", &System::system_properties);
 }
 
-} /* namespace ashell */
+}
+#endif

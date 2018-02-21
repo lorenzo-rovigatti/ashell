@@ -7,8 +7,6 @@
 
 #include "Particles.h"
 
-#include "defs_to_python.h"
-
 namespace ashell {
 
 Particles::Particles(uint N) :
@@ -32,6 +30,13 @@ Particles::~Particles() {
 
 }
 
+} /* namespace ashell */
+
+#ifdef ASHELL_PYTHON
+#include "defs_to_python.h"
+
+namespace ashell {
+
 using namespace boost::python;
 void export_particles() {
 	class_<Particles, std::shared_ptr<Particles> >("Particles", init<int>()).add_property("N", &Particles::N, &Particles::set_N);
@@ -40,4 +45,5 @@ void export_particles() {
 //			.add_property("forces", &Particles::forces);
 }
 
-} /* namespace ashell */
+}
+#endif

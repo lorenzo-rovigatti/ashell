@@ -7,7 +7,6 @@
 
 #include "Integrator.h"
 
-#include "../defs_to_python.h"
 #include "../World.h"
 
 namespace ashell {
@@ -25,8 +24,17 @@ void Integrator::step(ullint step) {
 	throw std::runtime_error("Integrator::step() should never be called");
 }
 
+} /* namespace ashell */
+
+#ifdef PYTHON_ASHELL
+#include "../defs_to_python.h"
+
+namespace ashell {
+
+}
 void export_integrator() {
 	bpy::class_<Integrator, std::shared_ptr<Integrator> >("Integrator");
 }
 
-} /* namespace ashell */
+}
+#endif

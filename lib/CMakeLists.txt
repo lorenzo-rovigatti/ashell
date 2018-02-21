@@ -18,7 +18,6 @@ SET(ashell_lib_SOURCES
 	Particles.cpp
 	System.cpp
 	SystemProperties.cpp
-	Topology.cpp
 	utils/parse_input.cpp
 	utils/Timings.cpp
 	World.cpp

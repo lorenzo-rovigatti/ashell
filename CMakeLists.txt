@@ -1,5 +1,6 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
+OPTION(Python "Enable Python bindings" OFF)
 OPTION(Debug "Set to ON to compile with debug symbols" OFF)
 OPTION(G "Set to ON to compile with optimisations and debug symbols" OFF)
 OPTION(INTEL "Use the Intel compiler" OFF)
@@ -8,6 +9,11 @@ PROJECT(ashell)
 
 # The default behaviour is to compile with optimisations
 SET(CMAKE_BUILD_TYPE Release)
+
+IF(Python)
+	ADD_DEFINITIONS(-DASHELL_PYTHON)
+	MESSAGE(STATUS "Enabling Python bindings")
+ENDIF(Python)
 
 IF(Debug)
 	SET(CMAKE_BUILD_TYPE Debug)

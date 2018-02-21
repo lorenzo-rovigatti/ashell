@@ -7,8 +7,6 @@
 
 #include "Cuboid.h"
 
-#include "../defs_to_python.h"
-
 #include <Eigen/Eigen>
 
 namespace ashell {
@@ -39,10 +37,18 @@ vec3 Cuboid::minimum_image(const vec3 &p, const vec3 &q) {
 	return diff - ((diff.array() / _box.array()).round() * _box.array()).matrix();
 }
 
+} /* namespace ashell */
+
+#ifdef ASHELL_PYTHON
+#include "../defs_to_python.h"
+
+namespace ashell {
+
 void export_cuboid() {
 	// Cuboid inherits from a noncopyable parent (Box), which means it is non-copyable itself
 	bpy::class_<Cuboid, std::shared_ptr<Cuboid>, bpy::bases<Box>, boost::noncopyable>("Cuboid", bpy::init<double>())
 			.def(bpy::init<double, double, double>());
 }
 
-} /* namespace ashell */
+}
+#endif

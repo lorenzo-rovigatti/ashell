@@ -7,8 +7,6 @@
 
 #include "Initialiser.h"
 
-#include "defs_to_python.h"
-
 namespace ashell {
 
 Initialiser::Initialiser() {
@@ -38,9 +36,17 @@ std::shared_ptr<Particles> Initialiser::make_random_N2(int N, std::shared_ptr<Bo
 	return particles;
 }
 
+} /* namespace ashell */
+
+#ifdef ASHELL_PYTHON
+#include "defs_to_python.h"
+
+namespace ashell {
+
 void export_initialiser() {
 	bpy::class_<Initialiser, std::shared_ptr<Initialiser> >("Initialiser", bpy::no_init)
 			.def("make_random", &Initialiser::make_random_N2).staticmethod("make_random");
 }
 
-} /* namespace ashell */
+}
+#endif

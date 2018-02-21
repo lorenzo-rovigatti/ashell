@@ -1,5 +1,7 @@
 # ashell
 
+ashell is a proof-of-concept code I am developing to learn modern c++ and to practice object-oriented programming. Its design burrows from [HOOMD-blue](http://glotzerlab.engin.umich.edu/hoomd-blue/)'s one.
+
 ## Building the executable
 
 ### Requirements
@@ -28,8 +30,9 @@ At the end of the compilation the final executable (ashell) will be placed in th
 
 Here is a list of options that can be passed to cmake during the pre-compilation stage:
 
+* `-DPython=On`			Enables Python bindings
 * `-DDebug=ON`				Compiles with debug symbols and without optimisation flags
-* `-DG=ON`					Compiles with debug symbols + optimisation flags
+* `-DG=ON`				Compiles with debug symbols + optimisation flags
 * `-DINTEL=ON`				Uses INTEL's compiler suite
 
 ## Acknowledgements

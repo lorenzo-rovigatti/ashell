@@ -7,8 +7,6 @@
 
 #include "World.h"
 
-#include "defs_to_python.h"
-
 #include <algorithm>
 
 namespace ashell {
@@ -48,6 +46,13 @@ void World::remove_system(std::shared_ptr<System> syst) {
 	}
 }
 
+} /* namespace ashell */
+
+#ifdef ASHELL_PYTHON
+#include "defs_to_python.h"
+
+namespace ashell {
+
 void export_world() {
 	bpy::class_<World, std::shared_ptr<World> >("World", bpy::no_init)
 			.def("current_system", &World::current_system).staticmethod("current_system")
@@ -55,4 +60,5 @@ void export_world() {
 			.def("remove_system", &World::remove_system).staticmethod("remove_system");
 }
 
-} /* namespace ashell */
+}
+#endif
