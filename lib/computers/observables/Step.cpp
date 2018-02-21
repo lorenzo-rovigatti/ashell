@@ -5,9 +5,7 @@
  *      Author: lorenzo
  */
 
-#include "../../computers/observables/Step.h"
-
-#include <boost/format.hpp>
+#include "Step.h"
 
 namespace ashell {
 

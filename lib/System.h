@@ -29,8 +29,12 @@ public:
 	}
 
 protected:
+	void _sanity_check();
+
 	std::shared_ptr<SystemProperties> _sys_props;
 	std::vector<std::shared_ptr<OutputObservable> > _outputs;
+	std::vector<std::shared_ptr<OutputObservable> > _after_clean_outputs;
+	ullint _current_step;
 };
 
 } /* namespace ashell */

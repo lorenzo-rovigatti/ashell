@@ -7,8 +7,6 @@
 
 #include "../../computers/observables/KineticEnergy.h"
 
-#include <boost/format.hpp>
-
 namespace ashell {
 
 KineticEnergy::KineticEnergy() :

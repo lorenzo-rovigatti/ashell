@@ -27,47 +27,17 @@ public:
 	auto box() const {
 		return _box;
 	}
-	void set_box(std::shared_ptr<Box> n_box) {
-		_box = n_box;
-	}
 
 	auto integrator() const {
 		return _integrator;
-	}
-	void set_integrator(std::shared_ptr<Integrator> n_integrator) {
-		_integrator = n_integrator;
 	}
 
 	auto particles() const {
 		return _particles;
 	}
 
-	void set_particles(std::shared_ptr<Particles> n_particles) {
-		_particles = n_particles;
-	}
-
 	double T() {
 		return _T;
-	}
-
-	void set_T(double nT) {
-		_T = nT;
-	}
-
-	void add_force(const std::shared_ptr<ForceComputer> n_force) {
-		_forces.push_back(n_force);
-	}
-
-	void add_link(std::shared_ptr<TopologyLink<2>> n_l) {
-		_links.push_back(n_l);
-	}
-
-	void add_angle(std::shared_ptr<TopologyLink<3>> n_a) {
-		_angles.push_back(n_a);
-	}
-
-	void add_dihedral(std::shared_ptr<TopologyLink<4>> n_d) {
-		_dihedrals.push_back(n_d);
 	}
 
 	const auto &forces() const {
@@ -85,6 +55,16 @@ public:
 	const auto &dihedrals() const {
 		return _dihedrals;
 	}
+
+	void set_box(std::shared_ptr<Box> n_box);
+	void set_particles(std::shared_ptr<Particles> n_particles);
+	void set_T(double nT);
+	void set_integrator(std::shared_ptr<Integrator> n_integrator);
+
+	void add_force(const std::shared_ptr<ForceComputer> n_force);
+	void add_link(std::shared_ptr<TopologyLink<2>> n_l);
+	void add_angle(std::shared_ptr<TopologyLink<3>> n_a);
+	void add_dihedral(std::shared_ptr<TopologyLink<4>> n_d);
 
 private:
 	std::shared_ptr<Box> _box;

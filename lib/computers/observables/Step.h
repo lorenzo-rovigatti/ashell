@@ -17,10 +17,10 @@ public:
 	Step();
 	virtual ~Step();
 
-	virtual std::string as_string();
+	std::string as_string() override;
 
 protected:
-	virtual void _observe(ullint step);
+	void _observe(ullint step) override;
 
 	ullint _curr_step;
 };

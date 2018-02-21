@@ -17,7 +17,7 @@ public:
 	Observable(std::string n_name="observable");
 	virtual ~Observable();
 
-	virtual void compute(ullint step);
+	void compute(ullint step) override;
 	virtual double as_scalar();
 	virtual std::string as_string();
 

@@ -7,8 +7,6 @@
 
 #include "../../computers/observables/Observable.h"
 
-#include <boost/format.hpp>
-
 namespace ashell {
 
 using std::string;

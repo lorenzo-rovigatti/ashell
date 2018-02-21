@@ -14,6 +14,7 @@
 
 namespace ashell {
 
+// TODO: add a signal/slot mechanism to handle a change in the number of particles
 class Particles {
 public:
 	Particles(uint N);
@@ -27,6 +28,8 @@ public:
 
 	void set_N(uint nN) {
 		_N = nN;
+		_poss.resize(_N);
+		_vels.resize(_N);
 	}
 
 	const vector_vec3 &positions() const {

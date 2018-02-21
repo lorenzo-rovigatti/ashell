@@ -25,6 +25,38 @@ SystemProperties::~SystemProperties() {
 
 }
 
+void SystemProperties::set_box(std::shared_ptr<Box> n_box) {
+	_box = n_box;
+}
+
+void SystemProperties::set_integrator(std::shared_ptr<Integrator> n_integrator) {
+	_integrator = n_integrator;
+}
+
+void SystemProperties::set_particles(std::shared_ptr<Particles> n_particles) {
+	_particles = n_particles;
+}
+
+void SystemProperties::set_T(double nT) {
+	_T = nT;
+}
+
+void SystemProperties::add_force(const std::shared_ptr<ForceComputer> n_force) {
+	_forces.push_back(n_force);
+}
+
+void SystemProperties::add_link(std::shared_ptr<TopologyLink<2>> n_l) {
+	_links.push_back(n_l);
+}
+
+void SystemProperties::add_angle(std::shared_ptr<TopologyLink<3>> n_a) {
+	_angles.push_back(n_a);
+}
+
+void SystemProperties::add_dihedral(std::shared_ptr<TopologyLink<4>> n_d) {
+	_dihedrals.push_back(n_d);
+}
+
 } /* namespace ashell */
 
 #ifdef ASHELL_PYTHON

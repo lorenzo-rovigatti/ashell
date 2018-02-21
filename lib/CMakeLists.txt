@@ -6,6 +6,7 @@ SET(ashell_lib_SOURCES
 	computers/ForceComputer.cpp
 	computers/ForceLink.cpp
 	computers/ForceTwoBodyIsotropic.cpp
+	computers/observables/Configuration.cpp
 	computers/observables/Observable.cpp
 	computers/observables/KineticEnergy.cpp
 	computers/observables/PotentialEnergy.cpp

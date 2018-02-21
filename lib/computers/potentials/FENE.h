@@ -10,8 +10,6 @@
 
 #include "../../defs.h"
 
-#include <boost/format.hpp>
-
 namespace ashell {
 
 class FENE {

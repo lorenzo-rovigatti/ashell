@@ -5,10 +5,9 @@
  *      Author: lorenzo
  */
 
-#include "../../computers/observables/PotentialEnergy.h"
+#include "PotentialEnergy.h"
 
-#include <boost/format.hpp>
-#include "../../computers/ForceComputer.h"
+#include "../ForceComputer.h"
 
 namespace ashell {
 

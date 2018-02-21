@@ -10,8 +10,6 @@
 
 #include "defs.h"
 
-#include <boost/format.hpp>
-
 namespace ashell {
 
 // TODO: it may be worth making this class hash-able so that it can be stored in std::set's

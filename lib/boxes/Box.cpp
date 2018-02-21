@@ -17,6 +17,11 @@ Box::~Box() {
 
 }
 
+std::string Box::as_string() {
+	throw std::runtime_error("Box::as_string() should never be called");
+	return std::string();
+}
+
 void Box::register_to_box_changes(BoxCallbackSlot slot) {
 	_changed_signal.connect(slot);
 }

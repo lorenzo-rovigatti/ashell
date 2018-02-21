@@ -7,17 +7,18 @@
 
 #include "Initialiser.h"
 
+#include "SystemProperties.h"
+
 namespace ashell {
-
-Initialiser::Initialiser() {
-
-}
 
 Initialiser::~Initialiser() {
 
 }
 
-std::shared_ptr<Particles> Initialiser::make_random_N2(int N, std::shared_ptr<Box> box) {
+void Initialiser::make_random_N2(std::shared_ptr<SystemProperties> sys_props) {
+	int N = sys_props->particles()->N();
+	auto box = sys_props->box();
+
 	vector_vec3 poss(1, box->random_point_in_box());
 	while((int) poss.size() != N) {
 		vec3 n_pos = box->random_point_in_box();
@@ -31,9 +32,20 @@ std::shared_ptr<Particles> Initialiser::make_random_N2(int N, std::shared_ptr<Bo
 		if(insert) poss.push_back(n_pos);
 	}
 
-	std::shared_ptr<Particles> particles(new Particles(N, poss));
+	sys_props->particles()->positions_writable() = poss;
+}
 
-	return particles;
+void Initialiser::make_random(std::shared_ptr<SystemProperties> sys_props) {
+	int N = sys_props->particles()->N();
+	auto box = sys_props->box();
+
+	vector_vec3 poss(1, box->random_point_in_box());
+	while((int) poss.size() != N) {
+		vec3 n_pos = box->random_point_in_box();
+		poss.push_back(n_pos);
+	}
+
+	sys_props->particles()->positions_writable() = poss;
 }
 
 } /* namespace ashell */

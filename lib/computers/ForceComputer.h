@@ -17,7 +17,7 @@ public:
 	ForceComputer(std::string name="force_computer");
 	virtual ~ForceComputer();
 
-	virtual void compute(ullint step);
+	void compute(ullint step) override;
 
 	double energy() {
 		return _energy;

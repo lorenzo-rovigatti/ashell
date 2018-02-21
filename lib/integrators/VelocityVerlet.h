@@ -17,7 +17,7 @@ public:
 	VelocityVerlet(double dt);
 	virtual ~VelocityVerlet();
 
-	void step(ullint step);
+	void step(ullint step) override;
 
 protected:
 	double _dt;

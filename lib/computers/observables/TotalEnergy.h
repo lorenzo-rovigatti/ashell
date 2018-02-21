@@ -19,10 +19,10 @@ public:
 	TotalEnergy();
 	virtual ~TotalEnergy();
 
-	virtual std::string as_string();
+	std::string as_string() override;
 
 protected:
-	virtual void _observe(ullint step);
+	void _observe(ullint step) override;
 
 	std::shared_ptr<PotentialEnergy> _potential_obs;
 	std::shared_ptr<KineticEnergy> _kinetic_obs;

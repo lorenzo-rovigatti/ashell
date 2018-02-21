@@ -27,6 +27,10 @@ Cuboid::~Cuboid() {
 
 }
 
+std::string Cuboid::as_string() {
+	return boost::str(boost::format("cuboid %lf %lf %lf") % _box[0] % _box[1] % _box[2]);
+}
+
 vec3 Cuboid::random_point_in_box() {
 	// Random() returns numbers between -1 and 1
 	return _box.array() * ((vec3::Random() + vec3(1., 1., 1.)) * 0.5).array();

@@ -7,8 +7,6 @@
 
 #include "../../computers/observables/TotalEnergy.h"
 
-#include <boost/format.hpp>
-
 namespace ashell {
 
 TotalEnergy::TotalEnergy() {

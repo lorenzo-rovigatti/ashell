@@ -18,8 +18,10 @@ public:
 	Cuboid(double Lx, double Ly, double Lz);
 	virtual ~Cuboid();
 
-	virtual vec3 random_point_in_box();
-	virtual vec3 minimum_image(const vec3 &p, const vec3 &q);
+	std::string as_string() override;
+
+	vec3 random_point_in_box() override;
+	vec3 minimum_image(const vec3 &p, const vec3 &q) override;
 
 protected:
 	vec3 _box;

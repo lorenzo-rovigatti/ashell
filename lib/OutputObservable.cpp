@@ -7,7 +7,6 @@
 
 #include "OutputObservable.h"
 
-#include <boost/format.hpp>
 #include <iostream>
 #include <sstream>
 
@@ -32,11 +31,6 @@ OutputObservable::OutputObservable(std::string stream_name, ullint print_every) 
 		_output = &_output_stream;
 	}
 
-	if(_print_every == 0) {
-		std::string error = boost::str(boost::format("OutputObservable %s: print_every should be > 0") % stream_name);
-		throw std::runtime_error(error);
-	}
-
 	if(_output->bad() || !_output->good()) {
 		throw std::runtime_error(boost::str(boost::format("Stream %s not writable") % stream_name.c_str()));
 	}
@@ -46,7 +40,10 @@ bool OutputObservable::is_ready(ullint step) {
 	if(_stop_at > 0 && step > _stop_at) {
 		return false;
 	}
-	return ((step >= _start_from) && (step % _print_every == 0));
+	if(step < _start_from) {
+		return false;
+	}
+	return ((_print_every != 0) && (step % _print_every == 0));
 }
 
 void OutputObservable::print_output(ullint step) {

@@ -17,10 +17,10 @@ public:
 	KineticEnergy();
 	virtual ~KineticEnergy();
 
-	virtual double as_scalar();
+	double as_scalar() override;
 
 protected:
-	virtual void _observe(ullint step);
+	void _observe(ullint step) override;
 
 	double _kinetic_energy;
 };

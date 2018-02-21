@@ -9,20 +9,20 @@
 #define LIB_INITIALISER_H_
 
 #include "Particles.h"
-#include "boxes/Box.h"
 
 #include <memory>
 
 namespace ashell {
 
+class SystemProperties;
+
 class Initialiser {
 public:
+	Initialiser() = delete;
 	virtual ~Initialiser();
 
-	static std::shared_ptr<Particles> make_random_N2(int N, std::shared_ptr<Box> box);
-
-private:
-	Initialiser();
+	static void make_random_N2(std::shared_ptr<SystemProperties> sys_props);
+	static void make_random(std::shared_ptr<SystemProperties> sys_props);
 };
 
 } /* namespace ashell */

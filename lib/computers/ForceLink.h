@@ -19,7 +19,7 @@ public:
 	virtual ~ForceLink();
 
 protected:
-	virtual void _compute_forces(ullint step);
+	void _compute_forces(ullint step) override;
 
 	potential _potential;
 };
