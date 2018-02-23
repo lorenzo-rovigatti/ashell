@@ -14,9 +14,9 @@ namespace ashell {
 Computer::Computer(std::string name) :
 				_ever_computed(false),
 				_last_step(0),
+				_sys_props(World::current_system()->system_properties()),
+				_particles(_sys_props->particles()),
 				_name(name) {
-	_sys_props = World::current_system()->system_properties();
-	_particles = _sys_props->particles();
 }
 
 Computer::~Computer() {
@@ -49,9 +49,9 @@ void Computer::compute(ullint step) {
 
 namespace ashell {
 
-void export_computer() {
-	bpy::class_<Computer>("Computer").def("should_compute", &Computer::should_compute).def("compute", &Computer::compute);
-}
+	void export_computer() {
+		bpy::class_<Computer>("Computer").def("should_compute", &Computer::should_compute).def("compute", &Computer::compute);
+	}
 
 }
 #endif

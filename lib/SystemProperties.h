@@ -57,7 +57,6 @@ public:
 	}
 
 	void set_box(std::shared_ptr<Box> n_box);
-	void set_particles(std::shared_ptr<Particles> n_particles);
 	void set_T(double nT);
 	void set_integrator(std::shared_ptr<Integrator> n_integrator);
 

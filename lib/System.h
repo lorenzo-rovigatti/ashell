@@ -24,7 +24,7 @@ public:
 	void init();
 	void run(ullint steps);
 
-	std::shared_ptr<SystemProperties> system_properties() const {
+	auto system_properties() const {
 		return _sys_props;
 	}
 

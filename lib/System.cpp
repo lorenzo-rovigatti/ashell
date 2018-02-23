@@ -21,8 +21,8 @@
 namespace ashell {
 
 System::System() :
+				_sys_props(std::shared_ptr<SystemProperties>(new SystemProperties())),
 				_current_step(0) {
-	_sys_props = std::shared_ptr<SystemProperties>(new SystemProperties());
 }
 
 System::~System() {
@@ -33,7 +33,7 @@ System::~System() {
 
 void System::init() {
 	_sys_props->set_box(std::shared_ptr<Box>(new Cuboid(10., 10., 10.)));
-	_sys_props->set_particles(std::shared_ptr<Particles>(new Particles(100)));
+	_sys_props->particles()->set_N(100);
 	_sys_props->set_integrator(std::shared_ptr<Integrator>(new VelocityVerlet(0.001)));
 	_sys_props->set_T(1.0);
 
