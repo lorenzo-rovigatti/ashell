@@ -19,7 +19,7 @@ SET(ashell_lib_SOURCES
 	Particles.cpp
 	System.cpp
 	SystemProperties.cpp
-	utils/parse_input.cpp
+	utils/InputFile.cpp
 	utils/Timings.cpp
 	World.cpp
 )

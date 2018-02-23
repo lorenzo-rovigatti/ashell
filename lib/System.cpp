@@ -7,14 +7,10 @@
 
 #include "System.h"
 
-#include "boxes/Cuboid.h"
-#include "computers/ForceLink.h"
-#include "computers/ForceTwoBodyIsotropic.h"
 #include "computers/observables/Configuration.h"
 #include "computers/observables/Step.h"
 #include "computers/observables/TotalEnergy.h"
-#include "Initialiser.h"
-#include "integrators/VelocityVerlet.h"
+#include "integrators/Integrator.h"
 #include "SystemProperties.h"
 #include "Topology.h"
 
@@ -22,7 +18,8 @@ namespace ashell {
 
 System::System() :
 				_sys_props(std::shared_ptr<SystemProperties>(new SystemProperties())),
-				_current_step(0) {
+				_current_step(0),
+				_print_every(10) {
 }
 
 System::~System() {
@@ -32,21 +29,20 @@ System::~System() {
 }
 
 void System::init() {
-	_sys_props->set_box(std::shared_ptr<Box>(new Cuboid(10., 10., 10.)));
-	_sys_props->particles()->set_N(100);
-	_sys_props->set_integrator(std::shared_ptr<Integrator>(new VelocityVerlet(0.001)));
-	_sys_props->set_T(1.0);
+	std::shared_ptr<OutputObservable> to_stdout(new OutputObservable("stdout", _print_every));
+	std::shared_ptr<OutputObservable> to_energy(new OutputObservable("energy.dat", _print_every));
 
-//	_sys_props->add_link(std::shared_ptr<TopologyLink<2>>(new TopologyLink<2>(0, {0, 1})));
-	_sys_props->add_force(std::shared_ptr<LennardJonesForce>(new LennardJonesForce()));
-	_sys_props->add_force(std::shared_ptr<FENEForce>(new FENEForce()));
+	auto step_obs = std::shared_ptr<Step>(new Step());
+	auto energy_obs = std::shared_ptr<TotalEnergy>(new TotalEnergy());
 
-	Initialiser::make_random_N2(_sys_props);
+	to_stdout->add_observable(step_obs);
+	to_energy->add_observable(step_obs);
 
-	std::shared_ptr<OutputObservable> to_stdout(new OutputObservable("stdout", 10));
-	to_stdout->add_observable(std::shared_ptr<Step>(new Step()));
-	to_stdout->add_observable(std::shared_ptr<TotalEnergy>(new TotalEnergy()));
+	to_stdout->add_observable(energy_obs);
+	to_energy->add_observable(energy_obs);
+
 	_outputs.push_back(to_stdout);
+	_outputs.push_back(to_energy);
 
 	std::shared_ptr<OutputObservable> last_conf(new OutputObservable("last_conf.dat", 0));
 	last_conf->add_observable(std::shared_ptr<Configuration>(new Configuration()));

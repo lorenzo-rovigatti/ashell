@@ -1,17 +1,18 @@
-#include "parse_input.h"
-
 #include <boost/log/trivial.hpp>
 #include <boost/format.hpp>
 #include <boost/algorithm/string.hpp>
 
 #include <algorithm>
+#include "InputFile.h"
 
 using std::string;
 using std::map;
 using std::set;
 using std::vector;
 
-input_file::input_file() {
+namespace ashell {
+
+InputFile::InputFile() {
 	state = UNPARSED;
 
 	true_values.insert("true");
@@ -27,36 +28,40 @@ input_file::input_file() {
 	false_values.insert("are you crazy?");
 }
 
-void printInput(input_file *inp, char *filename) {
-	BOOST_LOG_TRIVIAL(info) << "Printing the input file as used by oxDNA in '" << filename << "'";
+InputFile::~InputFile() {
+
+}
+
+void InputFile::print_input(char *filename) {
+	BOOST_LOG_TRIVIAL(info) << "Printing the input file as used by ashell in '" << filename << "'";
 	FILE *out = fopen(filename, "w");
 
-	for(input_map::iterator it = inp->keys.begin(); it != inp->keys.end(); it++) {
+	for(input_map::iterator it = keys.begin(); it != keys.end(); it++) {
 		fprintf(out, "%s = %s\n", it->first.c_str(), it->second.value.c_str());
 	}
 
 	fclose(out);
 }
 
-void loadInputFile(input_file *inp, const char *filename) {
+void InputFile::load_from_filename(const char *filename) {
 	FILE *inp_file = fopen(filename, "r");
 	if(inp_file == NULL) {
 	fprintf(stderr, "Input file '%s' not found\n", filename);
-		inp->state = ERROR;
+		state = ERROR;
 		return;
 	}
-	loadInput(inp, inp_file);
+	load_from_file(inp_file);
 	fclose(inp_file);
 	return;
 }
 
-void addCommandLineArguments(input_file *inp, int argc, char *argv[]) {
+void InputFile::add_from_command_line_arguments(int argc, char *argv[]) {
 	string s_inp("");
 	for(int i = 0; i < argc; i++) s_inp += string(argv[i]) + string("\n");
-	addInput(inp, s_inp);
+	add_input_from_string(s_inp);
 }
 
-int _readLine(std::vector<string>::iterator &it, std::vector<string>::iterator &end, string &key, string &value) {
+int InputFile::_readLine(std::vector<string>::iterator &it, std::vector<string>::iterator &end, string &key, string &value) {
 	string option(*it);
 	boost::algorithm::trim(option);
 
@@ -127,13 +132,13 @@ int _readLine(std::vector<string>::iterator &it, std::vector<string>::iterator &
 	return KEY_READ;
 }
 
-void loadInput(input_file *inp, FILE *inp_file) {
-	inp->state = UNPARSED;
-	addInput(inp, inp_file);
-	inp->state = PARSED;
+void InputFile::load_from_file(FILE *inp_file) {
+	state = UNPARSED;
+	add_input_from_file(inp_file);
+	state = PARSED;
 }
 
-void addInput(input_file *inp, string s_inp) {
+void InputFile::add_input_from_string(string s_inp) {
 	vector<string> tot_lines;
 	boost::algorithm::split(tot_lines, s_inp, boost::is_any_of("\n"));
 	vector<string> lines;
@@ -156,19 +161,19 @@ void addInput(input_file *inp, string s_inp) {
 		int res = _readLine(it, l_end, key, value);
 
 		if(res == KEY_READ){
-			input_value new_value(value);
+			InputValue new_value(value);
 
-			input_map::iterator old_val = inp->keys.find(key);
-			if(old_val != inp->keys.end()) {
+			input_map::iterator old_val = keys.find(key);
+			if(old_val != keys.end()) {
 				string msg = boost::str(boost::format("Overwriting key `%s' (`%s' to `%s')") % key % old_val->second.value % value);
 				BOOST_LOG_TRIVIAL(warning) << msg;
 			}
-			inp->keys[key] = value;
+			keys[key] = value;
 		}
 	}
 }
 
-void addInput(input_file *inp, FILE *inp_file) {
+void InputFile::add_input_from_file(FILE *inp_file) {
 	size_t alloc_size;
 	char *c_option = NULL;
 	string file_contents("");
@@ -181,12 +186,12 @@ void addInput(input_file *inp, FILE *inp_file) {
 		c_option = NULL;
 	}
 
-	addInput(inp, file_contents);
+	add_input_from_string(file_contents);
 }
 
-input_map::iterator getInputValue(input_file *inp, const char *skey, int mandatory)  {
-	std::map<string, input_value>::iterator it = inp->keys.find(string(skey));
-	if(it != inp->keys.end()) it->second.read++;
+input_map::iterator InputFile::_find_value(const char *skey, int mandatory)  {
+	std::map<string, InputValue>::iterator it = keys.find(string(skey));
+	if(it != keys.end()) it->second.read++;
 	else if(mandatory) {
 		string error = boost::str(boost::format("Mandatory key `%s' not found, exiting") % skey);
 		throw std::runtime_error(error);
@@ -195,46 +200,37 @@ input_map::iterator getInputValue(input_file *inp, const char *skey, int mandato
 	return it;
 }
 
-int getInputString(input_file *inp, const char *skey, string &dest, int mandatory) {
-	input_map::iterator it = getInputValue(inp, skey, mandatory);
-	if(it == inp->keys.end()) return KEY_NOT_FOUND;
+int InputFile::value_as_string(const char *skey, string &dest, int mandatory) {
+	input_map::iterator it = _find_value(skey, mandatory);
+	if(it == keys.end()) return KEY_NOT_FOUND;
 		
 	dest = it->second.value;
 
 	return KEY_FOUND;
 }
 
-int getInputString(input_file *inp, const char *skey, char *dest, int mandatory) {
-	string s_dest;
-	int res = getInputString(inp, skey, s_dest, mandatory);
-	if(res != KEY_FOUND) return res;
-	strncpy(dest, s_dest.c_str(), sizeof(char) * (s_dest.size()+1));
-
-	return KEY_FOUND;
-}
-
-int getInputInt(input_file *inp, const char *skey, int *dest, int mandatory) {
-	input_map::iterator it = getInputValue(inp, skey, mandatory);
-	if(it == inp->keys.end()) return KEY_NOT_FOUND;
+int InputFile::value_as_int(const char *skey, int *dest, int mandatory) {
+	input_map::iterator it = _find_value(skey, mandatory);
+	if(it == keys.end()) return KEY_NOT_FOUND;
 
 	*dest = (int) floor(atof(it->second.value.c_str())+0.1);
 
 	return KEY_FOUND;
 }
 
-int getInputBool(input_file *inp, const char *skey, bool *dest, int mandatory) {
-	input_map::iterator it = getInputValue(inp, skey, mandatory);
-	if(it == inp->keys.end()) return KEY_NOT_FOUND;
+int InputFile::value_as_bool(const char *skey, bool *dest, int mandatory) {
+	input_map::iterator it = _find_value(skey, mandatory);
+	if(it == keys.end()) return KEY_NOT_FOUND;
 
 	// make it lower case
 	string val = it->second.value;
 	std::transform(val.begin(), val.end(), val.begin(), ::tolower);
 
-	set<string>::iterator res = inp->true_values.find(val);
-	if(res != inp->true_values.end()) *dest = true;
+	set<string>::iterator res = true_values.find(val);
+	if(res != true_values.end()) *dest = true;
 	else {
-		res = inp->false_values.find(val);
-		if(res != inp->false_values.end()) *dest = false;
+		res = false_values.find(val);
+		if(res != false_values.end()) *dest = false;
 		else {
 			string error = boost::str(boost::format("boolean key `%s' is invalid (`%s'), aborting.") % skey % val);
 			throw std::runtime_error(error);
@@ -244,52 +240,34 @@ int getInputBool(input_file *inp, const char *skey, bool *dest, int mandatory) {
 	return KEY_FOUND;
 }
 
-int getInputBoolAsInt(input_file *inp, const char *skey, int *dest, int mandatory) {
-	bool ret;
-	int result = getInputBool(inp, skey, &ret, mandatory);
-	if(result == KEY_FOUND) *dest = (int) ret;
-
-	return result;
-}
-
-int getInputLLInt(input_file *inp, const char *skey, long long int *dest, int mandatory) {
-	input_map::iterator it = getInputValue(inp, skey, mandatory);
-	if(it == inp->keys.end()) return KEY_NOT_FOUND;
+int InputFile::value_as_llint(const char *skey, long long int *dest, int mandatory) {
+	input_map::iterator it = _find_value(skey, mandatory);
+	if(it == keys.end()) return KEY_NOT_FOUND;
 	*dest = (long long) floor(atof(it->second.value.c_str())+0.1);
 
 	return KEY_FOUND;
 }
 
-int getInputUInt(input_file *inp, const char *skey, unsigned int *dest, int mandatory) {
-	input_map::iterator it = getInputValue(inp, skey, mandatory);
-	if(it == inp->keys.end()) return KEY_NOT_FOUND;
+int InputFile::value_as_ullint(const char *skey, unsigned long long int *dest, int mandatory) {
+	input_map::iterator it = _find_value(skey, mandatory);
+	if(it == keys.end()) return KEY_NOT_FOUND;
+	*dest = (unsigned long long) floor(atof(it->second.value.c_str())+0.1);
+
+	return KEY_FOUND;
+}
+
+int InputFile::value_as_uint(const char *skey, unsigned int *dest, int mandatory) {
+	input_map::iterator it = _find_value(skey, mandatory);
+	if(it == keys.end()) return KEY_NOT_FOUND;
 
 	*dest = (unsigned int) floor (atof(it->second.value.c_str())+0.1);
 
 	return KEY_FOUND;
 }
 
-int getInputDouble(input_file *inp, const char *skey, double *dest, int mandatory) {
-	input_map::iterator it = getInputValue(inp, skey, mandatory);
-	if(it == inp->keys.end()) return KEY_NOT_FOUND;
-
-	*dest = atof(it->second.value.c_str());
-
-	return KEY_FOUND;
-}
-
-int getInputFloat(input_file *inp, const char *skey, float *dest, int mandatory) {
-	input_map::iterator it = getInputValue(inp, skey, mandatory);
-	if(it == inp->keys.end()) return KEY_NOT_FOUND;
-
-	*dest = atof(it->second.value.c_str());
-
-	return KEY_FOUND;
-}
-
-int getInputChar(input_file *inp, const char *skey, char *dest, int mandatory) {
-	input_map::iterator it = getInputValue(inp, skey, mandatory);
-	if(it == inp->keys.end()) return KEY_NOT_FOUND;
+int InputFile::value_as_char(const char *skey, char *dest, int mandatory) {
+	input_map::iterator it = _find_value(skey, mandatory);
+	if(it == keys.end()) return KEY_NOT_FOUND;
 
 	*dest = it->second.value[0];
 
@@ -297,42 +275,20 @@ int getInputChar(input_file *inp, const char *skey, char *dest, int mandatory) {
 }
 
 template<typename number>
-int getInputNumber(input_file *inp, const char *skey, number *dest, int mandatory) {
-	input_map::iterator it = getInputValue(inp, skey, mandatory);
-	if(it == inp->keys.end()) return KEY_NOT_FOUND;
+int InputFile::value_as_number(const char *skey, number *dest, int mandatory) {
+	input_map::iterator it = _find_value(skey, mandatory);
+	if(it == keys.end()) return KEY_NOT_FOUND;
 
 	*dest = (number) atof(it->second.value.c_str());
 
 	return KEY_FOUND;
 }
-template int getInputNumber(input_file *inp, const char *skey, float *dest, int mandatory);
-template int getInputNumber(input_file *inp, const char *skey, double *dest, int mandatory);
+template int InputFile::value_as_number(const char *skey, float *dest, int mandatory);
+template int InputFile::value_as_number(const char *skey, double *dest, int mandatory);
 
-void setUnreadKeys(input_file *inp) {
-	for(input_map::iterator it = inp->keys.begin(); it != inp->keys.end(); it++) {
-		if(it->second.read == 0) inp->unread_keys.push_back(it->first);
+void InputFile::set_unread_keys() {
+	for(input_map::iterator it = keys.begin(); it != keys.end(); it++) {
+		if(it->second.read == 0) unread_keys.push_back(it->first);
 	}
 }
-
-int getInputKeys (input_file *inp, string begins_with, vector<string> * dest, int mandatory) {
-	int ret = 0;
-	bool add_all = false;
-	if (begins_with.size() == 0) add_all = true;
-	for (input_map::iterator it = inp->keys.begin(); it != inp->keys.end(); it++) {
-		if (add_all || it->first.compare(0, begins_with.length(), begins_with) == 0) {
-			dest->push_back (it->first);
-			ret ++;
-		}
-	}
-	
-	if(mandatory && ret == 0) {
-		string error = boost::str(boost::format("At least one key starting with `%s' is required. Found none, exiting") % begins_with);
-		throw std::runtime_error(error);
-	}
-
-	return ret;
-}
-
-void cleanInputFile(input_file *inp) {
-	inp->state = UNPARSED;
-}
+} /* namespace ashell */
