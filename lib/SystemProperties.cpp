@@ -16,7 +16,7 @@ namespace ashell {
 SystemProperties::SystemProperties() :
 				_box(nullptr),
 				_integrator(nullptr),
-				_particles(std::shared_ptr<Particles>(new Particles(0))),
+				_particles(std::shared_ptr<Particles>(new Particles(1))),
 				_T(1.0) {
 
 }

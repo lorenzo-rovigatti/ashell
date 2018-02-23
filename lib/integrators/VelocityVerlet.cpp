@@ -15,9 +15,8 @@ namespace ashell {
 VelocityVerlet::VelocityVerlet(double dt) :
 				Integrator(),
 				_dt(dt),
-				_dt_half(dt / 2),
-				_forces(_particles->N(), vec3(0., 0., 0.)) {
-
+				_dt_half(dt / 2.),
+				_forces(10) {
 }
 
 VelocityVerlet::~VelocityVerlet() {
@@ -25,12 +24,15 @@ VelocityVerlet::~VelocityVerlet() {
 }
 
 void VelocityVerlet::step(ullint step) {
-	int N = _particles->N();
+	uint N = _particles->N();
+	if(N != _forces.size()) {
+		_forces.resize(N, vec3(0., 0., 0.));
+	}
 
 	vector_vec3 &poss = _particles->positions_writable();
 	vector_vec3 &vels = _particles->velocities_writable();
 
-	for(int i = 0; i < N; i++) {
+	for(uint i = 0; i < N; i++) {
 		vels[i] += _forces[i] * _dt_half;
 		poss[i] += vels[i] * _dt;
 		_forces[i] = vec3(0., 0., 0.);
@@ -41,12 +43,12 @@ void VelocityVerlet::step(ullint step) {
 		force_computer->compute(step);
 		energy +=  force_computer->energy();
 		auto computer_forces = force_computer->forces();
-		for(int i = 0; i < N; i++) {
+		for(uint i = 0; i < N; i++) {
 			_forces[i] += computer_forces[i];
 		}
 	}
 
-	for(int i = 0; i < N; i++) {
+	for(uint i = 0; i < N; i++) {
 		vels[i] += _forces[i] * _dt_half;
 	}
 }

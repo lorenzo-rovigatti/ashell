@@ -28,8 +28,8 @@ public:
 protected:
 	bool _ever_computed;
 	ullint _last_step;
-	const std::shared_ptr<SystemProperties> &_sys_props;
-	const std::shared_ptr<Particles> &_particles;
+	const std::shared_ptr<SystemProperties> _sys_props;
+	const std::shared_ptr<Particles> _particles;
 	std::string _name;
 };
 

@@ -24,8 +24,8 @@ public:
 	virtual void step(ullint step);
 
 protected:
-	const std::shared_ptr<SystemProperties> &_sys_props;
-	const std::shared_ptr<Particles> &_particles;
+	const std::shared_ptr<SystemProperties> _sys_props;
+	const std::shared_ptr<Particles> _particles;
 };
 
 } /* namespace ashell */

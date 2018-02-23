@@ -12,8 +12,8 @@ namespace ashell {
 ForceComputer::ForceComputer(std::string name) :
 				Computer(name),
 				_energy(0.),
-				_energies(_particles->N(), 0.),
-				_forces(_particles->N(), vec3(0., 0., 0.)) {
+				_energies(0),
+				_forces(0) {
 
 }
 
@@ -24,8 +24,8 @@ ForceComputer::~ForceComputer() {
 void ForceComputer::compute(ullint step) {
 	if(!should_compute(step)) return;
 
-	int N = _particles->N();
-	if(N != (int) _energies.size()) {
+	uint N = _particles->N();
+	if(N != _energies.size()) {
 		_energies.resize(N);
 		_forces.resize(N);
 	}
