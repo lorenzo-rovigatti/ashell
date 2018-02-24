@@ -16,7 +16,7 @@ VelocityVerlet::VelocityVerlet(double dt) :
 				Integrator(),
 				_dt(dt),
 				_dt_half(dt / 2.),
-				_forces(10) {
+				_forces(0) {
 }
 
 VelocityVerlet::~VelocityVerlet() {
