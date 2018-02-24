@@ -28,7 +28,15 @@ Cuboid::~Cuboid() {
 }
 
 std::string Cuboid::as_string() {
-	return boost::str(boost::format("cuboid %lf %lf %lf") % _box[0] % _box[1] % _box[2]);
+	std::string box_string;
+	if(_box(0) == _box(1) && _box(1) == _box(2)) {
+		box_string = boost::str(boost::format("cube %lf") % _box(0));
+	}
+	else {
+		box_string = boost::str(boost::format("cuboid %lf %lf %lf") % _box(0) % _box(1) % _box(2));
+	}
+
+	return box_string;
 }
 
 vec3 Cuboid::random_point_in_box() {

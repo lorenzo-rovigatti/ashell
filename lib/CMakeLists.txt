@@ -1,6 +1,7 @@
 SET(ashell_lib_SOURCES
 	ashell.cpp
 	boxes/Box.cpp
+	boxes/BoxFactory.cpp
 	boxes/Cuboid.cpp
 	computers/Computer.cpp
 	computers/ForceComputer.cpp
@@ -20,6 +21,7 @@ SET(ashell_lib_SOURCES
 	System.cpp
 	SystemProperties.cpp
 	utils/InputFile.cpp
+	utils/MathUtils.cpp
 	utils/Timings.cpp
 	World.cpp
 )

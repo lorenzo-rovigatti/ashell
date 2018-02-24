@@ -36,6 +36,12 @@ OutputObservable::OutputObservable(std::string stream_name, ullint print_every) 
 	}
 }
 
+OutputObservable::~OutputObservable() {
+	if(_output_stream.is_open()) {
+		_output_stream.close();
+	}
+}
+
 bool OutputObservable::is_ready(ullint step) {
 	if(_stop_at > 0 && step > _stop_at) {
 		return false;
@@ -60,10 +66,8 @@ void OutputObservable::print_output(ullint step) {
 	_output->flush();
 }
 
-OutputObservable::~OutputObservable() {
-	if(_output_stream.is_open()) {
-		_output_stream.close();
-	}
+void OutputObservable::set_print_every(ullint n_print_every) {
+	_print_every = n_print_every;
 }
 
 } /* namespace ashell */

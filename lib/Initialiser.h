@@ -21,8 +21,9 @@ public:
 	Initialiser() = delete;
 	virtual ~Initialiser();
 
-	static void make_random_N2(std::shared_ptr<SystemProperties> sys_props);
-	static void make_random(std::shared_ptr<SystemProperties> sys_props);
+	static void make_random_configuration_N2(std::shared_ptr<SystemProperties> sys_props);
+	static void init_configuration_from_filename(std::shared_ptr<SystemProperties> sys_props, std::string filename);
+	static void set_random_velocities(std::shared_ptr<SystemProperties> sys_props);
 };
 
 } /* namespace ashell */

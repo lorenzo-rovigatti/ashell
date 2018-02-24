@@ -26,11 +26,7 @@ public:
 		return _N;
 	}
 
-	void set_N(uint nN) {
-		_N = nN;
-		_poss.resize(_N);
-		_vels.resize(_N);
-	}
+	void set_N(uint nN);
 
 	const vector_vec3 &positions() const {
 		return _poss;

@@ -31,6 +31,7 @@ void Configuration::_observe(ullint step) {
 	std::stringstream ss;
 
 	ss << step << endl;
+	ss << _particles->N() << endl;
 	ss << _sys_props->box()->as_string();
 
 	auto poss = _particles->positions();

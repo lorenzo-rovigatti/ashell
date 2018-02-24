@@ -1,6 +1,6 @@
 # ashell
 
-ashell is a proof-of-concept code I am developing to learn modern c++ and to practice object-oriented programming. Its design burrows from [HOOMD-blue](http://glotzerlab.engin.umich.edu/hoomd-blue/)'s one.
+ashell is a proof-of-concept code I am developing to learn modern c++ and to practice object-oriented programming. Its design has been inspired by [HOOMD-blue](http://glotzerlab.engin.umich.edu/hoomd-blue/)'s architecture.
 
 ## Building the executable
 

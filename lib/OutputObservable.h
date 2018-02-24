@@ -28,6 +28,12 @@ public:
 
 	void print_output(ullint step);
 
+	ullint print_every() {
+		return _print_every;
+	}
+
+	void set_print_every(ullint n_print_every);
+
 protected:
 	std::vector<std::shared_ptr<Observable> > _observables;
 	std::ofstream _output_stream;
