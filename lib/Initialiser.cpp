@@ -108,6 +108,39 @@ void Initialiser::init_configuration_from_filename(std::shared_ptr<SystemPropert
 	inp.close();
 }
 
+void Initialiser::init_topology_from_filename(std::shared_ptr<SystemProperties> sys_props, std::string filename) {
+	std::ifstream inp(filename.c_str());
+
+	if(inp.bad() || !inp.good()) {
+		std::string error = boost::str(boost::format("Configuration file '%s' not found") % filename);
+		throw std::runtime_error(error);
+	}
+
+	std::string line;
+	while(std::getline(inp, line)) {
+		boost::trim(line);
+		// skip empty lines or lines starting with #
+		if(line.size() == 0 || boost::starts_with(line, "#")) continue;
+
+		std::vector<std::string> spl_line;
+		boost::split(spl_line, line, boost::is_any_of("\t "), boost::token_compress_on);
+
+		if(boost::starts_with("link", spl_line[0])) {
+			uint link_type = boost::lexical_cast<uint>(spl_line[1]);
+			uint p_idx = boost::lexical_cast<uint>(spl_line[2]);
+			uint q_idx = boost::lexical_cast<uint>(spl_line[3]);
+
+			sys_props->add_link(std::shared_ptr<TopologyLink<2>>(new TopologyLink<2>(link_type, {p_idx, q_idx})));
+		}
+		else {
+			std::string error = boost::str(boost::format("The topology file '%s' contains the invalid line '%s'") % filename % line);
+			throw std::runtime_error(error);
+		}
+	}
+
+	inp.close();
+}
+
 void Initialiser::set_random_velocities(std::shared_ptr<SystemProperties> sys_props) {
 	double rescale_factor = sqrt(sys_props->T());
 
