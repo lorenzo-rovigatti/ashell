@@ -10,14 +10,18 @@
 #include "computers/observables/Configuration.h"
 #include "computers/observables/Step.h"
 #include "computers/observables/TotalEnergy.h"
+#include "OutputObservable.h"
 #include "updaters/integrators/Integrator.h"
+#include "updaters/Updater.h"
 #include "SystemProperties.h"
+
 #include "Topology.h"
 
 namespace ashell {
 
 System::System() :
 				_sys_props(std::shared_ptr<SystemProperties>(new SystemProperties())),
+				_integrator(nullptr),
 				_current_step(0),
 				_print_defaults_every(1000) {
 }
@@ -57,7 +61,7 @@ void System::run(ullint steps) {
 	}
 
 	for(ullint i = 0; i < steps; i++) {
-		_sys_props->integrator()->step(_current_step);
+		_integrator->step(_current_step);
 		_current_step++;
 
 		for(auto output : _outputs) {
@@ -72,6 +76,10 @@ void System::run(ullint steps) {
 
 void System::add_updater(std::shared_ptr<Updater> new_updater) {
 	_updaters.push_back(new_updater);
+}
+
+void System::set_integrator(std::shared_ptr<Integrator> n_integrator) {
+	_integrator = n_integrator;
 }
 
 void System::set_print_defaults_every(ullint n_print_defaults_every) {

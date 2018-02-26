@@ -33,7 +33,7 @@ int main(int argc, char *argv[]) {
 
 	double dt;
 	my_inp.value_as_number("dt", dt, 1);
-	sys_props->set_integrator(std::shared_ptr<Integrator>(new VelocityVerlet(dt)));
+	system->set_integrator(std::shared_ptr<Integrator>(new VelocityVerlet(dt)));
 
 	double T;
 	my_inp.value_as_number("T", T, 1);

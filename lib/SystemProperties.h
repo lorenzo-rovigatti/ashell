@@ -17,7 +17,6 @@
 namespace ashell {
 
 class ForceComputer;
-class Integrator;
 
 class SystemProperties {
 public:
@@ -26,10 +25,6 @@ public:
 
 	auto box() const {
 		return _box;
-	}
-
-	auto integrator() const {
-		return _integrator;
 	}
 
 	auto particles() const {
@@ -58,7 +53,6 @@ public:
 
 	void set_box(std::shared_ptr<Box> n_box);
 	void set_T(double nT);
-	void set_integrator(std::shared_ptr<Integrator> n_integrator);
 
 	void add_force(const std::shared_ptr<ForceComputer> n_force);
 	void add_link(std::shared_ptr<TopologyLink<2>> n_l);
@@ -67,7 +61,6 @@ public:
 
 private:
 	std::shared_ptr<Box> _box;
-	std::shared_ptr<Integrator> _integrator;
 	std::shared_ptr<Particles> _particles;
 	std::vector<std::shared_ptr<ForceComputer>> _forces;
 
