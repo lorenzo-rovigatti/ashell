@@ -14,7 +14,7 @@ namespace ashell {
 
 class Configuration: public Observable {
 public:
-	Configuration(std::string n_name="observable");
+	Configuration(std::string n_name="configuration");
 	virtual ~Configuration();
 
 	std::string as_string() override;

@@ -7,6 +7,7 @@ SET(ashell_lib_SOURCES
 	computers/ForceComputer.cpp
 	computers/ForceLink.cpp
 	computers/ForceTwoBodyIsotropic.cpp
+	computers/observables/Cogli1Configuration.cpp
 	computers/observables/Configuration.cpp
 	computers/observables/Observable.cpp
 	computers/observables/KineticEnergy.cpp
@@ -14,8 +15,11 @@ SET(ashell_lib_SOURCES
 	computers/observables/TotalEnergy.cpp
 	computers/observables/Step.cpp
 	Initialiser.cpp
-	integrators/Integrator.cpp
-	integrators/VelocityVerlet.cpp
+	updaters/integrators/Integrator.cpp
+	updaters/integrators/VelocityVerlet.cpp
+	updaters/thermostats/Andersen.cpp
+	updaters/thermostats/ThermostatFactory.cpp
+	updaters/Updater.cpp
 	OutputObservable.cpp
 	Particles.cpp
 	System.cpp

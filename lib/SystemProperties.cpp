@@ -8,7 +8,7 @@
 #include "SystemProperties.h"
 
 #include "computers/ForceComputer.h"
-#include "integrators/Integrator.h"
+#include "updaters/integrators/Integrator.h"
 #include "Particles.h"
 
 namespace ashell {

@@ -9,6 +9,7 @@
 #define LIB_COMPUTERS_POTENTIALS_FENE_H_
 
 #include "../../defs.h"
+#include "../../Topology.h"
 
 namespace ashell {
 
@@ -22,7 +23,7 @@ public:
 
 	}
 
-	bool evaluate(double &energy, double &force_over_r, double r_sqr) {
+	bool evaluate(std::shared_ptr<TopologyLink<2>> link, double &energy, double &force_over_r, double r_sqr) {
 		if(r_sqr >= _rfene_sqr) {
 			throw std::runtime_error(boost::str(boost::format("A distance between particles exceeds the FENE distance (%lf > %lf)") % sqrt(r_sqr) % sqrt(_rfene_sqr)));
 		}

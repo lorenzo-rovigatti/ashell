@@ -37,7 +37,7 @@ void ForceLink<potential>::_compute_forces(ullint step) {
 		double r_sqr = dist.dot(dist);
 		double energy = 0.;
 		double force_over_r = 0.;
-		_potential.evaluate(energy, force_over_r, r_sqr);
+		_potential.evaluate(link, energy, force_over_r, r_sqr);
 
 		_energy += energy;
 		_energies[p] += energy;

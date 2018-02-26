@@ -1,27 +1,25 @@
 /*
- * Integrator.h
+ * Updater.h
  *
- *  Created on: 07 feb 2018
+ *  Created on: 26 feb 2018
  *      Author: lorenzo
  */
 
-#ifndef LIB_INTEGRATORS_INTEGRATOR_H_
-#define LIB_INTEGRATORS_INTEGRATOR_H_
+#ifndef LIB_UPDATERS_UPDATER_H_
+#define LIB_UPDATERS_UPDATER_H_
 
 #include "../defs.h"
 #include "../Particles.h"
 #include "../SystemProperties.h"
 
-#include <memory>
-
 namespace ashell {
 
-class Integrator {
+class Updater {
 public:
-	Integrator();
-	virtual ~Integrator();
+	Updater();
+	virtual ~Updater();
 
-	virtual void step(ullint step);
+	virtual void update(ullint step);
 
 protected:
 	const std::shared_ptr<SystemProperties> _sys_props;
@@ -30,4 +28,4 @@ protected:
 
 } /* namespace ashell */
 
-#endif /* LIB_INTEGRATORS_INTEGRATOR_H_ */
+#endif /* LIB_UPDATERS_UPDATER_H_ */

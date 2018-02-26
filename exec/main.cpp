@@ -7,11 +7,12 @@
 
 #include "../lib/defs.h"
 #include "../lib/World.h"
-#include "../lib/boxes/Cuboid.h"
+#include "../lib/boxes/BoxFactory.h"
 #include "../lib/computers/ForceLink.h"
 #include "../lib/computers/ForceTwoBodyIsotropic.h"
 #include "../lib/Initialiser.h"
-#include "../lib/integrators/VelocityVerlet.h"
+#include "../lib/updaters/integrators/VelocityVerlet.h"
+#include "../lib/updaters/thermostats/ThermostatFactory.h"
 
 #include <iostream>
 #include "../lib/utils/InputFile.h"
@@ -51,13 +52,20 @@ int main(int argc, char *argv[]) {
 	}
 	else {
 		int N;
-		my_inp.value_as_int("N", &N, 1);
+		my_inp.value_as_int("initial_N", &N, 1);
 		sys_props->particles()->set_N(N);
 
-		sys_props->set_box(std::shared_ptr<Box>(new Cuboid(10., 10., 10.)));
+		std::string box_string;
+		my_inp.value_as_string("initial_box", box_string, 1);
+		sys_props->set_box(std::shared_ptr<Box>(BoxFactory::make_box(box_string)));
 
 		BOOST_LOG_TRIVIAL(info) << "Initialising a random configuration with N = " << N << " particles";
 		Initialiser::make_random_configuration_N2(sys_props);
+	}
+
+	std::string thermostat;
+	if(my_inp.value_as_string("thermostat", thermostat, 0) == KEY_FOUND) {
+		system->add_updater(ThermostatFactory::make_thermostat(thermostat, my_inp));
 	}
 
 //	_sys_props->add_link(std::shared_ptr<TopologyLink<2>>(new TopologyLink<2>(0, {0, 1})));

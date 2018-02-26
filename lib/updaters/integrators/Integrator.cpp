@@ -7,13 +7,10 @@
 
 #include "Integrator.h"
 
-#include "../World.h"
-
 namespace ashell {
 
 Integrator::Integrator() :
-				_sys_props(World::current_system()->system_properties()),
-				_particles(_sys_props->particles()) {
+				Updater() {
 
 }
 

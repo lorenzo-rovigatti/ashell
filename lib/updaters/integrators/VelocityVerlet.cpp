@@ -8,7 +8,7 @@
 #include "VelocityVerlet.h"
 
 #include <iostream>
-#include "../computers/ForceComputer.h"
+#include "../../computers/ForceComputer.h"
 
 namespace ashell {
 

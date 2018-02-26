@@ -10,7 +10,7 @@
 #include "computers/observables/Configuration.h"
 #include "computers/observables/Step.h"
 #include "computers/observables/TotalEnergy.h"
-#include "integrators/Integrator.h"
+#include "updaters/integrators/Integrator.h"
 #include "SystemProperties.h"
 #include "Topology.h"
 
@@ -63,7 +63,15 @@ void System::run(ullint steps) {
 		for(auto output : _outputs) {
 			if(output->is_ready(_current_step)) output->print_output(_current_step);
 		}
+
+		for(auto updater: _updaters) {
+			updater->update(_current_step);
+		}
 	}
+}
+
+void System::add_updater(std::shared_ptr<Updater> new_updater) {
+	_updaters.push_back(new_updater);
 }
 
 void System::set_print_defaults_every(ullint n_print_defaults_every) {

@@ -23,6 +23,10 @@ public:
 	vec3 random_point_in_box() override;
 	vec3 minimum_image(const vec3 &p, const vec3 &q) override;
 
+	vec3 edges() {
+		return _box;
+	}
+
 protected:
 	vec3 _box;
 };

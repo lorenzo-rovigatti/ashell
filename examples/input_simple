@@ -1,8 +1,13 @@
-T = 2.0
+T = 1.0
 dt = 0.001
 
-N = 200
+initial_N = 200
+initial_box = cuboid 10 10 10
 
 steps = 1000
 print_defaults_every = 100
 #configuration_file = init_conf.dat
+
+thermostat = andersen
+newtonian_steps = 100
+bare_diffusion_coefficient = 1.0
