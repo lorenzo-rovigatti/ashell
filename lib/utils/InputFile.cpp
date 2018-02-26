@@ -189,7 +189,7 @@ void InputFile::add_input_from_file(FILE *inp_file) {
 	add_input_from_string(file_contents);
 }
 
-input_map::iterator InputFile::_find_value(const char *skey, int mandatory)  {
+input_map::iterator InputFile::_find_value(std::string skey, int mandatory)  {
 	std::map<string, InputValue>::iterator it = keys.find(string(skey));
 	if(it != keys.end()) it->second.read++;
 	else if(mandatory) {
@@ -200,7 +200,7 @@ input_map::iterator InputFile::_find_value(const char *skey, int mandatory)  {
 	return it;
 }
 
-int InputFile::value_as_string(const char *skey, string &dest, int mandatory) {
+int InputFile::value_as_string(std::string skey, string &dest, int mandatory) {
 	input_map::iterator it = _find_value(skey, mandatory);
 	if(it == keys.end()) return KEY_NOT_FOUND;
 		
@@ -209,16 +209,16 @@ int InputFile::value_as_string(const char *skey, string &dest, int mandatory) {
 	return KEY_FOUND;
 }
 
-int InputFile::value_as_int(const char *skey, int *dest, int mandatory) {
+int InputFile::value_as_int(std::string skey, int &dest, int mandatory) {
 	input_map::iterator it = _find_value(skey, mandatory);
 	if(it == keys.end()) return KEY_NOT_FOUND;
 
-	*dest = (int) floor(atof(it->second.value.c_str())+0.1);
+	dest = (int) floor(atof(it->second.value.c_str())+0.1);
 
 	return KEY_FOUND;
 }
 
-int InputFile::value_as_bool(const char *skey, bool *dest, int mandatory) {
+int InputFile::value_as_bool(std::string skey, bool &dest, int mandatory) {
 	input_map::iterator it = _find_value(skey, mandatory);
 	if(it == keys.end()) return KEY_NOT_FOUND;
 
@@ -227,10 +227,10 @@ int InputFile::value_as_bool(const char *skey, bool *dest, int mandatory) {
 	std::transform(val.begin(), val.end(), val.begin(), ::tolower);
 
 	set<string>::iterator res = true_values.find(val);
-	if(res != true_values.end()) *dest = true;
+	if(res != true_values.end()) dest = true;
 	else {
 		res = false_values.find(val);
-		if(res != false_values.end()) *dest = false;
+		if(res != false_values.end()) dest = false;
 		else {
 			string error = boost::str(boost::format("boolean key `%s' is invalid (`%s'), aborting.") % skey % val);
 			throw std::runtime_error(error);
@@ -240,51 +240,53 @@ int InputFile::value_as_bool(const char *skey, bool *dest, int mandatory) {
 	return KEY_FOUND;
 }
 
-int InputFile::value_as_llint(const char *skey, long long int *dest, int mandatory) {
+int InputFile::value_as_llint(std::string skey, long long int &dest, int mandatory) {
 	input_map::iterator it = _find_value(skey, mandatory);
 	if(it == keys.end()) return KEY_NOT_FOUND;
-	*dest = (long long) floor(atof(it->second.value.c_str())+0.1);
+
+	dest = (long long) floor(atof(it->second.value.c_str())+0.1);
 
 	return KEY_FOUND;
 }
 
-int InputFile::value_as_ullint(const char *skey, unsigned long long int *dest, int mandatory) {
+int InputFile::value_as_ullint(std::string skey, unsigned long long int &dest, int mandatory) {
 	input_map::iterator it = _find_value(skey, mandatory);
 	if(it == keys.end()) return KEY_NOT_FOUND;
-	*dest = (unsigned long long) floor(atof(it->second.value.c_str())+0.1);
+
+	dest = (unsigned long long) floor(atof(it->second.value.c_str())+0.1);
 
 	return KEY_FOUND;
 }
 
-int InputFile::value_as_uint(const char *skey, unsigned int *dest, int mandatory) {
+int InputFile::value_as_uint(std::string skey, unsigned int &dest, int mandatory) {
 	input_map::iterator it = _find_value(skey, mandatory);
 	if(it == keys.end()) return KEY_NOT_FOUND;
 
-	*dest = (unsigned int) floor (atof(it->second.value.c_str())+0.1);
+	dest = (unsigned int) floor (atof(it->second.value.c_str())+0.1);
 
 	return KEY_FOUND;
 }
 
-int InputFile::value_as_char(const char *skey, char *dest, int mandatory) {
+int InputFile::value_as_char(std::string skey, char &dest, int mandatory) {
 	input_map::iterator it = _find_value(skey, mandatory);
 	if(it == keys.end()) return KEY_NOT_FOUND;
 
-	*dest = it->second.value[0];
+	dest = it->second.value[0];
 
 	return KEY_FOUND;
 }
 
 template<typename number>
-int InputFile::value_as_number(const char *skey, number *dest, int mandatory) {
+int InputFile::value_as_number(std::string skey, number &dest, int mandatory) {
 	input_map::iterator it = _find_value(skey, mandatory);
 	if(it == keys.end()) return KEY_NOT_FOUND;
 
-	*dest = (number) atof(it->second.value.c_str());
+	dest = (number) atof(it->second.value.c_str());
 
 	return KEY_FOUND;
 }
-template int InputFile::value_as_number(const char *skey, float *dest, int mandatory);
-template int InputFile::value_as_number(const char *skey, double *dest, int mandatory);
+template int InputFile::value_as_number(std::string skey, float &dest, int mandatory);
+template int InputFile::value_as_number(std::string skey, double &dest, int mandatory);
 
 void InputFile::set_unread_keys() {
 	for(input_map::iterator it = keys.begin(); it != keys.end(); it++) {

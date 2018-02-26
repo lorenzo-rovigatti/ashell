@@ -87,14 +87,14 @@ public:
 	 */
 	void print_input(char *filename);
 
-	int value_as_string(const char *skey, std::string &dest, int mandatory);
-	int value_as_int(const char *skey, int *dest, int mandatory);
-	int value_as_bool(const char *skey, bool *dest, int mandatory);
-	int value_as_uint(const char *skey, unsigned int *dest, int mandatory);
-	int value_as_llint(const char *skey, long long int *dest, int mandatory);
-	int value_as_ullint(const char *skey, unsigned long long int *dest, int mandatory);
-	template<typename number> int value_as_number(const char *skey, number *dest, int mandatory);
-	int value_as_char(const char *skey, char *dest, int mandatory);
+	int value_as_string(std::string skey, std::string &dest, int mandatory);
+	int value_as_int(std::string skey, int &dest, int mandatory);
+	int value_as_bool(std::string skey, bool &dest, int mandatory);
+	int value_as_uint(std::string skey, unsigned int &dest, int mandatory);
+	int value_as_llint(std::string skey, long long int &dest, int mandatory);
+	int value_as_ullint(std::string skey, unsigned long long int &dest, int mandatory);
+	template<typename number> int value_as_number(std::string skey, number &dest, int mandatory);
+	int value_as_char(std::string skey, char &dest, int mandatory);
 
 	void set_unread_keys();
 
@@ -110,7 +110,7 @@ private:
 	 */
 	int _readLine(std::vector<std::string>::iterator &it, std::vector<std::string>::iterator &end, std::string &key, std::string &value);
 
-	input_map::iterator _find_value(const char *skey, int mandatory);
+	input_map::iterator _find_value(std::string skey, int mandatory);
 
 	input_map keys;
 	std::vector<std::string> unread_keys;

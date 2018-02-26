@@ -21,11 +21,11 @@ std::shared_ptr<Updater> ThermostatFactory::make_thermostat(std::string thermost
 
 	if(thermostat_name == "andersen") {
 		double dt;
-		input.value_as_number("dt", &dt, 1);
+		input.value_as_number("dt", dt, 1);
 		uint newtonian_steps;
-		input.value_as_uint("newtonian_steps", &newtonian_steps, 1);
+		input.value_as_uint("newtonian_steps", newtonian_steps, 1);
 		double D0;
-		input.value_as_number("bare_diffusion_coefficient", &D0, 1);
+		input.value_as_number("bare_diffusion_coefficient", D0, 1);
 
 		double newtonian_time = dt * newtonian_steps;
 		new_thermostat = std::shared_ptr<Updater>(new Andersen(newtonian_time, D0));

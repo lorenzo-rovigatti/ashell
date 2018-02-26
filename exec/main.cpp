@@ -32,18 +32,18 @@ int main(int argc, char *argv[]) {
 	auto sys_props = system->system_properties();
 
 	double dt;
-	my_inp.value_as_number("dt", &dt, 1);
+	my_inp.value_as_number("dt", dt, 1);
 	sys_props->set_integrator(std::shared_ptr<Integrator>(new VelocityVerlet(dt)));
 
 	double T;
-	my_inp.value_as_number("T", &T, 1);
+	my_inp.value_as_number("T", T, 1);
 	sys_props->set_T(T);
 
 	ullint steps;
-	my_inp.value_as_ullint("steps", &steps, 1);
+	my_inp.value_as_ullint("steps", steps, 1);
 
 	ullint print_defaults_every;
-	my_inp.value_as_ullint("print_defaults_every", &print_defaults_every, 0);
+	my_inp.value_as_ullint("print_defaults_every", print_defaults_every, 0);
 	system->set_print_defaults_every(print_defaults_every);
 
 	std::string conf_filename;
@@ -52,7 +52,7 @@ int main(int argc, char *argv[]) {
 	}
 	else {
 		int N;
-		my_inp.value_as_int("initial_N", &N, 1);
+		my_inp.value_as_int("initial_N", N, 1);
 		sys_props->particles()->set_N(N);
 
 		std::string box_string;
