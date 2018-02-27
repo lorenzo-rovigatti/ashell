@@ -28,6 +28,7 @@ void KineticEnergy::_observe(ullint step) {
 	for(auto &v : velocities) {
 		_kinetic_energy += 0.5 * v.dot(v);
 	}
+	_kinetic_energy /= _particles->N();
 }
 
 } /* namespace ashell */

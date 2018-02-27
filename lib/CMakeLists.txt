@@ -5,6 +5,7 @@ SET(ashell_lib_SOURCES
 	boxes/Cuboid.cpp
 	computers/Computer.cpp
 	computers/ForceComputer.cpp
+	computers/ForceDihedral.cpp
 	computers/ForceLink.cpp
 	computers/ForceTwoBodyIsotropic.cpp
 	computers/observables/Cogli1Configuration.cpp

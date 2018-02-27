@@ -8,6 +8,7 @@
 #include "../lib/defs.h"
 #include "../lib/World.h"
 #include "../lib/boxes/BoxFactory.h"
+#include "../lib/computers/ForceDihedral.h"
 #include "../lib/computers/ForceLink.h"
 #include "../lib/computers/ForceTwoBodyIsotropic.h"
 #include "../lib/Initialiser.h"
@@ -49,6 +50,11 @@ int main(int argc, char *argv[]) {
 	std::string conf_filename;
 	if(my_inp.value_as_string("configuration_file", conf_filename, 0) == KEY_FOUND) {
 		Initialiser::init_configuration_from_filename(sys_props, conf_filename);
+
+		std::string topology_filename;
+		if(my_inp.value_as_string("topology_file", topology_filename, 0) == KEY_FOUND) {
+			Initialiser::init_topology_from_filename(sys_props, topology_filename);
+		}
 	}
 	else {
 		int N;
@@ -68,9 +74,9 @@ int main(int argc, char *argv[]) {
 		system->add_updater(ThermostatFactory::make_thermostat(thermostat, my_inp));
 	}
 
-//	_sys_props->add_link(std::shared_ptr<TopologyLink<2>>(new TopologyLink<2>(0, {0, 1})));
 	sys_props->add_force(std::shared_ptr<LennardJonesForce>(new LennardJonesForce()));
 	sys_props->add_force(std::shared_ptr<FENEForce>(new FENEForce()));
+	//sys_props->add_force(std::shared_ptr<ForceDihedral>(new ForceDihedral()));
 
 	system->run(steps);
 

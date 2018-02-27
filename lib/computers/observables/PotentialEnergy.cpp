@@ -27,6 +27,7 @@ void PotentialEnergy::_observe(ullint step) {
 	for(auto &force: _sys_props->forces()) {
 		_energy += force->energy();
 	}
+	_energy /= _particles->N();
 }
 
 } /* namespace ashell */

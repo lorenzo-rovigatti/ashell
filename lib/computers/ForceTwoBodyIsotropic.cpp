@@ -36,8 +36,8 @@ void ForceTwoBodyIsotropic<potential>::_compute_forces(ullint step) {
 			_potential.evaluate(energy, force_over_r, r_sqr);
 
 			_energy += energy;
-			_energies[p] += energy;
-			_energies[q] += energy;
+			_energies[p] += energy / 2.;
+			_energies[q] += energy / 2.;
 
 			vec3 force = dist * force_over_r;
 			_forces[p] -= force;
