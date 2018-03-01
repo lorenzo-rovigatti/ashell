@@ -8,6 +8,7 @@
 #include "../lib/defs.h"
 #include "../lib/World.h"
 #include "../lib/boxes/BoxFactory.h"
+#include "../lib/computers/external_forces/ConstantForce.h"
 #include "../lib/computers/ForceDihedral.h"
 #include "../lib/computers/ForceLink.h"
 #include "../lib/computers/ForceTwoBodyIsotropic.h"
@@ -85,6 +86,9 @@ int main(int argc, char *argv[]) {
 //	sys_props->add_force(std::shared_ptr<FENEForce>(new FENEForce({15., 2.5})));
 	sys_props->add_force(std::shared_ptr<HarmonicForce>(new HarmonicForce({1., 1.})));
 	sys_props->add_force(std::shared_ptr<ForceDihedral>(new ForceDihedral()));
+
+	sys_props->add_force(std::shared_ptr<ConstantForce>(new ConstantForce(vec3(-1., 0., 0.), 50., std::vector<int>(1, 484))));
+	sys_props->add_force(std::shared_ptr<ConstantForce>(new ConstantForce(vec3(1., 0., 0.), 50., std::vector<int>(1, 110))));
 
 	system->run(steps);
 

@@ -13,7 +13,7 @@ namespace ashell {
 
 ForceDihedral::ForceDihedral(std::string name) :
 				ForceComputer(name),
-				_kb(10.),
+				_kb(100.),
 				_theta0(0.) {
 
 }

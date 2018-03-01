@@ -4,6 +4,8 @@ SET(ashell_lib_SOURCES
 	boxes/BoxFactory.cpp
 	boxes/Cuboid.cpp
 	computers/Computer.cpp
+	computers/external_forces/ConstantForce.cpp
+	computers/external_forces/ExternalForce.cpp
 	computers/ForceComputer.cpp
 	computers/ForceDihedral.cpp
 	computers/ForceLink.cpp
