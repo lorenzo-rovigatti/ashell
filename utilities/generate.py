@@ -7,7 +7,6 @@ import subprocess as sp
 import math
 import itertools as it
 from scipy.spatial import ConvexHull
-import utils
 
 MAX_ROT = 0.1
 
@@ -30,11 +29,15 @@ def die(msg):
     print >> sys.stderr, msg
     sys.exit(1)
 
-if len(sys.argv) < 2: die("Usage is %s mesh_points" % sys.argv[0])
+if len(sys.argv) < 2: die("Usage is %s mesh_points [add_params=False]" % sys.argv[0])
 
 n_points = int(sys.argv[1])
 if n_points < 100: die("Too few mesh points (%d)" % n_points)
 if n_points < 500: print >> sys.stderr, "WARNING: RBCs with less than 500 mesh points should not be used in production"
+
+add_params = False
+if len(sys.argv) > 2:
+    add_params = bool(sys.argv[2])
 
 gen = sp.Popen(["./generate_sphere", str(n_points)], stdout=sp.PIPE)
 out, err = gen.communicate()
@@ -65,7 +68,7 @@ print >> sys.stderr, "Triangulation completed"
 # this lovely one-liner takes a list of triangles (identified by their three vertices) and transform it in the list of all the edges
 edges = list(it.chain.from_iterable([it.combinations(t, 2) for t in cvx.simplices]))
 
-length_factor = 1. / np.sqrt(min_dist_sqr)
+length_factor = 0.8 / np.sqrt(min_dist_sqr)
 with open("init_conf.dat", "w") as f:
     print >> f, 0
     print >> f, n_points
@@ -76,7 +79,12 @@ with open("init_conf.dat", "w") as f:
 
 with open("topology.dat", "w") as f:
     for e in edges:
-        print >> f, "link", 0, e[0], e[1]
+        to_print = "%d %d %d" % (0, e[0], e[1])
+        if add_params:
+            diff = points[e[0]] - points[e[1]]
+            dist = np.sqrt(np.dot(diff, diff))
+            to_print += " %lf" % dist
+        print >> f, "link", to_print
 
     for combination in it.combinations(cvx.simplices, 2):
         first = combination[0]
