@@ -10,9 +10,9 @@
 namespace ashell {
 
 template<class potential>
-ForceLink<potential>::ForceLink(std::string name) :
+ForceLink<potential>::ForceLink(std::initializer_list<double> params, std::string name) :
 				ForceComputer(name),
-				_potential({}) {
+				_potential(params) {
 
 }
 
@@ -24,9 +24,8 @@ ForceLink<potential>::~ForceLink() {
 template<class potential>
 void ForceLink<potential>::_compute_forces(ullint step) {
 	const vector_vec3 &poss = _particles->positions();
-	const auto &links = _sys_props->links();
 
-	for(auto &link : links) {
+	for(auto &link : _sys_props->links()) {
 		uint p = link->members[0];
 		uint q = link->members[1];
 

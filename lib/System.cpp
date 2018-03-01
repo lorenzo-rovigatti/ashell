@@ -7,6 +7,7 @@
 
 #include "System.h"
 
+#include "computers/ForceComputer.h"
 #include "computers/observables/Cogli1Configuration.h"
 #include "computers/observables/Configuration.h"
 #include "computers/observables/Step.h"
@@ -15,16 +16,32 @@
 #include "updaters/integrators/Integrator.h"
 #include "updaters/Updater.h"
 #include "SystemProperties.h"
-
 #include "Topology.h"
 
+#include <csignal>
+
 namespace ashell {
+
+void gbl_terminate (int arg) {
+	// we make it so pressing ctrl+c twice kills the program no matter what.
+	if(!System::started || System::stop) signal(arg, SIG_DFL);
+	BOOST_LOG_TRIVIAL(info) << "# Caught SIGNAL " << arg << "; setting stop = true\n";
+	System::stop = true;
+}
+
+bool System::stop = false;
+bool System::started = false;
 
 System::System() :
 				_sys_props(std::shared_ptr<SystemProperties>(new SystemProperties())),
 				_integrator(nullptr),
 				_current_step(0),
 				_print_defaults_every(1000) {
+	// here we handle a few SIG* signals;
+	signal(SIGTERM, gbl_terminate);
+	signal(SIGABRT, gbl_terminate);
+	signal(SIGINT, gbl_terminate);
+	signal(SIGUSR2, gbl_terminate);
 }
 
 System::~System() {
@@ -66,10 +83,14 @@ void System::run(ullint steps) {
 		throw std::runtime_error("System::init should be called before System::run");
 	}
 
-	for(ullint i = 0; i < steps; i++) {
-		_integrator->step(_current_step);
-		_current_step++;
+	// we compute all the forces at the beginning so that the observables can work
+	// with updated data
+	for(auto &force_computer : _sys_props->forces()) {
+		force_computer->compute(_current_step);
+	}
 
+	System::started = true;
+	for(ullint i = 0; i < steps && !System::stop; i++) {
 		for(auto output : _outputs) {
 			if(output->is_ready(_current_step)) output->print_output(_current_step);
 		}
@@ -77,7 +98,11 @@ void System::run(ullint steps) {
 		for(auto updater: _updaters) {
 			updater->update(_current_step);
 		}
+
+		_integrator->step(_current_step);
+		_current_step++;
 	}
+	System::started = false;
 }
 
 void System::add_updater(std::shared_ptr<Updater> new_updater) {

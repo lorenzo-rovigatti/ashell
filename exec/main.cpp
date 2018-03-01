@@ -55,6 +55,13 @@ int main(int argc, char *argv[]) {
 		if(my_inp.value_as_string("topology_file", topology_filename, 0) == KEY_FOUND) {
 			Initialiser::init_topology_from_filename(sys_props, topology_filename);
 		}
+
+		bool random_velocities = false;
+		my_inp.value_as_bool("random_velocities", random_velocities, 0);
+		if(random_velocities) {
+			BOOST_LOG_TRIVIAL(info) << "Initialising the configuration with random velocities";
+			Initialiser::set_random_velocities(sys_props);
+		}
 	}
 	else {
 		int N;
@@ -74,9 +81,10 @@ int main(int argc, char *argv[]) {
 		system->add_updater(ThermostatFactory::make_thermostat(thermostat, my_inp));
 	}
 
-	sys_props->add_force(std::shared_ptr<LennardJonesForce>(new LennardJonesForce()));
-	sys_props->add_force(std::shared_ptr<FENEForce>(new FENEForce()));
-	//sys_props->add_force(std::shared_ptr<ForceDihedral>(new ForceDihedral()));
+//	sys_props->add_force(std::shared_ptr<LennardJonesForce>(new LennardJonesForce({1.122462048309373})));
+//	sys_props->add_force(std::shared_ptr<FENEForce>(new FENEForce({15., 2.5})));
+	sys_props->add_force(std::shared_ptr<HarmonicForce>(new HarmonicForce({1., 1.})));
+	sys_props->add_force(std::shared_ptr<ForceDihedral>(new ForceDihedral()));
 
 	system->run(steps);
 

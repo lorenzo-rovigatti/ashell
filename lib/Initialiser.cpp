@@ -47,7 +47,7 @@ void Initialiser::make_random_configuration_N2(std::shared_ptr<SystemProperties>
 void Initialiser::init_configuration_from_filename(std::shared_ptr<SystemProperties> sys_props, std::string filename) {
 	std::ifstream inp(filename.c_str());
 
-	if(inp.bad() || !inp.good()) {
+	if(!inp.good()) {
 		std::string error = boost::str(boost::format("Configuration file '%s' not found") % filename);
 		throw std::runtime_error(error);
 	}
@@ -55,12 +55,15 @@ void Initialiser::init_configuration_from_filename(std::shared_ptr<SystemPropert
 	std::string line;
 	// time step
 	std::getline(inp, line);
+	if(!inp.good()) throw std::runtime_error("Caught an error while reading the time step in the initial configuration");
 	// number of particles
 	std::getline(inp, line);
+	if(!inp.good()) throw std::runtime_error("Caught an error while reading the number of particles in the initial configuration");
 	uint N = boost::lexical_cast<uint>(line);
 
 	// box line
 	std::getline(inp, line);
+	if(!inp.good()) throw std::runtime_error("Caught an error while reading the box line in the initial configuration");
 	sys_props->set_box(std::shared_ptr<Box>(BoxFactory::make_box(line)));
 
 	auto particles = sys_props->particles();
@@ -118,6 +121,7 @@ void Initialiser::init_topology_from_filename(std::shared_ptr<SystemProperties> 
 
 	std::string line;
 	int curr_line = 1;
+	uint largest_idx = 0;
 	while(std::getline(inp, line)) {
 		boost::trim(line);
 		// skip empty lines or lines starting with #
@@ -136,7 +140,14 @@ void Initialiser::init_topology_from_filename(std::shared_ptr<SystemProperties> 
 			uint p_idx = boost::lexical_cast<uint>(spl_line[2]);
 			uint q_idx = boost::lexical_cast<uint>(spl_line[3]);
 
-			sys_props->add_link(std::shared_ptr<TopologyLink<2>>(new TopologyLink<2>(link_type, {p_idx, q_idx})));
+			std::shared_ptr<TopologyLink<2>> new_link = std::shared_ptr<TopologyLink<2>>(new TopologyLink<2>(link_type, {p_idx, q_idx}));
+			for(uint i = 4; i < spl_line.size(); i++) {
+				new_link->add_param(boost::lexical_cast<double>(spl_line[i]));
+			}
+
+			sys_props->add_link(new_link);
+
+			largest_idx = std::max(largest_idx, *std::max_element(new_link->members.begin(), new_link->members.end()));
 		}
 		else if(boost::starts_with("dihedral", spl_line[0])) {
 			if(spl_line.size() < 6) {
@@ -150,7 +161,14 @@ void Initialiser::init_topology_from_filename(std::shared_ptr<SystemProperties> 
 			uint k_idx = boost::lexical_cast<uint>(spl_line[4]);
 			uint l_idx = boost::lexical_cast<uint>(spl_line[5]);
 
-			sys_props->add_dihedral(std::shared_ptr<TopologyLink<4>>(new TopologyLink<4>(link_type, {i_idx, j_idx, k_idx, l_idx})));
+			std::shared_ptr<TopologyLink<4>> new_dihedral = std::shared_ptr<TopologyLink<4>>(new TopologyLink<4>(link_type, {i_idx, j_idx, k_idx, l_idx}));
+			for(uint i = 6; i < spl_line.size(); i++) {
+				new_dihedral->add_param(boost::lexical_cast<double>(spl_line[i]));
+			}
+
+			sys_props->add_dihedral(new_dihedral);
+
+			largest_idx = std::max(largest_idx, *std::max_element(new_dihedral->members.begin(), new_dihedral->members.end()));
 		}
 		else {
 			std::string error = boost::str(boost::format("The topology file '%s' contains the invalid line '%s'") % filename % line);
@@ -159,8 +177,16 @@ void Initialiser::init_topology_from_filename(std::shared_ptr<SystemProperties> 
 
 		curr_line++;
 	}
-
 	inp.close();
+
+	if(largest_idx > sys_props->particles()->N()) {
+		BOOST_LOG_TRIVIAL(warning) << "The topology found in '"
+				<< filename
+				<< "' assumes that there are at least "
+				<< (largest_idx + 1) << " particles, while the current number of particles is just "
+				<< sys_props->particles()->N()
+				<< ". Are you sure you know what you are doing?";
+	}
 }
 
 void Initialiser::set_random_velocities(std::shared_ptr<SystemProperties> sys_props) {

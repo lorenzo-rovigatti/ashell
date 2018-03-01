@@ -43,6 +43,9 @@ public:
 		return _print_defaults_every;
 	}
 
+	static bool stop;
+	static bool started;
+
 protected:
 	void _sanity_check();
 

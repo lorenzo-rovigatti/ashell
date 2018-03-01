@@ -22,12 +22,20 @@ struct TopologyLink {
 			throw std::runtime_error(boost::str(boost::format("Invalid initialisation of a topological link of size %u (got %u parameters instead)") % link_size % l.size()));
 		}
 		std::copy(l.begin(), l.end(), members.begin());
-		std::sort(members.begin(), members.end());
+	}
+
+	void add_param(double new_param) {
+		params.push_back(new_param);
+	}
+
+	uint N_params() {
+		return params.size();
 	}
 
 	uint type;
 	uint size;
 	std::array<uint, link_size> members;
+	std::vector<double> params;
 };
 
 }

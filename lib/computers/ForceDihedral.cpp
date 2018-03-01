@@ -13,7 +13,7 @@ namespace ashell {
 
 ForceDihedral::ForceDihedral(std::string name) :
 				ForceComputer(name),
-				_kb(50.),
+				_kb(10.),
 				_theta0(0.) {
 
 }
@@ -32,9 +32,8 @@ void ForceDihedral::set_theta0(double n_theta0) {
 
 void ForceDihedral::_compute_forces(ullint step) {
 	const vector_vec3 &poss = _particles->positions();
-	const auto &dihedrals = _sys_props->dihedrals();
 
-	for(auto &dihedral : dihedrals) {
+	for(auto &dihedral : _sys_props->dihedrals()) {
 		uint i = dihedral->members[0];
 		uint j = dihedral->members[1];
 		uint k = dihedral->members[2];
@@ -42,13 +41,13 @@ void ForceDihedral::_compute_forces(ullint step) {
 
 		vec3 i_pos = poss[i];
 		vec3 j_pos = poss[j];
-		vec3 l_pos = poss[k];
-		vec3 k_pos = poss[l];
+		vec3 k_pos = poss[k];
+		vec3 l_pos = poss[l];
 
 		// see Sofia Biagi's thesis, pag. 114
-		vec3 r_ij = _sys_props->box()->minimum_image(i_pos, j_pos);
-		vec3 r_kj = _sys_props->box()->minimum_image(k_pos, j_pos);
-		vec3 r_kl = _sys_props->box()->minimum_image(k_pos, l_pos);
+		vec3 r_ij = _sys_props->box()->minimum_image(j_pos, i_pos);
+		vec3 r_kj = _sys_props->box()->minimum_image(j_pos, k_pos);
+		vec3 r_kl = _sys_props->box()->minimum_image(l_pos, k_pos);
 
 		double r_kj_sqr = r_kj.dot(r_kj);
 		double r_kj_mod = sqrt(r_kj_sqr);
@@ -63,9 +62,10 @@ void ForceDihedral::_compute_forces(ullint step) {
 		if(costheta > 1.) costheta = 1.;
 		if(costheta < -1.) costheta = -1.;
 
-		// IUPAC vs polymer conventions
-		double theta = acos(costheta) - M_PI;
+		double theta = acos(costheta);
 		if(r_ij.dot(n) < 0.) theta = -theta;
+		// we use the so-called polymer convention, for which theta(polymer) = theta(IUPAC) +/- pi
+		theta -= M_PI;
 
 		double dVdtheta = _kb * sin(theta - _theta0);
 		vec3 F_i = (-dVdtheta * r_kj_mod / m_sqr) * m;
@@ -81,6 +81,8 @@ void ForceDihedral::_compute_forces(ullint step) {
 		_forces[l] += F_l;
 
 		double energy = _kb * (1. - cos(theta - _theta0));
+
+//		BOOST_LOG_TRIVIAL(info) << costheta << " " << (theta*180/M_PI) << " " << energy;
 
 		_energy += energy;
 		_energies[i] += energy / 4.;

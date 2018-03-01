@@ -16,7 +16,13 @@ namespace ashell {
 class FENE {
 public:
 	FENE(std::initializer_list<double> params) {
-		_rfene_sqr = SQR(1.5);
+		if(params.size() != 2) {
+			throw std::runtime_error(boost::str(boost::format("FENE expects a parameter list of length 2, not %u") % params.size()));
+		}
+		auto iter = params.begin();
+		_U = *iter;
+		iter++;
+		_rfene_sqr = SQR(*iter);
 	}
 
 	virtual ~FENE() {
@@ -28,13 +34,14 @@ public:
 			throw std::runtime_error(boost::str(boost::format("A distance between particles exceeds the FENE distance (%lf > %lf)") % sqrt(r_sqr) % sqrt(_rfene_sqr)));
 		}
 
-		energy = -15 * _rfene_sqr * log(1. - r_sqr / _rfene_sqr);
-		force_over_r = -30 * _rfene_sqr / (_rfene_sqr - r_sqr);
+		energy = -_U * _rfene_sqr * log(1. - r_sqr / _rfene_sqr);
+		force_over_r = -2. * _U * _rfene_sqr / (_rfene_sqr - r_sqr);
 
 		return true;
 	}
 
 private:
+	double _U;
 	double _rfene_sqr;
 };
 
