@@ -46,9 +46,7 @@ System::System() :
 }
 
 System::~System() {
-	for(auto output : _after_clean_outputs) {
-		output->print_output(_current_step);
-	}
+
 }
 
 void System::init() {
@@ -81,7 +79,7 @@ void System::init() {
 
 	std::shared_ptr<OutputObservable> last_conf(new OutputObservable("last_conf.dat", 0));
 	last_conf->add_observable(std::shared_ptr<Configuration>(new Configuration()));
-	_after_clean_outputs.push_back(last_conf);
+	_post_run_outputs.push_back(last_conf);
 }
 
 void System::run(ullint steps) {
@@ -109,6 +107,10 @@ void System::run(ullint steps) {
 		_current_step++;
 	}
 	System::started = false;
+
+	for(auto output : _post_run_outputs) {
+		output->print_output(_current_step);
+	}
 }
 
 void System::add_updater(std::shared_ptr<Updater> new_updater) {

@@ -59,7 +59,7 @@ protected:
 	std::vector<std::shared_ptr<Updater>> _updaters;
 	std::vector<std::shared_ptr<OutputObservable>> _outputs;
 	std::vector<std::shared_ptr<OutputObservable>> _default_outputs;
-	std::vector<std::shared_ptr<OutputObservable>> _after_clean_outputs;
+	std::vector<std::shared_ptr<OutputObservable>> _post_run_outputs;
 	std::vector<std::shared_ptr<OutputObservable>> _configuration_outputs;
 	ullint _current_step;
 	ullint _print_defaults_every;

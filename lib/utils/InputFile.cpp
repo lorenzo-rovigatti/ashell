@@ -46,9 +46,9 @@ void InputFile::print_input(char *filename) {
 void InputFile::load_from_filename(const char *filename) {
 	FILE *inp_file = fopen(filename, "r");
 	if(inp_file == NULL) {
-	fprintf(stderr, "Input file '%s' not found\n", filename);
 		state = ERROR;
-		return;
+		std::string error = boost::str(boost::format("Input file '%s' not found") % filename);
+		throw std::runtime_error(error);
 	}
 	load_from_file(inp_file);
 	fclose(inp_file);
