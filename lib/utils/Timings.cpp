@@ -20,9 +20,9 @@
 #endif
 
 #ifdef MOSIX
-#define OXDNA_CLOCK() 0
+#define ASHELL_CLOCK() 0
 #else
-#define OXDNA_CLOCK() clock()
+#define ASHELL_CLOCK() clock()
 #endif
 
 using std::string;
@@ -31,7 +31,7 @@ Timer::Timer() {
 	_time = (clock_t) 0;
 	_last = (clock_t) 0;
 	_active = false;
-	_desc = std::string("Uninitialized timer");
+	_desc = std::string("Uninitialised timer");
 }
 
 Timer::Timer(std::string arg) {
@@ -42,7 +42,7 @@ Timer::Timer(std::string arg) {
 }
 
 Timer::~Timer() {
-	BOOST_LOG_TRIVIAL(debug) << "Timer with desc " << _desc << " deleted";
+	BOOST_LOG_TRIVIAL(debug)<< "Timer with desc " << _desc << " deleted";
 }
 
 void Timer::resume() {
@@ -50,7 +50,7 @@ void Timer::resume() {
 		string error = boost::str(boost::format("resuming already active timer %s") % _desc);
 		throw std::runtime_error(error);
 	}
-	_last = OXDNA_CLOCK();
+	_last = ASHELL_CLOCK();
 	_active = true;
 }
 
@@ -60,62 +60,42 @@ void Timer::pause() {
 		string error = boost::str(boost::format("pausing resuming already inactive timer %s") % _desc);
 		throw std::runtime_error(error);
 	}
-	_time += (OXDNA_CLOCK() - _last);
+	_time += (ASHELL_CLOCK() - _last);
 	_active = false;
 }
 
 // this should work regardless of the timers being active
 long long int Timer::get_time() {
-	if(_active)
-		return (long long int) (_time + (OXDNA_CLOCK() - _last));
-	else
-		return (long long int) _time;
+	if(_active) return (long long int) (_time + (ASHELL_CLOCK() - _last));
+	else return (long long int) _time;
 }
 
 /***************** END OF TIMER CLASS *********************/
 
 // singleton
-TimingManager * TimingManager::_timingManager = NULL;
+std::shared_ptr<TimingManager> TimingManager::_timingManager(nullptr);
 
-// time manager class
 TimingManager::TimingManager() {
 
 }
 
 TimingManager::~TimingManager() {
-	for(unsigned int i = 0; i < _timers.size(); i++) {
-		if (_timers[i] != NULL) {
-			BOOST_LOG_TRIVIAL(debug) << "Trying to delete timer...";
-			delete _timers[i];
-		}
-	}
+//	for(unsigned int i = 0; i < _timers.size(); i++) {
+//		if(_timers[i] != NULL) {
+//			BOOST_LOG_TRIVIAL(debug)<< "Trying to delete timer...";
+//			delete _timers[i];
+//		}
+//	}
 }
 
-void TimingManager::init() {
-	if(_timingManager != NULL) {
-		throw std::runtime_error("initializing an already initialized TimingManager");
-	}
-	_timingManager = new TimingManager();
-}
-
-void TimingManager::clear() {
-	if(_timingManager != NULL) delete _timingManager;
-}
-
-TimingManager *TimingManager::instance() {
+std::shared_ptr<TimingManager> TimingManager::instance() {
 	if(_timingManager == NULL) {
-		throw std::runtime_error("accessing an uninitialized TimingManager");
+		_timingManager = std::shared_ptr<TimingManager>(new TimingManager());
 	}
 	return _timingManager;
 }
 
-void TimingManager::add_timer(Timer * arg) {
-	_timers.push_back(arg);
-	_parents.insert(std::make_pair(arg, (Timer *) NULL));
-	_desc_map.insert(std::make_pair(arg->get_desc(), arg));
-}
-
-Timer * TimingManager::new_timer(std::string desc) {
+Timer *TimingManager::new_timer(std::string desc) {
 	if(_desc_map.count(desc) != 0) {
 		string error = boost::str(boost::format("timer %s already used! Aborting") % desc);
 		throw std::runtime_error(error);
@@ -127,12 +107,12 @@ Timer * TimingManager::new_timer(std::string desc) {
 	_parents[timer] = (Timer *) NULL;
 	_desc_map[desc] = timer;
 
-	BOOST_LOG_TRIVIAL(debug) << "Adding new timer with description " << desc << "and no parent";
+	BOOST_LOG_TRIVIAL(debug)<< "Adding new timer with description " << desc << " and no parent";
 
 	return timer;
 }
 
-Timer * TimingManager::new_timer(std::string desc, std::string parent_desc) {
+Timer *TimingManager::new_timer(std::string desc, std::string parent_desc) {
 	if(_desc_map.count(desc) != 0) {
 		string error = boost::str(boost::format("timer %s already used! Aborting") % desc);
 		throw std::runtime_error(error);
@@ -147,37 +127,21 @@ Timer * TimingManager::new_timer(std::string desc, std::string parent_desc) {
 	_parents[timer] = get_timer_by_desc(parent_desc);
 	_desc_map[desc] = timer;
 
-	BOOST_LOG_TRIVIAL(debug) << "Adding new timer with description " << desc << " and parent " << parent_desc;
+	BOOST_LOG_TRIVIAL(debug)<< "Adding new timer with description " << desc << " and parent " << parent_desc;
 
 	return timer;
 }
 
-void TimingManager::add_timer(Timer * arg, std::string parent_desc) {
-	std::string my_parent_desc;
-	Timer * my_parent_ptr;
-	if(_desc_map.count(parent_desc) > 0) {
-		my_parent_desc = std::string(parent_desc);
-		my_parent_ptr = _desc_map[parent_desc];
-	}
-	else {
-		BOOST_LOG_TRIVIAL(warning) << "Trying to add timer '" << arg->get_desc() << "' with an unknown parent '" << parent_desc << "'";
-		my_parent_desc = std::string("None");
-		my_parent_ptr = NULL;
-	}
-
-	_timers.push_back(arg);
-	_parents.insert(std::make_pair(arg, my_parent_ptr));
-	_desc_map.insert(std::make_pair(arg->get_desc(), arg));
-}
-
-void TimingManager::print(long long int total_steps) {
+void TimingManager::print(ullint total_steps) {
 	// times (including children) 
-	std::map<Timer *, long long int> totaltimes;
-	for(unsigned int i = 0; i < _timers.size(); i++) totaltimes[_timers[i]] = _timers[i]->get_time();
+	std::map<Timer *, ullint> totaltimes;
+	for(unsigned int i = 0; i < _timers.size(); i++)
+		totaltimes[_timers[i]] = _timers[i]->get_time();
 
 	// times in children 
-	std::map<Timer *, long long int> sum_of_children;
-	for(unsigned int i = 0; i < _timers.size(); i++) sum_of_children[_timers[i]] = 0;
+	std::map<Timer *, ullint> sum_of_children;
+	for(unsigned int i = 0; i < _timers.size(); i++)
+		sum_of_children[_timers[i]] = 0;
 	for(unsigned int i = 0; i < _timers.size(); i++) {
 		Timer * t = _timers[i];
 		Timer * p = _parents[t];
@@ -188,7 +152,7 @@ void TimingManager::print(long long int total_steps) {
 	}
 
 	// own time (not in children)
-	std::map<Timer *, long long int> own_time;
+	std::map<Timer *, ullint> own_time;
 	for(unsigned int i = 0; i < _timers.size(); i++) {
 		Timer * t = _timers[i];
 		own_time[t] = totaltimes[t] - sum_of_children[t];
@@ -216,16 +180,14 @@ void TimingManager::print(long long int total_steps) {
 	}
 
 	// now the list is ordered in the order we want to print it
-	double tot = (double)get_timer_by_desc("SimBackend")->get_time() / CPSF;
+	double tot = (double) get_timer_by_desc("Simulation")->get_time() / CPSF;
 	if(tot < 1e-10) {
-		BOOST_LOG_TRIVIAL(info) << "No timings available (either oxDNA was compiled with MOSIX=1 or no simulation steps were performed)";
+		BOOST_LOG_TRIVIAL(info)<< "No timings available (either oxDNA was compiled with MOSIX=1 or no simulation steps were performed)";
 		return;
 	}
 
-	// TODO port this to boost::log
-	/*OX_LOG(Logger::LOG_NOTHING, "");
-	OX_LOG(Logger::LOG_INFO, "Total Running Time: %g s, per step: %g ms", tot, tot / total_steps * 1000.);
-	OX_LOG(Logger::LOG_INFO, "Timings, in seconds, by Timer (total, own, spent in children)");
+	std::string to_log = boost::str(boost::format("Total Running Time: %g s, per step: %g ms\n") % tot % (tot / total_steps * 1000.));
+	to_log += boost::str(boost::format("Timings, in seconds, by Timer (total, own, spent in children)"));
 	for(unsigned int i = 0; i < mylist.size(); i++) {
 		char mystr[512] = "";
 		Timer * t = get_timer_by_desc(mylist[i]);
@@ -240,16 +202,17 @@ void TimingManager::print(long long int total_steps) {
 		}
 		strcat(mystr, "> ");
 		strcat(mystr, t->get_desc().c_str());
-		//printf ("%s %lld %lld %lld %s\n", t->get_desc().c_str(), totaltimes[t], own_time[t], sum_of_children[t]);
-		//OX_LOG(Logger::LOG_NOTHING, "%-30s %12.3lf %12.3lf %12.3lf", (char *) mystr, totaltimes[t] / CPSF, own_time[t] / CPSF, sum_of_children[t] / CPSF);
-		OX_LOG(Logger::LOG_NOTHING, "%-30s %12.3lf (%5.1lf\%) %12.3lf (%5.1f\%) %12.3lf (%5.1f\%)",
-				(char *) mystr,
-				totaltimes[t] / CPSF, totaltimes[t] / CPSF / tot * 100.,
-				own_time[t] / CPSF, own_time[t] / CPSF / tot * 100.,
-				sum_of_children[t] / CPSF, sum_of_children[t] / CPSF / tot * 100.);
+//		to_log += boost::str(boost::format("%-30s %12.3lf (%5.1lf\%) %12.3lf (%5.1f\%) %12.3lf (%5.1f\%)") %
+//				mystr %
+//				(totaltimes[t] / CPSF) %
+//				(totaltimes[t] / CPSF / tot * 100.) %
+//				(own_time[t] / CPSF) %
+//				(own_time[t] / CPSF / tot * 100.) %
+//				(sum_of_children[t] / CPSF) %
+//				(sum_of_children[t] / CPSF / tot * 100.)
+//				);
 	}
-	OX_LOG(Logger::LOG_NOTHING, "");*/
 
-	return;
+	BOOST_LOG_TRIVIAL(info) << "Performance summary:\n" << to_log;
 }
 

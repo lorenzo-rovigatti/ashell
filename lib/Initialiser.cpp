@@ -59,7 +59,14 @@ void Initialiser::init_configuration_from_filename(std::shared_ptr<SystemPropert
 	// number of particles
 	std::getline(inp, line);
 	if(!inp.good()) throw std::runtime_error("Caught an error while reading the number of particles in the initial configuration");
-	uint N = boost::lexical_cast<uint>(line);
+	uint N;
+	try {
+		N = boost::lexical_cast<uint>(line);
+	}
+	catch(boost::bad_lexical_cast &e) {
+		std::string error = boost::str(boost::format("The line '%s', which should contain the number of particles, cannot be cast to an integer") % line);
+		throw std::runtime_error(error);
+	}
 
 	// box line
 	std::getline(inp, line);
@@ -88,17 +95,23 @@ void Initialiser::init_configuration_from_filename(std::shared_ptr<SystemPropert
 			throw std::runtime_error(error);
 		}
 
-		poss[N_read] = vec3(
-				boost::lexical_cast<double>(spl_line[0]),
-				boost::lexical_cast<double>(spl_line[1]),
-				boost::lexical_cast<double>(spl_line[2])
-		);
+		try {
+			poss[N_read] = vec3(
+					boost::lexical_cast<double>(spl_line[0]),
+					boost::lexical_cast<double>(spl_line[1]),
+					boost::lexical_cast<double>(spl_line[2])
+			);
 
-		vels[N_read] = vec3(
-				boost::lexical_cast<double>(spl_line[3]),
-				boost::lexical_cast<double>(spl_line[4]),
-				boost::lexical_cast<double>(spl_line[5])
-		);
+			vels[N_read] = vec3(
+					boost::lexical_cast<double>(spl_line[3]),
+					boost::lexical_cast<double>(spl_line[4]),
+					boost::lexical_cast<double>(spl_line[5])
+			);
+		}
+		catch(boost::bad_lexical_cast &e) {
+			std::string error = boost::str(boost::format("Invalid line '%s' (cannot cast all the fields to floating points)") % line);
+			throw std::runtime_error(error);
+		}
 
 		N_read++;
 	}
@@ -130,48 +143,54 @@ void Initialiser::init_topology_from_filename(std::shared_ptr<SystemProperties> 
 		std::vector<std::string> spl_line;
 		boost::split(spl_line, line, boost::is_any_of("\t "), boost::token_compress_on);
 
-		if(boost::starts_with("link", spl_line[0])) {
-			if(spl_line.size() < 4) {
-				std::string error = boost::str(boost::format("Topology line number %d contains %d fields, should be at least 4") % curr_line % spl_line.size());
+		try {
+			if(boost::starts_with("link", spl_line[0])) {
+				if(spl_line.size() < 4) {
+					std::string error = boost::str(boost::format("Topology line number %d contains %d fields, should be at least 4") % curr_line % spl_line.size());
+					throw std::runtime_error(error);
+				}
+
+				uint link_type = boost::lexical_cast<uint>(spl_line[1]);
+				uint p_idx = boost::lexical_cast<uint>(spl_line[2]);
+				uint q_idx = boost::lexical_cast<uint>(spl_line[3]);
+
+				std::shared_ptr<TopologyLink<2>> new_link = std::shared_ptr<TopologyLink<2>>(new TopologyLink<2>(link_type, {p_idx, q_idx}));
+				for(uint i = 4; i < spl_line.size(); i++) {
+					new_link->add_param(boost::lexical_cast<double>(spl_line[i]));
+				}
+
+				sys_props->add_link(new_link);
+
+				largest_idx = std::max(largest_idx, *std::max_element(new_link->members.begin(), new_link->members.end()));
+			}
+			else if(boost::starts_with("dihedral", spl_line[0])) {
+				if(spl_line.size() < 6) {
+					std::string error = boost::str(boost::format("Topology line number %d contains %d fields, should be at least 6") % curr_line % spl_line.size());
+					throw std::runtime_error(error);
+				}
+
+				uint link_type = boost::lexical_cast<uint>(spl_line[1]);
+				uint i_idx = boost::lexical_cast<uint>(spl_line[2]);
+				uint j_idx = boost::lexical_cast<uint>(spl_line[3]);
+				uint k_idx = boost::lexical_cast<uint>(spl_line[4]);
+				uint l_idx = boost::lexical_cast<uint>(spl_line[5]);
+
+				std::shared_ptr<TopologyLink<4>> new_dihedral = std::shared_ptr<TopologyLink<4>>(new TopologyLink<4>(link_type, {i_idx, j_idx, k_idx, l_idx}));
+				for(uint i = 6; i < spl_line.size(); i++) {
+					new_dihedral->add_param(boost::lexical_cast<double>(spl_line[i]));
+				}
+
+				sys_props->add_dihedral(new_dihedral);
+
+				largest_idx = std::max(largest_idx, *std::max_element(new_dihedral->members.begin(), new_dihedral->members.end()));
+			}
+			else {
+				std::string error = boost::str(boost::format("The topology file '%s' contains the invalid line '%s'") % filename % line);
 				throw std::runtime_error(error);
 			}
-
-			uint link_type = boost::lexical_cast<uint>(spl_line[1]);
-			uint p_idx = boost::lexical_cast<uint>(spl_line[2]);
-			uint q_idx = boost::lexical_cast<uint>(spl_line[3]);
-
-			std::shared_ptr<TopologyLink<2>> new_link = std::shared_ptr<TopologyLink<2>>(new TopologyLink<2>(link_type, {p_idx, q_idx}));
-			for(uint i = 4; i < spl_line.size(); i++) {
-				new_link->add_param(boost::lexical_cast<double>(spl_line[i]));
-			}
-
-			sys_props->add_link(new_link);
-
-			largest_idx = std::max(largest_idx, *std::max_element(new_link->members.begin(), new_link->members.end()));
 		}
-		else if(boost::starts_with("dihedral", spl_line[0])) {
-			if(spl_line.size() < 6) {
-				std::string error = boost::str(boost::format("Topology line number %d contains %d fields, should be at least 6") % curr_line % spl_line.size());
-				throw std::runtime_error(error);
-			}
-
-			uint link_type = boost::lexical_cast<uint>(spl_line[1]);
-			uint i_idx = boost::lexical_cast<uint>(spl_line[2]);
-			uint j_idx = boost::lexical_cast<uint>(spl_line[3]);
-			uint k_idx = boost::lexical_cast<uint>(spl_line[4]);
-			uint l_idx = boost::lexical_cast<uint>(spl_line[5]);
-
-			std::shared_ptr<TopologyLink<4>> new_dihedral = std::shared_ptr<TopologyLink<4>>(new TopologyLink<4>(link_type, {i_idx, j_idx, k_idx, l_idx}));
-			for(uint i = 6; i < spl_line.size(); i++) {
-				new_dihedral->add_param(boost::lexical_cast<double>(spl_line[i]));
-			}
-
-			sys_props->add_dihedral(new_dihedral);
-
-			largest_idx = std::max(largest_idx, *std::max_element(new_dihedral->members.begin(), new_dihedral->members.end()));
-		}
-		else {
-			std::string error = boost::str(boost::format("The topology file '%s' contains the invalid line '%s'") % filename % line);
+		catch(boost::bad_lexical_cast &e) {
+			std::string error = boost::str(boost::format("Error while parsing the topology line '%s'") % line);
 			throw std::runtime_error(error);
 		}
 

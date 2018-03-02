@@ -19,7 +19,12 @@ ExternalForce::~ExternalForce() {
 }
 
 void ExternalForce::_compute_forces(ullint step) {
+	uint N = _sys_props->particles()->N();
 	for(uint i : _target_particles) {
+		if(i >= N) {
+			std::string error = boost::str(boost::format("A %s external force was told to act on the non-existent particle n. %u") % _name % i);
+			throw std::runtime_error(error);
+		}
 		_compute_force_on_particle(step, i);
 	}
 }

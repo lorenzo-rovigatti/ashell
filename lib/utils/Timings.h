@@ -8,6 +8,8 @@
 #ifndef TIMINGS_H_
 #define TIMINGS_H_
 
+#include "../defs.h"
+
 #include <ctime>
 #include <vector>
 #include <map>
@@ -80,56 +82,28 @@ private:
 	std::map<Timer *, Timer *> _parents;
 	std::map<std::string, Timer *> _desc_map;
 
-	static TimingManager * _timingManager;
-
-	/**
-	 * @brief Default constructor. It is kept private to enforce the singleton pattern.
-	 *
-	 * @return
-	 */
-	TimingManager();
-
-	/**
-	 * @brief Copy constructor. It is kept private to enforce the singleton pattern.
-	 *
-	 * @param
-	 * @return
-	 */
-	TimingManager(TimingManager const&) {
-	}
-	;
+	static std::shared_ptr<TimingManager> _timingManager;
 
 public:
-	/// creates a new orphan timer
-	Timer * new_timer(std::string desc);
+	TimingManager();
+	virtual ~TimingManager();
 
 	/// creates a new orphan timer
-	Timer * new_timer(std::string desc, std::string parent_desc);
+	Timer *new_timer(std::string desc);
 
-	/// adds the timer to the manager, using the description to set the parent
-	void add_timer(Timer * arg, std::string parent_desc);
-
-	/// adds the timer to the manager, setting no parent
-	void add_timer(Timer * arg);
+	/// creates a new orphan timer
+	Timer *new_timer(std::string desc, std::string parent_desc);
 
 	/// return the Timer pointer associated to a given description
-	Timer * get_timer_by_desc(std::string desc) {
+	Timer *get_timer_by_desc(std::string desc) {
 		return _desc_map[desc];
 	}
 
 	/// singleton
-	static TimingManager * instance();
-
-	/// init function
-	static void init();
-
-	/// clear function
-	static void clear();
+	static std::shared_ptr<TimingManager> instance();
 
 	/// prints 
-	void print(long long int total_steps);
-
-	virtual ~TimingManager();
+	void print(ullint total_steps);
 };
 #endif
 

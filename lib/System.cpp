@@ -13,6 +13,7 @@
 #include "computers/observables/Step.h"
 #include "computers/observables/TotalEnergy.h"
 #include "OutputObservable.h"
+#include "utils/Timings.h"
 #include "updaters/integrators/Integrator.h"
 #include "updaters/Updater.h"
 #include "SystemProperties.h"
@@ -83,6 +84,8 @@ void System::init() {
 }
 
 void System::run(ullint steps) {
+	TimingManager::instance()->get_timer_by_desc("Main loop")->resume();
+
 	if(_sys_props == nullptr) {
 		throw std::runtime_error("System::init should be called before System::run");
 	}
@@ -111,6 +114,8 @@ void System::run(ullint steps) {
 	for(auto output : _post_run_outputs) {
 		output->print_output(_current_step);
 	}
+
+	TimingManager::instance()->get_timer_by_desc("Main loop")->pause();
 }
 
 void System::add_updater(std::shared_ptr<Updater> new_updater) {

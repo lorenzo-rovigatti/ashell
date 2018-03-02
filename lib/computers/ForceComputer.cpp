@@ -5,7 +5,9 @@
  *      Author: lorenzo
  */
 
-#include "../computers/ForceComputer.h"
+#include "ForceComputer.h"
+
+#include "../utils/Timings.h"
 
 namespace ashell {
 
@@ -24,6 +26,8 @@ ForceComputer::~ForceComputer() {
 void ForceComputer::compute(ullint step) {
 	if(!should_compute(step)) return;
 
+	TimingManager::instance()->get_timer_by_desc("Force calculation")->resume();
+
 	uint N = _particles->N();
 	if(N != _energies.size()) {
 		_energies.resize(N);
@@ -35,6 +39,8 @@ void ForceComputer::compute(ullint step) {
 	std::fill(_forces.begin(), _forces.end(), vec3(0., 0., 0.));
 
 	_compute_forces(step);
+
+	TimingManager::instance()->get_timer_by_desc("Force calculation")->pause();
 }
 
 void ForceComputer::_compute_forces(ullint step) {

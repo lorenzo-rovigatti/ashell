@@ -1,6 +1,7 @@
 #include <boost/log/trivial.hpp>
 #include <boost/format.hpp>
 #include <boost/algorithm/string.hpp>
+#include <boost/lexical_cast.hpp>
 
 #include <algorithm>
 #include "InputFile.h"
@@ -13,19 +14,28 @@ using std::vector;
 namespace ashell {
 
 InputFile::InputFile() {
-	state = UNPARSED;
+	_state = UNPARSED;
 
-	true_values.insert("true");
-	true_values.insert("1");
-	true_values.insert("yes");
-	true_values.insert("yup");
-	true_values.insert("of course");
+	_true_values.insert("true");
+	_true_values.insert("1");
+	_true_values.insert("yes");
+	_true_values.insert("yup");
+	_true_values.insert("of course");
 
-	false_values.insert("false");
-	false_values.insert("0");
-	false_values.insert("no");
-	false_values.insert("nope");
-	false_values.insert("are you crazy?");
+	_false_values.insert("false");
+	_false_values.insert("0");
+	_false_values.insert("no");
+	_false_values.insert("nope");
+	_false_values.insert("are you crazy?");
+
+	_aggregable_keys = {
+		"external_force",
+		"observable"
+	};
+
+	for(auto key : _aggregable_keys) {
+		_aggregated_keys[key] = std::vector<InputFile>(0);
+	}
 }
 
 InputFile::~InputFile() {
@@ -33,10 +43,10 @@ InputFile::~InputFile() {
 }
 
 void InputFile::print_input(char *filename) {
-	BOOST_LOG_TRIVIAL(info) << "Printing the input file as used by ashell in '" << filename << "'";
+	BOOST_LOG_TRIVIAL(info)<< "Printing the input file as used by ashell in '" << filename << "'";
 	FILE *out = fopen(filename, "w");
 
-	for(input_map::iterator it = keys.begin(); it != keys.end(); it++) {
+	for(input_map::iterator it = _keys.begin(); it != _keys.end(); it++) {
 		fprintf(out, "%s = %s\n", it->first.c_str(), it->second.value.c_str());
 	}
 
@@ -46,7 +56,7 @@ void InputFile::print_input(char *filename) {
 void InputFile::load_from_filename(const char *filename) {
 	FILE *inp_file = fopen(filename, "r");
 	if(inp_file == NULL) {
-		state = ERROR;
+		_state = ERROR;
 		std::string error = boost::str(boost::format("Input file '%s' not found") % filename);
 		throw std::runtime_error(error);
 	}
@@ -57,7 +67,8 @@ void InputFile::load_from_filename(const char *filename) {
 
 void InputFile::add_from_command_line_arguments(int argc, char *argv[]) {
 	string s_inp("");
-	for(int i = 0; i < argc; i++) s_inp += string(argv[i]) + string("\n");
+	for(int i = 0; i < argc; i++)
+		s_inp += string(argv[i]) + string("\n");
 	add_input_from_string(s_inp);
 }
 
@@ -65,18 +76,20 @@ int InputFile::_readLine(std::vector<string>::iterator &it, std::vector<string>:
 	string option(*it);
 	boost::algorithm::trim(option);
 
-	if (option.size() > 0) {
+	if(option.size() > 0) {
 		std::vector<string> words;
 		boost::algorithm::split(words, option, boost::is_any_of("="));
-		
-		if (words.size() == 1) {
-			BOOST_LOG_TRIVIAL(warning) << "Malformed line '" << option << "' found. Ignoring it";
+
+		if(words.size() == 1) {
+			BOOST_LOG_TRIVIAL(warning)<< "Malformed line '" << option << "' found. Ignoring it";
 			return NOTHING_READ;
 		}
 
-		if (words.size() > 2) {
-			BOOST_LOG_TRIVIAL(warning) << "Multiple `=' symbols found in line '" << option << "'. Assuming you know what you are doing.";
-			for (unsigned int i = 2; i < words.size(); i ++) words[1] += string("=") + words[i];
+		if(words.size() > 2) {
+			BOOST_LOG_TRIVIAL(warning)<< "Multiple `=' symbols found in line '" << option << "'. Assuming you know what you are doing.";
+			for(auto word : words) {
+				words[1] += string("=") + word;
+			}
 		}
 
 		string my_key = boost::algorithm::trim_copy(words[0]);
@@ -87,26 +100,26 @@ int InputFile::_readLine(std::vector<string>::iterator &it, std::vector<string>:
 			size_t open = std::count(my_value.begin(), my_value.end(), '{');
 			size_t close = std::count(my_value.begin(), my_value.end(), '}');
 
-			int sum = (int)open - (int)close; 
+			int sum = (int) open - (int) close;
 
-			if (sum < 0) {
-				BOOST_LOG_TRIVIAL(warning) << "Malformed line '" << option << "' found. Extra `}'.";
+			if(sum < 0) {
+				BOOST_LOG_TRIVIAL(warning)<< "Malformed line '" << option << "' found. Extra `}'.";
 				return NOTHING_READ;
 			}
 
-			if (sum > 0) my_value += string("\n");
+			if(sum > 0) my_value += string("\n");
 
-			while (sum > 0) {
+			while(sum > 0) {
 				it++;
-				
+
 				if(it == end) throw std::runtime_error("Unclosed `{' at the end of file. Aborting");
-				
+
 				string new_line = string(*it);
 				boost::algorithm::trim(new_line);
 
 				int n_open = std::count(new_line.begin(), new_line.end(), '{');
 				int n_closed = std::count(new_line.begin(), new_line.end(), '}');
-			
+
 				sum += n_open;
 				sum -= n_closed;
 
@@ -133,9 +146,9 @@ int InputFile::_readLine(std::vector<string>::iterator &it, std::vector<string>:
 }
 
 void InputFile::load_from_file(FILE *inp_file) {
-	state = UNPARSED;
+	_state = UNPARSED;
 	add_input_from_file(inp_file);
-	state = PARSED;
+	_state = PARSED;
 }
 
 void InputFile::add_input_from_string(string s_inp) {
@@ -146,7 +159,7 @@ void InputFile::add_input_from_string(string s_inp) {
 	for(vector<string>::iterator it = tot_lines.begin(); it != tot_lines.end(); it++) {
 		// remove in-line comments
 		size_t comment_start = it->find('#');
-		if(comment_start != string::npos) it->erase (comment_start, it->size() - comment_start);
+		if(comment_start != string::npos) it->erase(comment_start, it->size() - comment_start);
 
 		// split the string using ; as a delimiter
 		std::vector<string> to_add;
@@ -160,15 +173,37 @@ void InputFile::add_input_from_string(string s_inp) {
 		string key, value;
 		int res = _readLine(it, l_end, key, value);
 
-		if(res == KEY_READ){
-			InputValue new_value(value);
+		if(res == KEY_READ) {
+			if(std::find(_aggregable_keys.begin(), _aggregable_keys.end(), key) != _aggregable_keys.end()) {
+				// if the first element is a '{' then we assume that the whole value is enclosed between braces
+				// which therefore have to be removed
+				if(value[0] == '{') {
+					auto opening_brace = std::find(value.begin(), value.end(), '{');
+					value.erase(opening_brace);
+					// this is a reverse_iterator
+					auto closing_brace_r = std::find(value.rbegin(), value.rend(), '}');
+					if(closing_brace_r != value.rend()) {
+						// we need the right iterator type... which refers to the element that
+						// that is next from the associated reverse_iterator
+						auto closing_brace = --(closing_brace_r.base());
+						value.erase(closing_brace);
+					}
+				}
 
-			input_map::iterator old_val = keys.find(key);
-			if(old_val != keys.end()) {
-				string msg = boost::str(boost::format("Overwriting key `%s' (`%s' to `%s')") % key % old_val->second.value % value);
-				BOOST_LOG_TRIVIAL(warning) << msg;
+				InputFile new_inp;
+				new_inp.add_input_from_string(value);
+				_aggregated_keys[key].push_back(new_inp);
 			}
-			keys[key] = value;
+			else {
+				InputValue new_value(value);
+
+				input_map::iterator old_val = _keys.find(key);
+				if(old_val != _keys.end()) {
+					string msg = boost::str(boost::format("Overwriting key `%s' (`%s' to `%s')") % key % old_val->second.value % value);
+					BOOST_LOG_TRIVIAL(warning)<< msg;
+				}
+				_keys[key] = value;
+			}
 		}
 	}
 }
@@ -189,9 +224,9 @@ void InputFile::add_input_from_file(FILE *inp_file) {
 	add_input_from_string(file_contents);
 }
 
-input_map::iterator InputFile::_find_value(std::string skey, int mandatory)  {
-	std::map<string, InputValue>::iterator it = keys.find(string(skey));
-	if(it != keys.end()) it->second.read++;
+input_map::iterator InputFile::_find_value(std::string skey, int mandatory) {
+	std::map<string, InputValue>::iterator it = _keys.find(string(skey));
+	if(it != _keys.end()) it->second.read++;
 	else if(mandatory) {
 		string error = boost::str(boost::format("Mandatory key `%s' not found, exiting") % skey);
 		throw std::runtime_error(error);
@@ -200,97 +235,151 @@ input_map::iterator InputFile::_find_value(std::string skey, int mandatory)  {
 	return it;
 }
 
-int InputFile::value_as_string(std::string skey, string &dest, int mandatory) {
+KeyState InputFile::value_as_string(std::string skey, string &dest, int mandatory) {
 	input_map::iterator it = _find_value(skey, mandatory);
-	if(it == keys.end()) return KEY_NOT_FOUND;
-		
+	if(it == _keys.end()) return KeyState::NOT_FOUND;
+
 	dest = it->second.value;
 
-	return KEY_FOUND;
+	return KeyState::FOUND;
 }
 
-int InputFile::value_as_int(std::string skey, int &dest, int mandatory) {
+template<typename T>
+KeyState InputFile::value_as_integer(std::string skey, T &dest, int mandatory) {
 	input_map::iterator it = _find_value(skey, mandatory);
-	if(it == keys.end()) return KEY_NOT_FOUND;
+	if(it == _keys.end()) return KeyState::NOT_FOUND;
 
-	dest = (int) floor(atof(it->second.value.c_str())+0.1);
+	try {
+		dest = boost::lexical_cast<T>(it->second.value) + 0.1;
+	}
+	catch(boost::bad_lexical_cast &e) {
+		string error = boost::str(boost::format("Value '%s' from key '%s' cannot be cast to an integer") % it->second.value % skey);
+		throw std::runtime_error(error);
+	}
 
-	return KEY_FOUND;
+	return KeyState::FOUND;
 }
 
-int InputFile::value_as_bool(std::string skey, bool &dest, int mandatory) {
+template KeyState InputFile::value_as_integer(std::string skey, int &dest, int mandatory);
+template KeyState InputFile::value_as_integer(std::string skey, uint &dest, int mandatory);
+template KeyState InputFile::value_as_integer(std::string skey, long long int &dest, int mandatory);
+template KeyState InputFile::value_as_integer(std::string skey, ullint &dest, int mandatory);
+
+KeyState InputFile::value_as_bool(std::string skey, bool &dest, int mandatory) {
 	input_map::iterator it = _find_value(skey, mandatory);
-	if(it == keys.end()) return KEY_NOT_FOUND;
+	if(it == _keys.end()) return KeyState::NOT_FOUND;
 
 	// make it lower case
 	string val = it->second.value;
 	std::transform(val.begin(), val.end(), val.begin(), ::tolower);
 
-	set<string>::iterator res = true_values.find(val);
-	if(res != true_values.end()) dest = true;
+	set<string>::iterator res = _true_values.find(val);
+	if(res != _true_values.end()) dest = true;
 	else {
-		res = false_values.find(val);
-		if(res != false_values.end()) dest = false;
+		res = _false_values.find(val);
+		if(res != _false_values.end()) dest = false;
 		else {
 			string error = boost::str(boost::format("boolean key `%s' is invalid (`%s'), aborting.") % skey % val);
 			throw std::runtime_error(error);
 		}
 	}
 
-	return KEY_FOUND;
+	return KeyState::FOUND;
 }
 
-int InputFile::value_as_llint(std::string skey, long long int &dest, int mandatory) {
+KeyState InputFile::value_as_char(std::string skey, char &dest, int mandatory) {
 	input_map::iterator it = _find_value(skey, mandatory);
-	if(it == keys.end()) return KEY_NOT_FOUND;
-
-	dest = (long long) floor(atof(it->second.value.c_str())+0.1);
-
-	return KEY_FOUND;
-}
-
-int InputFile::value_as_ullint(std::string skey, unsigned long long int &dest, int mandatory) {
-	input_map::iterator it = _find_value(skey, mandatory);
-	if(it == keys.end()) return KEY_NOT_FOUND;
-
-	dest = (unsigned long long) floor(atof(it->second.value.c_str())+0.1);
-
-	return KEY_FOUND;
-}
-
-int InputFile::value_as_uint(std::string skey, unsigned int &dest, int mandatory) {
-	input_map::iterator it = _find_value(skey, mandatory);
-	if(it == keys.end()) return KEY_NOT_FOUND;
-
-	dest = (unsigned int) floor (atof(it->second.value.c_str())+0.1);
-
-	return KEY_FOUND;
-}
-
-int InputFile::value_as_char(std::string skey, char &dest, int mandatory) {
-	input_map::iterator it = _find_value(skey, mandatory);
-	if(it == keys.end()) return KEY_NOT_FOUND;
+	if(it == _keys.end()) return KeyState::NOT_FOUND;
 
 	dest = it->second.value[0];
 
-	return KEY_FOUND;
+	return KeyState::FOUND;
+}
+
+KeyState InputFile::value_as_vec3(std::string skey, vec3 &dest, int mandatory) {
+	input_map::iterator it = _find_value(skey, mandatory);
+	if(it == _keys.end()) return KeyState::NOT_FOUND;
+
+	std::vector<std::string> spl_line;
+	boost::split(spl_line, it->second.value, boost::is_any_of(","), boost::token_compress_on);
+
+	if(spl_line.size() != 3) {
+		string error = boost::str(boost::format("Value '%s' from key '%s' should have three fields to be interpreted as a vec3") % it->second.value % skey);
+		throw std::runtime_error(error);
+	}
+
+	for(auto &token : spl_line) {
+		boost::trim(token);
+	}
+
+	try {
+		dest = vec3(
+				boost::lexical_cast<double>(spl_line[0]),
+				boost::lexical_cast<double>(spl_line[1]),
+				boost::lexical_cast<double>(spl_line[2])
+		);
+	}
+	catch(boost::bad_lexical_cast &e) {
+		string error = boost::str(boost::format("Value '%s' from key '%s' cannot be interpreted as a vec3") % it->second.value % skey);
+		throw std::runtime_error(error);
+	}
+
+	return KeyState::FOUND;
+}
+
+KeyState InputFile::value_as_int_vector(std::string skey, std::vector<int> &dest, int mandatory) {
+	input_map::iterator it = _find_value(skey, mandatory);
+	if(it == _keys.end()) return KeyState::NOT_FOUND;
+
+	std::vector<std::string> spl_line;
+	boost::split(spl_line, it->second.value, boost::is_any_of(","), boost::token_compress_on);
+
+	dest.clear();
+	for(auto v : spl_line) {
+		try {
+			boost::trim(v);
+			dest.push_back(boost::lexical_cast<int>(v));
+		}
+		catch(boost::bad_lexical_cast &e) {
+			string error = boost::str(boost::format("The component '%s' of value '%s' from key '%s' cannot be cast to an integer") % v % it->second.value % skey);
+			throw std::runtime_error(error);
+		}
+	}
+
+	return KeyState::FOUND;
 }
 
 template<typename number>
-int InputFile::value_as_number(std::string skey, number &dest, int mandatory) {
+KeyState InputFile::value_as_number(std::string skey, number &dest, int mandatory) {
 	input_map::iterator it = _find_value(skey, mandatory);
-	if(it == keys.end()) return KEY_NOT_FOUND;
+	if(it == _keys.end()) return KeyState::NOT_FOUND;
 
-	dest = (number) atof(it->second.value.c_str());
+	try {
+		dest = boost::lexical_cast<number>(it->second.value);
+	}
+	catch(boost::bad_lexical_cast &e) {
+		string error = boost::str(boost::format("The key '%s' cannot be cast to a floating point") % it->second.value % skey);
+		throw std::runtime_error(error);
+	}
 
-	return KEY_FOUND;
+	return KeyState::FOUND;
 }
-template int InputFile::value_as_number(std::string skey, float &dest, int mandatory);
-template int InputFile::value_as_number(std::string skey, double &dest, int mandatory);
+
+template KeyState InputFile::value_as_number(std::string skey, float &dest, int mandatory);
+template KeyState InputFile::value_as_number(std::string skey, double &dest, int mandatory);
+
+std::vector<InputFile> &InputFile::get_aggregated(std::string key) {
+	if(std::find(_aggregable_keys.begin(), _aggregable_keys.end(), key) == _aggregable_keys.end()) {
+		std::string error = boost::str(boost::format("The '%s' key is not aggregable") % key);
+		throw std::runtime_error(error);
+	}
+
+	return _aggregated_keys[key];
+}
 
 void InputFile::set_unread_keys() {
-	for(input_map::iterator it = keys.begin(); it != keys.end(); it++) {
-		if(it->second.read == 0) unread_keys.push_back(it->first);
+	for(input_map::iterator it = _keys.begin(); it != _keys.end(); it++) {
+		if(it->second.read == 0) _unread_keys.push_back(it->first);
 	}
 }
 } /* namespace ashell */

@@ -8,13 +8,14 @@
 #include "../lib/defs.h"
 #include "../lib/World.h"
 #include "../lib/boxes/BoxFactory.h"
-#include "../lib/computers/external_forces/ConstantForce.h"
+#include "../lib/computers/external_forces/ForceFactory.h"
 #include "../lib/computers/ForceDihedral.h"
 #include "../lib/computers/ForceLink.h"
 #include "../lib/computers/ForceTwoBodyIsotropic.h"
 #include "../lib/Initialiser.h"
 #include "../lib/updaters/integrators/VelocityVerlet.h"
 #include "../lib/updaters/thermostats/ThermostatFactory.h"
+#include "../lib/utils/Timings.h"
 
 #include <iostream>
 #include "../lib/utils/InputFile.h"
@@ -33,19 +34,19 @@ void init_from_input(InputFile &inp, std::shared_ptr<System> system) {
 	sys_props->set_T(T);
 
 	ullint print_defaults_every;
-	inp.value_as_ullint("print_defaults_every", print_defaults_every, 1);
+	inp.value_as_integer<ullint>("print_defaults_every", print_defaults_every, 1);
 	system->set_print_defaults_every(print_defaults_every);
 
 	ullint print_configuration_every;
-	inp.value_as_ullint("print_configuration_every", print_configuration_every, 1);
+	inp.value_as_integer<ullint>("print_configuration_every", print_configuration_every, 1);
 	system->set_print_configuration_every(print_configuration_every);
 
 	std::string conf_filename;
-	if(inp.value_as_string("configuration_file", conf_filename, 0) == KEY_FOUND) {
+	if(inp.value_as_string("configuration_file", conf_filename, 0) == KeyState::FOUND) {
 		Initialiser::init_configuration_from_filename(sys_props, conf_filename);
 
 		std::string topology_filename;
-		if(inp.value_as_string("topology_file", topology_filename, 0) == KEY_FOUND) {
+		if(inp.value_as_string("topology_file", topology_filename, 0) == KeyState::FOUND) {
 			Initialiser::init_topology_from_filename(sys_props, topology_filename);
 		}
 
@@ -57,8 +58,8 @@ void init_from_input(InputFile &inp, std::shared_ptr<System> system) {
 		}
 	}
 	else {
-		int N;
-		inp.value_as_int("initial_N", N, 1);
+		uint N;
+		inp.value_as_integer<uint>("initial_N", N, 1);
 		sys_props->particles()->set_N(N);
 
 		std::string box_string;
@@ -70,8 +71,15 @@ void init_from_input(InputFile &inp, std::shared_ptr<System> system) {
 	}
 
 	std::string thermostat;
-	if(inp.value_as_string("thermostat", thermostat, 0) == KEY_FOUND) {
+	if(inp.value_as_string("thermostat", thermostat, 0) == KeyState::FOUND) {
 		system->add_updater(ThermostatFactory::make_thermostat(thermostat, inp));
+	}
+
+	// initialise external forces
+	auto ext_forces = inp.get_aggregated("external_force");
+	for(auto ext_force_input : ext_forces) {
+		auto new_force = ForceFactory::make_force(ext_force_input);
+		sys_props->add_force(new_force);
 	}
 }
 
@@ -80,6 +88,16 @@ int main(int argc, char *argv[]) {
 		std::cerr << "Usage is '" << argv[0] << " input_file'" << std::endl;
 		exit(1);
 	}
+
+	TimingManager::instance()->new_timer("Simulation");
+	TimingManager::instance()->new_timer("Initialisation", "Simulation");
+	TimingManager::instance()->new_timer("Main loop", "Simulation");
+	TimingManager::instance()->new_timer("Integration", "Main loop");
+	TimingManager::instance()->new_timer("Force calculation", "Main loop");
+	TimingManager::instance()->new_timer("Analysis", "Main loop");
+
+	TimingManager::instance()->get_timer_by_desc("Simulation")->resume();
+	TimingManager::instance()->get_timer_by_desc("Initialisation")->resume();
 
 	auto system = World::new_system();
 	InputFile my_inp;
@@ -93,25 +111,26 @@ int main(int argc, char *argv[]) {
 //		sys_props->add_force(std::shared_ptr<FENEForce>(new FENEForce({15., 2.5})));
 		sys_props->add_force(std::shared_ptr<HarmonicForce>(new HarmonicForce( { 1., 1. })));
 		sys_props->add_force(std::shared_ptr<ForceDihedral>(new ForceDihedral()));
-
-		sys_props->add_force(std::shared_ptr<ConstantForce>(new ConstantForce(vec3(-1., 0., 0.), 50., std::vector<int>(1, 484))));
-		sys_props->add_force(std::shared_ptr<ConstantForce>(new ConstantForce(vec3(1., 0., 0.), 50., std::vector<int>(1, 110))));
 	}
-	catch(std::runtime_error &e) {
+	catch(std::exception &e) {
 		BOOST_LOG_TRIVIAL(error)<< "Caught the following error during the initialisation, aborting\n" << e.what();
 		return 1;
 	}
 
-	try {
-		ullint steps;
-		my_inp.value_as_ullint("steps", steps, 1);
+	TimingManager::instance()->get_timer_by_desc("Initialisation")->pause();
 
+	ullint steps;
+	try {
+		my_inp.value_as_integer<ullint>("steps", steps, 1);
 		system->run(steps);
 	}
-	catch(std::runtime_error &e) {
+	catch(std::exception &e) {
 		BOOST_LOG_TRIVIAL(error)<< "Caught the following error during the run, aborting\n" << e.what();
 		return 1;
 	}
+
+	TimingManager::instance()->get_timer_by_desc("Simulation")->pause();
+	TimingManager::instance()->print(steps);
 
 	return 0;
 }

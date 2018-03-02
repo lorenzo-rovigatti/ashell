@@ -5,28 +5,31 @@
 #define _GNU_SOURCE
 #endif
 
+#include "../defs.h"
+
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <ctype.h>
 #include <cmath>
 #include <string>
-#include <vector>
 #include <map>
 #include <set>
 
 #define UNPARSED 0
 #define PARSED 1
 #define ERROR 2
-#define KEY_NOT_FOUND -1
-#define KEY_FOUND 0
-#define KEY_INVALID 1
 
 #define INP_EOF -1
 #define KEY_READ 0
 #define NOTHING_READ 1
 
 namespace ashell {
+
+enum class KeyState {
+	NOT_FOUND = -1,
+	FOUND = 0,
+};
 
 struct InputValue {
 	std::string value;
@@ -87,14 +90,15 @@ public:
 	 */
 	void print_input(char *filename);
 
-	int value_as_string(std::string skey, std::string &dest, int mandatory);
-	int value_as_int(std::string skey, int &dest, int mandatory);
-	int value_as_bool(std::string skey, bool &dest, int mandatory);
-	int value_as_uint(std::string skey, unsigned int &dest, int mandatory);
-	int value_as_llint(std::string skey, long long int &dest, int mandatory);
-	int value_as_ullint(std::string skey, unsigned long long int &dest, int mandatory);
-	template<typename number> int value_as_number(std::string skey, number &dest, int mandatory);
-	int value_as_char(std::string skey, char &dest, int mandatory);
+	KeyState value_as_string(std::string skey, std::string &dest, int mandatory);
+	template<typename T> KeyState value_as_integer(std::string skey, T &dest, int mandatory);
+	KeyState value_as_bool(std::string skey, bool &dest, int mandatory);
+	KeyState value_as_char(std::string skey, char &dest, int mandatory);
+	KeyState value_as_vec3(std::string skey, vec3 &dest, int mandatory);
+	KeyState value_as_int_vector(std::string skey, std::vector<int> &dest, int mandatory);
+	template<typename number> KeyState value_as_number(std::string skey, number &dest, int mandatory);
+
+	std::vector<InputFile> &get_aggregated(std::string key);
 
 	void set_unread_keys();
 
@@ -112,12 +116,14 @@ private:
 
 	input_map::iterator _find_value(std::string skey, int mandatory);
 
-	input_map keys;
-	std::vector<std::string> unread_keys;
-	int state;
+	input_map _keys;
+	std::vector<std::string> _aggregable_keys;
+	std::map<std::string, std::vector<InputFile>> _aggregated_keys;
+	std::vector<std::string> _unread_keys;
+	int _state;
 
-	std::set<std::string> true_values;
-	std::set<std::string> false_values;
+	std::set<std::string> _true_values;
+	std::set<std::string> _false_values;
 };
 
 }
