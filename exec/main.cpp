@@ -45,8 +45,12 @@ int main(int argc, char *argv[]) {
 	my_inp.value_as_ullint("steps", steps, 1);
 
 	ullint print_defaults_every;
-	my_inp.value_as_ullint("print_defaults_every", print_defaults_every, 0);
+	my_inp.value_as_ullint("print_defaults_every", print_defaults_every, 1);
 	system->set_print_defaults_every(print_defaults_every);
+
+	ullint print_configuration_every;
+	my_inp.value_as_ullint("print_configuration_every", print_configuration_every, 1);
+	system->set_print_configuration_every(print_configuration_every);
 
 	std::string conf_filename;
 	if(my_inp.value_as_string("configuration_file", conf_filename, 0) == KEY_FOUND) {

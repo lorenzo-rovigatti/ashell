@@ -30,6 +30,7 @@ public:
 
 	void set_integrator(std::shared_ptr<Integrator> n_integrator);
 	void set_print_defaults_every(ullint n_print_defaults_every);
+	void set_print_configuration_every(ullint n_print_configuration_every);
 
 	auto integrator() const {
 		return _integrator;
@@ -41,6 +42,10 @@ public:
 
 	ullint print_defaults_every() {
 		return _print_defaults_every;
+	}
+
+	ullint print_configuration_every() {
+		return _print_configuration_every;
 	}
 
 	static bool stop;
@@ -55,8 +60,10 @@ protected:
 	std::vector<std::shared_ptr<OutputObservable>> _outputs;
 	std::vector<std::shared_ptr<OutputObservable>> _default_outputs;
 	std::vector<std::shared_ptr<OutputObservable>> _after_clean_outputs;
+	std::vector<std::shared_ptr<OutputObservable>> _configuration_outputs;
 	ullint _current_step;
 	ullint _print_defaults_every;
+	ullint _print_configuration_every;
 };
 
 } /* namespace ashell */

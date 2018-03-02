@@ -36,7 +36,8 @@ System::System() :
 				_sys_props(std::shared_ptr<SystemProperties>(new SystemProperties())),
 				_integrator(nullptr),
 				_current_step(0),
-				_print_defaults_every(1000) {
+				_print_defaults_every(1000),
+				_print_configuration_every(10000) {
 	// here we handle a few SIG* signals;
 	signal(SIGTERM, gbl_terminate);
 	signal(SIGABRT, gbl_terminate);
@@ -53,8 +54,8 @@ System::~System() {
 void System::init() {
 	std::shared_ptr<OutputObservable> to_stdout(new OutputObservable("stdout", _print_defaults_every));
 	std::shared_ptr<OutputObservable> to_energy(new OutputObservable("energy.dat", _print_defaults_every));
-	std::shared_ptr<OutputObservable> to_cogli1_traj(new OutputObservable("trajectory.mgl", _print_defaults_every));
-	std::shared_ptr<OutputObservable> to_traj(new OutputObservable("trajectory.dat", _print_defaults_every));
+	std::shared_ptr<OutputObservable> to_cogli1_traj(new OutputObservable("trajectory.mgl", _print_configuration_every));
+	std::shared_ptr<OutputObservable> to_traj(new OutputObservable("trajectory.dat", _print_configuration_every));
 
 	auto step_obs = std::shared_ptr<Step>(new Step());
 	auto energy_obs = std::shared_ptr<TotalEnergy>(new TotalEnergy());
@@ -71,8 +72,8 @@ void System::init() {
 
 	_default_outputs.push_back(to_stdout);
 	_default_outputs.push_back(to_energy);
-	_default_outputs.push_back(to_cogli1_traj);
-	_default_outputs.push_back(to_traj);
+	_configuration_outputs.push_back(to_cogli1_traj);
+	_configuration_outputs.push_back(to_traj);
 	_outputs.push_back(to_stdout);
 	_outputs.push_back(to_energy);
 	_outputs.push_back(to_cogli1_traj);
@@ -122,6 +123,13 @@ void System::set_print_defaults_every(ullint n_print_defaults_every) {
 	_print_defaults_every = n_print_defaults_every;
 	for(auto output : _default_outputs) {
 		output->set_print_every(_print_defaults_every);
+	}
+}
+
+void System::set_print_configuration_every(ullint n_print_configuration_every) {
+	_print_configuration_every = n_print_configuration_every;
+	for(auto output : _configuration_outputs) {
+		output->set_print_every(_print_configuration_every);
 	}
 }
 

@@ -6,7 +6,10 @@ initial_box = cuboid 10 10 10
 
 steps = 1000
 print_defaults_every = 100
+print_configuration_every = 1000
 #configuration_file = init_conf.dat
+#topology_file = topology.dat
+#refresh_velocities = true
 
 thermostat = andersen
 newtonian_steps = 100
