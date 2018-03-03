@@ -84,8 +84,6 @@ void System::init() {
 }
 
 void System::run(ullint steps) {
-	TimingManager::instance()->get_timer_by_desc("Main loop")->resume();
-
 	if(_sys_props == nullptr) {
 		throw std::runtime_error("System::init should be called before System::run");
 	}
@@ -106,7 +104,9 @@ void System::run(ullint steps) {
 			updater->update(_current_step);
 		}
 
+		TimingManager::instance()->get_timer_by_desc("Integration")->resume();
 		_integrator->step(_current_step);
+		TimingManager::instance()->get_timer_by_desc("Integration")->pause();
 		_current_step++;
 	}
 	System::started = false;
@@ -114,8 +114,6 @@ void System::run(ullint steps) {
 	for(auto output : _post_run_outputs) {
 		output->print_output(_current_step);
 	}
-
-	TimingManager::instance()->get_timer_by_desc("Main loop")->pause();
 }
 
 void System::add_updater(std::shared_ptr<Updater> new_updater) {

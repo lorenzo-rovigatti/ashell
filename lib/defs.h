@@ -11,11 +11,12 @@
 #define SQR(x) ((x) * (x))
 #define CUB(x) ((x) * (x) * (x))
 
-#include <boost/format.hpp>
-#include <boost/log/trivial.hpp>
-
 #include <Eigen/Core>
 #include <Eigen/StdVector>
+
+#include <boost/format.hpp>
+#include <boost/log/trivial.hpp>
+#include <iostream>
 
 using vec3 = Eigen::Vector3d;
 using mat3 = Eigen::Matrix3d;

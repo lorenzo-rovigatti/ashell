@@ -47,7 +47,7 @@ Timer::~Timer() {
 
 void Timer::resume() {
 	if(_active) {
-		string error = boost::str(boost::format("resuming already active timer %s") % _desc);
+		string error = boost::str(boost::format("Resuming the already active timer %s") % _desc);
 		throw std::runtime_error(error);
 	}
 	_last = ASHELL_CLOCK();
@@ -57,7 +57,7 @@ void Timer::resume() {
 void Timer::pause() {
 	SYNCHRONIZE();
 	if(!_active) {
-		string error = boost::str(boost::format("pausing resuming already inactive timer %s") % _desc);
+		string error = boost::str(boost::format("Pausing the already inactive timer %s") % _desc);
 		throw std::runtime_error(error);
 	}
 	_time += (ASHELL_CLOCK() - _last);
@@ -97,7 +97,7 @@ std::shared_ptr<TimingManager> TimingManager::instance() {
 
 Timer *TimingManager::new_timer(std::string desc) {
 	if(_desc_map.count(desc) != 0) {
-		string error = boost::str(boost::format("timer %s already used! Aborting") % desc);
+		string error = boost::str(boost::format("Timer %s already exists! Aborting") % desc);
 		throw std::runtime_error(error);
 	}
 
@@ -107,27 +107,27 @@ Timer *TimingManager::new_timer(std::string desc) {
 	_parents[timer] = (Timer *) NULL;
 	_desc_map[desc] = timer;
 
-	BOOST_LOG_TRIVIAL(debug)<< "Adding new timer with description " << desc << " and no parent";
+	BOOST_LOG_TRIVIAL(debug)<< "Adding a new timer with description '" << desc << "' and no parent";
 
 	return timer;
 }
 
 Timer *TimingManager::new_timer(std::string desc, std::string parent_desc) {
 	if(_desc_map.count(desc) != 0) {
-		string error = boost::str(boost::format("timer %s already used! Aborting") % desc);
+		string error = boost::str(boost::format("Timer '%s' already exists! Aborting") % desc);
 		throw std::runtime_error(error);
 	}
 	if(_desc_map.count(parent_desc) == 0) {
-		string error = boost::str(boost::format("Cannot add timer %s because parent timer %s does not exist") % desc % parent_desc);
+		string error = boost::str(boost::format("Cannot add timer '%s' because parent timer '%s' does not exist") % desc % parent_desc);
 		throw std::runtime_error(error);
 	}
 
-	Timer * timer = new Timer(desc);
+	Timer *timer = new Timer(desc);
 	_timers.push_back(timer);
 	_parents[timer] = get_timer_by_desc(parent_desc);
 	_desc_map[desc] = timer;
 
-	BOOST_LOG_TRIVIAL(debug)<< "Adding new timer with description " << desc << " and parent " << parent_desc;
+	BOOST_LOG_TRIVIAL(debug)<< "Adding a new timer with description '" << desc << "' and parent '" << parent_desc << "'";
 
 	return timer;
 }
@@ -135,16 +135,18 @@ Timer *TimingManager::new_timer(std::string desc, std::string parent_desc) {
 void TimingManager::print(ullint total_steps) {
 	// times (including children) 
 	std::map<Timer *, ullint> totaltimes;
-	for(unsigned int i = 0; i < _timers.size(); i++)
+	for(uint i = 0; i < _timers.size(); i++) {
 		totaltimes[_timers[i]] = _timers[i]->get_time();
+	}
 
 	// times in children 
 	std::map<Timer *, ullint> sum_of_children;
-	for(unsigned int i = 0; i < _timers.size(); i++)
+	for(uint i = 0; i < _timers.size(); i++) {
 		sum_of_children[_timers[i]] = 0;
-	for(unsigned int i = 0; i < _timers.size(); i++) {
-		Timer * t = _timers[i];
-		Timer * p = _parents[t];
+	}
+	for(uint i = 0; i < _timers.size(); i++) {
+		Timer *t = _timers[i];
+		Timer *p = _parents[t];
 		while(p != NULL) {
 			sum_of_children[p] += totaltimes[t];
 			p = _parents[p];
@@ -153,15 +155,16 @@ void TimingManager::print(ullint total_steps) {
 
 	// own time (not in children)
 	std::map<Timer *, ullint> own_time;
-	for(unsigned int i = 0; i < _timers.size(); i++) {
-		Timer * t = _timers[i];
+	for(uint i = 0; i < _timers.size(); i++) {
+		Timer *t = _timers[i];
 		own_time[t] = totaltimes[t] - sum_of_children[t];
+		std::cout << own_time[t] << " " << totaltimes[t] << " " << sum_of_children[t] << std::endl;
 	}
 
 	// mylist will be ordered as a tree
 	std::vector<std::string> mylist;
 	while(mylist.size() < _timers.size()) {
-		for(unsigned int i = 0; i < _timers.size(); i++) {
+		for(uint i = 0; i < _timers.size(); i++) {
 			Timer * t = _timers[i];
 			Timer * p = _parents[t];
 
@@ -186,12 +189,12 @@ void TimingManager::print(ullint total_steps) {
 		return;
 	}
 
-	std::string to_log = boost::str(boost::format("Total Running Time: %g s, per step: %g ms\n") % tot % (tot / total_steps * 1000.));
-	to_log += boost::str(boost::format("Timings, in seconds, by Timer (total, own, spent in children)"));
-	for(unsigned int i = 0; i < mylist.size(); i++) {
+	std::string to_log = boost::str(boost::format("Total Running Time: %lf s, per step: %lf ms\n") % tot % (tot / total_steps * 1000.));
+	to_log += boost::str(boost::format("Timings, in seconds, by Timer (total, own, spent in children)\n"));
+	for(uint i = 0; i < mylist.size(); i++) {
 		char mystr[512] = "";
-		Timer * t = get_timer_by_desc(mylist[i]);
-		Timer * p = _parents[t];
+		Timer *t = get_timer_by_desc(mylist[i]);
+		Timer *p = _parents[t];
 		int generations = 0;
 		while(p != NULL) {
 			generations++;
@@ -202,15 +205,15 @@ void TimingManager::print(ullint total_steps) {
 		}
 		strcat(mystr, "> ");
 		strcat(mystr, t->get_desc().c_str());
-//		to_log += boost::str(boost::format("%-30s %12.3lf (%5.1lf\%) %12.3lf (%5.1f\%) %12.3lf (%5.1f\%)") %
-//				mystr %
-//				(totaltimes[t] / CPSF) %
-//				(totaltimes[t] / CPSF / tot * 100.) %
-//				(own_time[t] / CPSF) %
-//				(own_time[t] / CPSF / tot * 100.) %
-//				(sum_of_children[t] / CPSF) %
-//				(sum_of_children[t] / CPSF / tot * 100.)
-//				);
+		to_log += boost::str(boost::format("%-30s %12.3lf (%5.1lf%%) %12.3lf (%5.1f%%) %12.3lf (%5.1f%%)\n") %
+				mystr %
+				(totaltimes[t] / CPSF) %
+				(totaltimes[t] / CPSF / tot * 100.) %
+				(own_time[t] / CPSF) %
+				(own_time[t] / CPSF / tot * 100.) %
+				(sum_of_children[t] / CPSF) %
+				(sum_of_children[t] / CPSF / tot * 100.)
+				);
 	}
 
 	BOOST_LOG_TRIVIAL(info) << "Performance summary:\n" << to_log;

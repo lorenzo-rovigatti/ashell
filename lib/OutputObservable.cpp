@@ -7,6 +7,8 @@
 
 #include "OutputObservable.h"
 
+#include "utils/Timings.h"
+
 #include <iostream>
 #include <sstream>
 
@@ -53,6 +55,8 @@ bool OutputObservable::is_ready(ullint step) {
 }
 
 void OutputObservable::print_output(ullint step) {
+	TimingManager::instance()->get_timer_by_desc("Analysis")->resume();
+
 	stringstream ss;
 	for(auto obs : _observables) {
 		obs->compute(step);
@@ -64,6 +68,8 @@ void OutputObservable::print_output(ullint step) {
 	string to_write = ss.str();
 	*_output << to_write;
 	_output->flush();
+
+	TimingManager::instance()->get_timer_by_desc("Analysis")->pause();
 }
 
 void OutputObservable::set_print_every(ullint n_print_every) {

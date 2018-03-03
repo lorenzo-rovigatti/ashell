@@ -39,3 +39,4 @@ Here is a list of options that can be passed to cmake during the pre-compilation
 
 * The structure of ashell has been inspired by [HOOMD-blue](http://glotzerlab.engin.umich.edu/hoomd-blue/)
 * Eigen 3.3.4 is included in the source tree
+* Some utility classes have been taken (and subsequently modified) from [oxDNA](https://sourceforge.net/projects/oxdna/)

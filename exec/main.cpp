@@ -91,10 +91,9 @@ int main(int argc, char *argv[]) {
 
 	TimingManager::instance()->new_timer("Simulation");
 	TimingManager::instance()->new_timer("Initialisation", "Simulation");
-	TimingManager::instance()->new_timer("Main loop", "Simulation");
-	TimingManager::instance()->new_timer("Integration", "Main loop");
-	TimingManager::instance()->new_timer("Force calculation", "Main loop");
-	TimingManager::instance()->new_timer("Analysis", "Main loop");
+	TimingManager::instance()->new_timer("Integration", "Simulation");
+	TimingManager::instance()->new_timer("Force calculation", "Simulation");
+	TimingManager::instance()->new_timer("Analysis", "Simulation");
 
 	TimingManager::instance()->get_timer_by_desc("Simulation")->resume();
 	TimingManager::instance()->get_timer_by_desc("Initialisation")->resume();
