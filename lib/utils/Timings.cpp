@@ -157,16 +157,19 @@ void TimingManager::print(ullint total_steps) {
 	std::map<Timer *, ullint> own_time;
 	for(uint i = 0; i < _timers.size(); i++) {
 		Timer *t = _timers[i];
-		own_time[t] = totaltimes[t] - sum_of_children[t];
-		std::cout << own_time[t] << " " << totaltimes[t] << " " << sum_of_children[t] << std::endl;
+		long long int own_time_signed = totaltimes[t] - sum_of_children[t];
+		if(own_time_signed < 0) {
+			BOOST_LOG_TRIVIAL(warning) << "The total time measured by the '" << _timers[i]->get_desc() << "' timer is smaller than the sum of the times measured by its children";
+		}
+		own_time[t] = (ullint) own_time_signed;
 	}
 
 	// mylist will be ordered as a tree
 	std::vector<std::string> mylist;
 	while(mylist.size() < _timers.size()) {
 		for(uint i = 0; i < _timers.size(); i++) {
-			Timer * t = _timers[i];
-			Timer * p = _parents[t];
+			Timer *t = _timers[i];
+			Timer *p = _parents[t];
 
 			if(p == NULL) {
 				mylist.push_back(t->get_desc());
