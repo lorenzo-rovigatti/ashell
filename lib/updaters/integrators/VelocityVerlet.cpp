@@ -8,7 +8,9 @@
 #include "VelocityVerlet.h"
 
 #include <iostream>
+#include "../../World.h"
 #include "../../computers/ForceComputer.h"
+#include "../../utils/Timings.h"
 
 namespace ashell {
 
@@ -24,6 +26,8 @@ VelocityVerlet::~VelocityVerlet() {
 }
 
 void VelocityVerlet::step(ullint step) {
+	TimingManager::instance()->get_timer_by_desc("Integration")->resume();
+
 	uint N = _particles->N();
 	if(N != _forces.size()) {
 		_forces.resize(N, vec3(0., 0., 0.));
@@ -38,8 +42,10 @@ void VelocityVerlet::step(ullint step) {
 		_forces[i] = vec3(0., 0., 0.);
 	}
 
+	TimingManager::instance()->get_timer_by_desc("Integration")->pause();
+
 	double energy = 0.;
-	for(auto &force_computer : _sys_props->forces()) {
+	for(auto &force_computer : World::current_system()->forces()) {
 		force_computer->compute(step);
 		energy +=  force_computer->energy();
 		auto computer_forces = force_computer->forces();
@@ -48,9 +54,13 @@ void VelocityVerlet::step(ullint step) {
 		}
 	}
 
+	TimingManager::instance()->get_timer_by_desc("Integration")->resume();
+
 	for(uint i = 0; i < N; i++) {
 		vels[i] += _forces[i] * _dt_half;
 	}
+
+	TimingManager::instance()->get_timer_by_desc("Integration")->pause();
 }
 
 } /* namespace ashell */

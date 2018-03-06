@@ -11,7 +11,7 @@
 
 namespace ashell {
 
-std::shared_ptr<System> World::_current_system;
+std::weak_ptr<System> World::_current_system;
 std::vector<std::shared_ptr<System> > World::_systems;
 
 World::~World() {
@@ -23,7 +23,7 @@ std::shared_ptr<System> World::current_system() {
 		throw std::runtime_error("World: there are no initialised systems: use World::new_system first");
 	}
 
-	return _current_system;
+	return _current_system.lock();
 }
 
 std::shared_ptr<System> World::new_system() {

@@ -31,7 +31,7 @@ Particles::~Particles() {
 }
 
 void Particles::set_N(uint nN) {
-//	BOOST_LOG_TRIVIAL(info) << "Changing the number of particles from " << _N << " to " << nN;
+	BOOST_LOG_TRIVIAL(info) << "Changing the number of particles from " << _N << " to " << nN;
 	_N = nN;
 	_poss.resize(_N, vec3(0., 0., 0.));
 	_vels.resize(_N, vec3(0., 0., 0.));

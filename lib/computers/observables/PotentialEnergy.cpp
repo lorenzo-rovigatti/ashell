@@ -8,6 +8,7 @@
 #include "PotentialEnergy.h"
 
 #include "../ForceComputer.h"
+#include "../../World.h"
 
 namespace ashell {
 
@@ -24,7 +25,7 @@ double PotentialEnergy::as_scalar() {
 
 void PotentialEnergy::_observe(ullint step) {
 	_energy = 0.;
-	for(auto &force: _sys_props->forces()) {
+	for(auto &force: World::current_system()->forces()) {
 		_energy += force->energy();
 	}
 	_energy /= _particles->N();

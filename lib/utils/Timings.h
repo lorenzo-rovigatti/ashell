@@ -26,18 +26,22 @@ private:
 	std::string _desc;
 
 	/// time elapsed between pauses
-	clock_t _time;
+	clock_t _time = 0;
 
 	/// last time that the timer was started
-	clock_t _last;
+	clock_t _last = 0;
 
 	/// whether the timer is running or paused
-	bool _active;
+	bool _active = false;
+
+	Timer *_parent;
+
+	ullint _time_spent_in_children = 0;
 
 public:
-	Timer();
 	Timer(std::string desc);
-	~Timer();
+	Timer(std::string desc, Timer *my_parent);
+	virtual ~Timer();
 
 	/// resumes (or starts) the timer
 	void resume();
@@ -48,6 +52,14 @@ public:
 	/// resets the timer
 	void reset() {
 		_time = (clock_t) 0;
+		_last = (clock_t) 0;
+		_time_spent_in_children = 0;
+	}
+
+	void update_time_spent_in_children(ullint child_time);
+
+	ullint time_spent_in_children() {
+		return _time_spent_in_children;
 	}
 
 	/// returns the time passed as a llint; works for active and inactive timers
@@ -68,6 +80,10 @@ public:
 		return _desc;
 	}
 
+	Timer *parent() {
+		return _parent;
+	}
+
 	/// returns whether the timer is active
 	bool is_active() {
 		return _active;
@@ -77,8 +93,7 @@ public:
 /// new attempt at a singleton to be able to add from anywhere within the code a timer and have it do what expected
 class TimingManager {
 private:
-	std::vector<Timer> _allocated_timers;
-	std::vector<Timer *> _timers;
+	std::vector<std::shared_ptr<Timer>> _timers;
 	std::map<Timer *, Timer *> _parents;
 	std::map<std::string, Timer *> _desc_map;
 

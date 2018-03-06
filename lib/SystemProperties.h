@@ -16,8 +16,6 @@
 
 namespace ashell {
 
-class ForceComputer;
-
 class SystemProperties {
 public:
 	SystemProperties();
@@ -35,10 +33,6 @@ public:
 		return _T;
 	}
 
-	const auto &forces() const {
-		return _forces;
-	}
-
 	const auto &links() const {
 		return _links;
 	}
@@ -54,7 +48,6 @@ public:
 	void set_box(std::shared_ptr<Box> n_box);
 	void set_T(double nT);
 
-	void add_force(const std::shared_ptr<ForceComputer> n_force);
 	void add_link(std::shared_ptr<TopologyLink<2>> n_l);
 	void add_angle(std::shared_ptr<TopologyLink<3>> n_a);
 	void add_dihedral(std::shared_ptr<TopologyLink<4>> n_d);
@@ -62,7 +55,6 @@ public:
 private:
 	std::shared_ptr<Box> _box;
 	std::shared_ptr<Particles> _particles;
-	std::vector<std::shared_ptr<ForceComputer>> _forces;
 
 	std::vector<std::shared_ptr<TopologyLink<2>>> _links;
 	std::vector<std::shared_ptr<TopologyLink<3>>> _angles;

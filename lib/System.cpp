@@ -90,7 +90,7 @@ void System::run(ullint steps) {
 
 	// we compute all the forces at the beginning so that the observables can work
 	// with updated data
-	for(auto &force_computer : _sys_props->forces()) {
+	for(auto &force_computer : _forces) {
 		force_computer->compute(_current_step);
 	}
 
@@ -104,9 +104,7 @@ void System::run(ullint steps) {
 			updater->update(_current_step);
 		}
 
-		TimingManager::instance()->get_timer_by_desc("Integration")->resume();
 		_integrator->step(_current_step);
-		TimingManager::instance()->get_timer_by_desc("Integration")->pause();
 		_current_step++;
 	}
 	System::started = false;
@@ -118,6 +116,10 @@ void System::run(ullint steps) {
 
 void System::add_updater(std::shared_ptr<Updater> new_updater) {
 	_updaters.push_back(new_updater);
+}
+
+void System::add_force(const std::shared_ptr<ForceComputer> n_force) {
+	_forces.push_back(n_force);
 }
 
 void System::set_integrator(std::shared_ptr<Integrator> n_integrator) {

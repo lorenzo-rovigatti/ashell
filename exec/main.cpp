@@ -79,7 +79,7 @@ void init_from_input(InputFile &inp, std::shared_ptr<System> system) {
 	auto ext_forces = inp.get_aggregated("external_force");
 	for(auto ext_force_input : ext_forces) {
 		auto new_force = ForceFactory::make_force(ext_force_input);
-		sys_props->add_force(new_force);
+		system->add_force(new_force);
 	}
 }
 
@@ -91,9 +91,9 @@ int main(int argc, char *argv[]) {
 
 	TimingManager::instance()->new_timer("Simulation");
 	TimingManager::instance()->new_timer("Initialisation", "Simulation");
+	TimingManager::instance()->new_timer("Analysis", "Simulation");
 	TimingManager::instance()->new_timer("Integration", "Simulation");
 	TimingManager::instance()->new_timer("Force calculation", "Simulation");
-	TimingManager::instance()->new_timer("Analysis", "Simulation");
 
 	TimingManager::instance()->get_timer_by_desc("Simulation")->resume();
 	TimingManager::instance()->get_timer_by_desc("Initialisation")->resume();
@@ -105,11 +105,10 @@ int main(int argc, char *argv[]) {
 		my_inp.load_from_filename(argv[1]);
 		init_from_input(my_inp, system);
 
-		auto sys_props = system->system_properties();
 //		sys_props->add_force(std::shared_ptr<LennardJonesForce>(new LennardJonesForce({1.122462048309373})));
 //		sys_props->add_force(std::shared_ptr<FENEForce>(new FENEForce({15., 2.5})));
-		sys_props->add_force(std::shared_ptr<HarmonicForce>(new HarmonicForce( { 1., 1. })));
-		sys_props->add_force(std::shared_ptr<ForceDihedral>(new ForceDihedral()));
+		system->add_force(std::shared_ptr<HarmonicForce>(new HarmonicForce( { 1., 1. })));
+		system->add_force(std::shared_ptr<ForceDihedral>(new ForceDihedral()));
 	}
 	catch(std::exception &e) {
 		BOOST_LOG_TRIVIAL(error)<< "Caught the following error during the initialisation, aborting\n" << e.what();

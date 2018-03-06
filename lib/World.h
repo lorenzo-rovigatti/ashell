@@ -25,7 +25,7 @@ public:
 	static void remove_system(std::shared_ptr<System> syst);
 
 private:
-	static std::shared_ptr<System> _current_system;
+	static std::weak_ptr<System> _current_system;
 	static std::vector<std::shared_ptr<System> > _systems;
 };
 

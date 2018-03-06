@@ -27,22 +27,22 @@
 
 using std::string;
 
-Timer::Timer() {
-	_time = (clock_t) 0;
-	_last = (clock_t) 0;
-	_active = false;
-	_desc = std::string("Uninitialised timer");
+Timer::Timer(std::string desc) : Timer(desc, nullptr) {
+	_desc = desc;
+	_parent = nullptr;
 }
 
-Timer::Timer(std::string arg) {
-	_desc = std::string(arg);
-	_time = (clock_t) 0;
-	_last = (clock_t) 0;
-	_active = false;
+Timer::Timer(std::string desc, Timer *my_parent) {
+	_desc = desc;
+	_parent = my_parent;
 }
 
 Timer::~Timer() {
-	BOOST_LOG_TRIVIAL(debug)<< "Timer with desc " << _desc << " deleted";
+
+}
+
+void Timer::update_time_spent_in_children(ullint child_time) {
+	_time_spent_in_children += child_time;
 }
 
 void Timer::resume() {
@@ -80,16 +80,11 @@ TimingManager::TimingManager() {
 }
 
 TimingManager::~TimingManager() {
-//	for(unsigned int i = 0; i < _timers.size(); i++) {
-//		if(_timers[i] != NULL) {
-//			BOOST_LOG_TRIVIAL(debug)<< "Trying to delete timer...";
-//			delete _timers[i];
-//		}
-//	}
+
 }
 
 std::shared_ptr<TimingManager> TimingManager::instance() {
-	if(_timingManager == NULL) {
+	if(_timingManager == nullptr) {
 		_timingManager = std::shared_ptr<TimingManager>(new TimingManager());
 	}
 	return _timingManager;
@@ -102,9 +97,7 @@ Timer *TimingManager::new_timer(std::string desc) {
 	}
 
 	Timer *timer = new Timer(desc);
-
-	_timers.push_back(timer);
-	_parents[timer] = (Timer *) NULL;
+	_timers.push_back(std::shared_ptr<Timer>(timer));
 	_desc_map[desc] = timer;
 
 	BOOST_LOG_TRIVIAL(debug)<< "Adding a new timer with description '" << desc << "' and no parent";
@@ -122,9 +115,8 @@ Timer *TimingManager::new_timer(std::string desc, std::string parent_desc) {
 		throw std::runtime_error(error);
 	}
 
-	Timer *timer = new Timer(desc);
-	_timers.push_back(timer);
-	_parents[timer] = get_timer_by_desc(parent_desc);
+	Timer *timer = new Timer(desc, get_timer_by_desc(parent_desc));
+	_timers.push_back(std::shared_ptr<Timer>(timer));
 	_desc_map[desc] = timer;
 
 	BOOST_LOG_TRIVIAL(debug)<< "Adding a new timer with description '" << desc << "' and parent '" << parent_desc << "'";
@@ -133,53 +125,21 @@ Timer *TimingManager::new_timer(std::string desc, std::string parent_desc) {
 }
 
 void TimingManager::print(ullint total_steps) {
-	// times (including children) 
-	std::map<Timer *, ullint> totaltimes;
-	for(uint i = 0; i < _timers.size(); i++) {
-		totaltimes[_timers[i]] = _timers[i]->get_time();
-	}
-
-	// times in children 
-	std::map<Timer *, ullint> sum_of_children;
-	for(uint i = 0; i < _timers.size(); i++) {
-		sum_of_children[_timers[i]] = 0;
-	}
-	for(uint i = 0; i < _timers.size(); i++) {
-		Timer *t = _timers[i];
-		Timer *p = _parents[t];
-		while(p != NULL) {
-			sum_of_children[p] += totaltimes[t];
-			p = _parents[p];
-		}
-	}
-
-	// own time (not in children)
-	std::map<Timer *, ullint> own_time;
-	for(uint i = 0; i < _timers.size(); i++) {
-		Timer *t = _timers[i];
-		long long int own_time_signed = totaltimes[t] - sum_of_children[t];
-		if(own_time_signed < 0) {
-			BOOST_LOG_TRIVIAL(warning) << "The total time measured by the '" << _timers[i]->get_desc() << "' timer is smaller than the sum of the times measured by its children";
-		}
-		own_time[t] = (ullint) own_time_signed;
-	}
-
 	// mylist will be ordered as a tree
 	std::vector<std::string> mylist;
 	while(mylist.size() < _timers.size()) {
-		for(uint i = 0; i < _timers.size(); i++) {
-			Timer *t = _timers[i];
-			Timer *p = _parents[t];
+		for(auto timer : _timers) {
+			auto p = timer->parent();
 
-			if(p == NULL) {
-				mylist.push_back(t->get_desc());
+			if(p == nullptr) {
+				mylist.push_back(timer->get_desc());
 			}
 			else {
-				// troviamo il nome del parente
+				// find the name of the parent
 				std::vector<std::string>::iterator it = std::find(mylist.begin(), mylist.end(), p->get_desc());
 				if(it != mylist.end()) {
 					it++;
-					mylist.insert(it, t->get_desc());
+					mylist.insert(it, timer->get_desc());
 				}
 			}
 		}
@@ -188,37 +148,39 @@ void TimingManager::print(ullint total_steps) {
 	// now the list is ordered in the order we want to print it
 	double tot = (double) get_timer_by_desc("Simulation")->get_time() / CPSF;
 	if(tot < 1e-10) {
-		BOOST_LOG_TRIVIAL(info)<< "No timings available (either oxDNA was compiled with MOSIX=1 or no simulation steps were performed)";
+		BOOST_LOG_TRIVIAL(info) << "No timings available (either oxDNA was compiled with MOSIX=1 or no simulation steps were performed)";
 		return;
 	}
 
 	std::string to_log = boost::str(boost::format("Total Running Time: %lf s, per step: %lf ms\n") % tot % (tot / total_steps * 1000.));
 	to_log += boost::str(boost::format("Timings, in seconds, by Timer (total, own, spent in children)\n"));
-	for(uint i = 0; i < mylist.size(); i++) {
-		char mystr[512] = "";
-		Timer *t = get_timer_by_desc(mylist[i]);
-		Timer *p = _parents[t];
-		int generations = 0;
-		while(p != NULL) {
-			generations++;
-			p = _parents[p];
+	for(auto desc : mylist) {
+		std::string summary;
+		Timer *t = get_timer_by_desc(desc);
+		Timer *p = t->parent();
+		while(p != nullptr) {
+			summary += "***";
+			p = p->parent();
 		}
-		for(int j = 0; j < generations; j++) {
-			strcat(mystr, "***");
+		summary += "> ";
+		summary += t->get_desc();
+
+		long long int own_time_signed = t->get_time() - t->time_spent_in_children();
+		if(own_time_signed < 0) {
+			BOOST_LOG_TRIVIAL(warning) << "The total time measured by the '" << t->get_desc() << "' timer is smaller than the sum of the times measured by its children";
 		}
-		strcat(mystr, "> ");
-		strcat(mystr, t->get_desc().c_str());
+		ullint own_time = (ullint) own_time_signed;
+
 		to_log += boost::str(boost::format("%-30s %12.3lf (%5.1lf%%) %12.3lf (%5.1f%%) %12.3lf (%5.1f%%)\n") %
-				mystr %
-				(totaltimes[t] / CPSF) %
-				(totaltimes[t] / CPSF / tot * 100.) %
-				(own_time[t] / CPSF) %
-				(own_time[t] / CPSF / tot * 100.) %
-				(sum_of_children[t] / CPSF) %
-				(sum_of_children[t] / CPSF / tot * 100.)
+				summary %
+				(t->get_time() / CPSF) %
+				(t->get_time() / CPSF / tot * 100.) %
+				(own_time / CPSF) %
+				(own_time / CPSF / tot * 100.) %
+				(t->time_spent_in_children() / CPSF) %
+				(t->time_spent_in_children() / CPSF / tot * 100.)
 				);
 	}
 
-	BOOST_LOG_TRIVIAL(info) << "Performance summary:\n" << to_log;
+	BOOST_LOG_TRIVIAL(info) << "Performance summary:\n\n" << to_log;
 }
-

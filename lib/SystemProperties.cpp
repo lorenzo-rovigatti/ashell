@@ -7,8 +7,6 @@
 
 #include "SystemProperties.h"
 
-#include "computers/ForceComputer.h"
-#include "updaters/integrators/Integrator.h"
 #include "Particles.h"
 
 namespace ashell {
@@ -30,10 +28,6 @@ void SystemProperties::set_box(std::shared_ptr<Box> n_box) {
 
 void SystemProperties::set_T(double nT) {
 	_T = nT;
-}
-
-void SystemProperties::add_force(const std::shared_ptr<ForceComputer> n_force) {
-	_forces.push_back(n_force);
 }
 
 void SystemProperties::add_link(std::shared_ptr<TopologyLink<2>> n_l) {
