@@ -13,6 +13,7 @@ SET(ashell_lib_SOURCES
 	computers/ForceTwoBodyIsotropic.cpp
 	computers/observables/Cogli1Configuration.cpp
 	computers/observables/Configuration.cpp
+	computers/observables/ObservableFactory.cpp
 	computers/observables/Observable.cpp
 	computers/observables/KineticEnergy.cpp
 	computers/observables/PotentialEnergy.cpp

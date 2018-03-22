@@ -30,7 +30,8 @@ InputFile::InputFile() {
 
 	_aggregable_keys = {
 		"external_force",
-		"observable"
+		"observable",
+		"column"
 	};
 
 	for(auto key : _aggregable_keys) {
