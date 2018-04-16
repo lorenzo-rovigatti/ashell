@@ -52,14 +52,7 @@ public:
 	 * @param inp
 	 * @param filename
 	 */
-	void load_from_filename(const char *filename);
-
-	/**
-	 * @brief Load the keys and values found in the desc file into the given input_file
-	 * @param inp
-	 * @param desc
-	 */
-	void load_from_file(FILE *desc);
+	void add_input_from_filename(std::string filename);
 
 	/**
 	 * @brief Add the keys and values found in the desc file to the given input_file.
@@ -112,7 +105,7 @@ private:
 	 * @param value
 	 * @return INP_EOF if EOF, NOTHING_READ if the line is malformed, empty or commented and KEY_READ otherwise.
 	 */
-	int _readLine(std::vector<std::string>::iterator &it, std::vector<std::string>::iterator &end, std::string &key, std::string &value);
+	int _parse_line(std::vector<std::string>::iterator &it, std::vector<std::string>::iterator &end, std::string &key, std::string &value);
 
 	input_map::iterator _find_value(std::string skey, int mandatory);
 

@@ -102,7 +102,7 @@ int main(int argc, char *argv[]) {
 	InputFile my_inp;
 
 	try {
-		my_inp.load_from_filename(argv[1]);
+		my_inp.add_input_from_filename(argv[1]);
 		init_from_input(my_inp, system);
 
 //		sys_props->add_force(std::shared_ptr<LennardJonesForce>(new LennardJonesForce({1.122462048309373})));

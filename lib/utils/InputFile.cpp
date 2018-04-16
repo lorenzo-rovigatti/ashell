@@ -54,26 +54,28 @@ void InputFile::print_input(char *filename) {
 	fclose(out);
 }
 
-void InputFile::load_from_filename(const char *filename) {
-	FILE *inp_file = fopen(filename, "r");
+void InputFile::add_input_from_filename(std::string filename) {
+	FILE *inp_file = fopen(filename.c_str(), "r");
 	if(inp_file == NULL) {
 		_state = ERROR;
 		std::string error = boost::str(boost::format("Input file '%s' not found") % filename);
 		throw std::runtime_error(error);
 	}
-	load_from_file(inp_file);
+	_state = UNPARSED;
+	add_input_from_file(inp_file);
+	_state = PARSED;
 	fclose(inp_file);
-	return;
 }
 
 void InputFile::add_from_command_line_arguments(int argc, char *argv[]) {
 	string s_inp("");
-	for(int i = 0; i < argc; i++)
+	for(int i = 0; i < argc; i++) {
 		s_inp += string(argv[i]) + string("\n");
+	}
 	add_input_from_string(s_inp);
 }
 
-int InputFile::_readLine(std::vector<string>::iterator &it, std::vector<string>::iterator &end, string &key, string &value) {
+int InputFile::_parse_line(std::vector<string>::iterator &it, std::vector<string>::iterator &end, string &key, string &value) {
 	string option(*it);
 	boost::algorithm::trim(option);
 
@@ -146,25 +148,19 @@ int InputFile::_readLine(std::vector<string>::iterator &it, std::vector<string>:
 	return KEY_READ;
 }
 
-void InputFile::load_from_file(FILE *inp_file) {
-	_state = UNPARSED;
-	add_input_from_file(inp_file);
-	_state = PARSED;
-}
-
 void InputFile::add_input_from_string(string s_inp) {
 	vector<string> tot_lines;
 	boost::algorithm::split(tot_lines, s_inp, boost::is_any_of("\n"));
 	vector<string> lines;
 
-	for(vector<string>::iterator it = tot_lines.begin(); it != tot_lines.end(); it++) {
+	for(auto &line : tot_lines) {
 		// remove in-line comments
-		size_t comment_start = it->find('#');
-		if(comment_start != string::npos) it->erase(comment_start, it->size() - comment_start);
+		size_t comment_start = line.find('#');
+		if(comment_start != string::npos) line.erase(comment_start, line.size() - comment_start);
 
 		// split the string using ; as a delimiter
 		std::vector<string> to_add;
-		boost::algorithm::split(to_add, *it, boost::is_any_of(";"));
+		boost::algorithm::split(to_add, line, boost::is_any_of(";"));
 
 		lines.insert(lines.end(), to_add.begin(), to_add.end());
 	}
@@ -172,7 +168,7 @@ void InputFile::add_input_from_string(string s_inp) {
 	std::vector<string>::iterator l_end = lines.end();
 	for(std::vector<string>::iterator it = lines.begin(); it != lines.end(); it++) {
 		string key, value;
-		int res = _readLine(it, l_end, key, value);
+		int res = _parse_line(it, l_end, key, value);
 
 		if(res == KEY_READ) {
 			if(std::find(_aggregable_keys.begin(), _aggregable_keys.end(), key) != _aggregable_keys.end()) {
@@ -252,8 +248,7 @@ KeyState InputFile::value_as_integer(std::string skey, T &dest, int mandatory) {
 
 	try {
 		dest = boost::lexical_cast<T>(it->second.value) + 0.1;
-	}
-	catch(boost::bad_lexical_cast &e) {
+	} catch (boost::bad_lexical_cast &e) {
 		string error = boost::str(boost::format("Value '%s' from key '%s' cannot be cast to an integer") % it->second.value % skey);
 		throw std::runtime_error(error);
 	}
@@ -314,13 +309,8 @@ KeyState InputFile::value_as_vec3(std::string skey, vec3 &dest, int mandatory) {
 	}
 
 	try {
-		dest = vec3(
-				boost::lexical_cast<double>(spl_line[0]),
-				boost::lexical_cast<double>(spl_line[1]),
-				boost::lexical_cast<double>(spl_line[2])
-		);
-	}
-	catch(boost::bad_lexical_cast &e) {
+		dest = vec3(boost::lexical_cast<double>(spl_line[0]), boost::lexical_cast<double>(spl_line[1]), boost::lexical_cast<double>(spl_line[2]));
+	} catch (boost::bad_lexical_cast &e) {
 		string error = boost::str(boost::format("Value '%s' from key '%s' cannot be interpreted as a vec3") % it->second.value % skey);
 		throw std::runtime_error(error);
 	}
@@ -340,8 +330,7 @@ KeyState InputFile::value_as_int_vector(std::string skey, std::vector<int> &dest
 		try {
 			boost::trim(v);
 			dest.push_back(boost::lexical_cast<int>(v));
-		}
-		catch(boost::bad_lexical_cast &e) {
+		} catch (boost::bad_lexical_cast &e) {
 			string error = boost::str(boost::format("The component '%s' of value '%s' from key '%s' cannot be cast to an integer") % v % it->second.value % skey);
 			throw std::runtime_error(error);
 		}
@@ -357,8 +346,7 @@ KeyState InputFile::value_as_number(std::string skey, number &dest, int mandator
 
 	try {
 		dest = boost::lexical_cast<number>(it->second.value);
-	}
-	catch(boost::bad_lexical_cast &e) {
+	} catch (boost::bad_lexical_cast &e) {
 		string error = boost::str(boost::format("The key '%s' cannot be cast to a floating point") % it->second.value % skey);
 		throw std::runtime_error(error);
 	}
