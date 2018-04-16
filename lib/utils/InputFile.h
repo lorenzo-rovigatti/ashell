@@ -81,7 +81,7 @@ public:
 	 * @param inp
 	 * @param filename
 	 */
-	void print_input(char *filename);
+	void print_input(std::string filename);
 
 	KeyState value_as_string(std::string skey, std::string &dest, int mandatory);
 	template<typename T> KeyState value_as_integer(std::string skey, T &dest, int mandatory);
@@ -117,6 +117,8 @@ private:
 
 	std::set<std::string> _true_values;
 	std::set<std::string> _false_values;
+
+	std::set<std::string> _parsed_filenames;
 };
 
 }

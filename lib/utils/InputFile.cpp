@@ -43,9 +43,9 @@ InputFile::~InputFile() {
 
 }
 
-void InputFile::print_input(char *filename) {
+void InputFile::print_input(std::string filename) {
 	BOOST_LOG_TRIVIAL(info)<< "Printing the input file as used by ashell in '" << filename << "'";
-	FILE *out = fopen(filename, "w");
+	FILE *out = fopen(filename.c_str(), "w");
 
 	for(input_map::iterator it = _keys.begin(); it != _keys.end(); it++) {
 		fprintf(out, "%s = %s\n", it->first.c_str(), it->second.value.c_str());
@@ -61,6 +61,7 @@ void InputFile::add_input_from_filename(std::string filename) {
 		std::string error = boost::str(boost::format("Input file '%s' not found") % filename);
 		throw std::runtime_error(error);
 	}
+	_parsed_filenames.insert(filename);
 	_state = UNPARSED;
 	add_input_from_file(inp_file);
 	_state = PARSED;
@@ -80,6 +81,36 @@ int InputFile::_parse_line(std::vector<string>::iterator &it, std::vector<string
 	boost::algorithm::trim(option);
 
 	if(option.size() > 0) {
+		// check whether the line contains a parser command
+		size_t command_start = option.find('@');
+		if(command_start == 0) {
+			std::vector<string> parts;
+			boost::algorithm::split(parts, option, boost::is_any_of(" \t"));
+			// trim all the tokens
+			for(auto &part : parts) {
+				boost::algorithm::trim(part);
+			}
+			if(parts[0] == "@include") {
+				if(parts.size() < 2) {
+					BOOST_LOG_TRIVIAL(warning)<< "Malformed line '" << option << "' found: an '@include' directive should be followed by one or more filenames. Ignoring it";
+					return NOTHING_READ;
+				}
+				parts.erase(parts.begin());
+				for(auto &part : parts) {
+					if(_parsed_filenames.find(part) != _parsed_filenames.end()) {
+						string error = boost::str(boost::format("The '%s' directive contains the already-parsed file '%s'. Are you *this* fond of infinite recursion? Aborting") % option % part);
+						throw std::runtime_error(error);
+					}
+					add_input_from_filename(part);
+				}
+			}
+			else {
+				BOOST_LOG_TRIVIAL(warning)<< "Unrecognized parser directive '" << parts[0] << "' found. Ignoring it";
+				return NOTHING_READ;
+			}
+			return KEY_READ;
+		}
+
 		std::vector<string> words;
 		boost::algorithm::split(words, option, boost::is_any_of("="));
 
@@ -89,7 +120,7 @@ int InputFile::_parse_line(std::vector<string>::iterator &it, std::vector<string
 		}
 
 		if(words.size() > 2) {
-			BOOST_LOG_TRIVIAL(warning)<< "Multiple `=' symbols found in line '" << option << "'. Assuming you know what you are doing.";
+			BOOST_LOG_TRIVIAL(warning)<< "Multiple '=' symbols found in line '" << option << "'. Assuming you know what you are doing.";
 			for(auto word : words) {
 				words[1] += string("=") + word;
 			}
