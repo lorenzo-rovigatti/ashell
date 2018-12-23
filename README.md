@@ -35,6 +35,13 @@ Here is a list of options that can be passed to cmake during the pre-compilation
 * `-DG=ON`				Compiles with debug symbols + optimisation flags
 * `-DINTEL=ON`				Uses INTEL's compiler suite
 
+## Usage
+
+### Initial configuration
+
+* If the input file contains no `configuration_file` key, `ashell` will attempt to generate a random configuration using the `initial_N` and `initial_box` keys as initial number of particles and box size, respectively.
+* Use the `utilities/generate.py` script to set up a configuration of a spherical triangulated mesh. The script, which takes as argument the number of points that will compose the sphere, produces an initial configuration and a topology file.
+
 ## Acknowledgements
 
 * The structure of ashell has been inspired by [HOOMD-blue](http://glotzerlab.engin.umich.edu/hoomd-blue/)

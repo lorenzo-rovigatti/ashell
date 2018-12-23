@@ -2,6 +2,7 @@
 
 import sys
 import random
+import os
 import numpy as np
 import subprocess as sp
 import math
@@ -39,7 +40,8 @@ add_params = False
 if len(sys.argv) > 2:
     add_params = bool(sys.argv[2])
 
-gen = sp.Popen(["./generate_sphere", str(n_points)], stdout=sp.PIPE)
+generate_sphere_path = os.path.join(os.path.dirname(sys.argv[0]), "generate_sphere")
+gen = sp.Popen([generate_sphere_path, str(n_points)], stdout=sp.PIPE)
 out, err = gen.communicate()
 
 convex_points = []
