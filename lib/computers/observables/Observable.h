@@ -12,10 +12,14 @@
 
 namespace ashell {
 
+class InputFile;
+
 class Observable : public Computer {
 public:
 	Observable(std::string n_name="observable");
 	virtual ~Observable();
+
+	void parse_input(InputFile &inp);
 
 	void compute(ullint step) override;
 	virtual double as_scalar();

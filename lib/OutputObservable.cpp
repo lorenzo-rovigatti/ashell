@@ -8,6 +8,7 @@
 #include "OutputObservable.h"
 
 #include "utils/Timings.h"
+#include "utils/InputFile.h"
 
 #include <iostream>
 #include <sstream>
@@ -74,6 +75,26 @@ void OutputObservable::print_output(ullint step) {
 
 void OutputObservable::set_print_every(ullint n_print_every) {
 	_print_every = n_print_every;
+}
+
+std::shared_ptr<OutputObservable> OutputObservable::make(InputFile &inp) {
+	std::shared_ptr<OutputObservable> oo;
+
+	std::string name;
+	inp.value_as_string("name", name, 1);
+
+	ullint print_every;
+	inp.value_as_integer<ullint>("print_every", print_every, 1);
+
+	ullint start_from;
+	inp.value_as_integer<ullint>("start_from", start_from, 0);
+
+	ullint stop_at;
+	inp.value_as_integer<ullint>("stop_at", stop_at, 0);
+
+	oo = std::shared_ptr<OutputObservable>(new OutputObservable(name, print_every));
+
+	return oo;
 }
 
 } /* namespace ashell */

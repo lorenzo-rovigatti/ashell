@@ -36,7 +36,7 @@ ENDIF()
 
 # the BOOST_LOG_DYN_LINK definition is required in order to build a python-readable
 # dynamic library
-ADD_DEFINITIONS(-Wall -DBOOST_LOG_DYN_LINK)
+ADD_DEFINITIONS(-Wall -DBOOST_LOG_DYN_LINK -Wno-int-in-bool-context)
 
 IF(NOT CMAKE_BUILD_TYPE MATCHES Debug)
 	IF(INTEL)

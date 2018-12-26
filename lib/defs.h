@@ -1,5 +1,5 @@
 /*
- * math_defs.h
+ * defs.h
  *
  *  Created on: 08 feb 2018
  *      Author: lorenzo
@@ -11,7 +11,7 @@
 #define SQR(x) ((x) * (x))
 #define CUB(x) ((x) * (x) * (x))
 
-#include <Eigen/Core>
+#include <Eigen/Dense>
 #include <Eigen/StdVector>
 
 #include <boost/format.hpp>

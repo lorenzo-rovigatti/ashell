@@ -118,8 +118,12 @@ void System::add_updater(std::shared_ptr<Updater> new_updater) {
 	_updaters.push_back(new_updater);
 }
 
-void System::add_force(const std::shared_ptr<ForceComputer> n_force) {
+void System::add_force(std::shared_ptr<ForceComputer> n_force) {
 	_forces.push_back(n_force);
+}
+
+void System::add_output(std::shared_ptr<OutputObservable> n_output) {
+	_outputs.push_back(n_output);
 }
 
 void System::set_integrator(std::shared_ptr<Integrator> n_integrator) {

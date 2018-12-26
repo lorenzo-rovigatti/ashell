@@ -15,6 +15,8 @@
 
 namespace ashell {
 
+class InputFile;
+
 class OutputObservable {
 public:
 	OutputObservable(std::string stream_name, ullint print_every);
@@ -33,6 +35,8 @@ public:
 	}
 
 	void set_print_every(ullint n_print_every);
+
+	static std::shared_ptr<OutputObservable> make(InputFile &inp);
 
 protected:
 	std::vector<std::shared_ptr<Observable> > _observables;

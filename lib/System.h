@@ -28,7 +28,8 @@ public:
 	void init();
 	void run(ullint steps);
 	void add_updater(std::shared_ptr<Updater> new_updater);
-	void add_force(const std::shared_ptr<ForceComputer> n_force);
+	void add_force(std::shared_ptr<ForceComputer> n_force);
+	void add_output(std::shared_ptr<OutputObservable> n_output);
 
 	void set_integrator(std::shared_ptr<Integrator> n_integrator);
 	void set_print_defaults_every(ullint n_print_defaults_every);

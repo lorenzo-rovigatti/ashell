@@ -7,6 +7,8 @@
 
 #include "../../computers/observables/Observable.h"
 
+#include "../../utils/InputFile.h"
+
 namespace ashell {
 
 using std::string;
@@ -18,6 +20,10 @@ Observable::Observable(std::string n_name) :
 }
 
 Observable::~Observable() {
+
+}
+
+void Observable::parse_input(InputFile &inp) {
 
 }
 

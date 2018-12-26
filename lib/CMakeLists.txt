@@ -19,6 +19,7 @@ SET(ashell_lib_SOURCES
 	computers/observables/PotentialEnergy.cpp
 	computers/observables/TotalEnergy.cpp
 	computers/observables/Step.cpp
+	computers/observables/StrainInvariants.cpp
 	Initialiser.cpp
 	updaters/integrators/Integrator.cpp
 	updaters/integrators/VelocityVerlet.cpp

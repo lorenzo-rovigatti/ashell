@@ -7,11 +7,13 @@
 
 #include "../lib/defs.h"
 #include "../lib/World.h"
+#include "../lib/OutputObservable.h"
 #include "../lib/boxes/BoxFactory.h"
 #include "../lib/computers/external_forces/ForceFactory.h"
 #include "../lib/computers/ForceDihedral.h"
 #include "../lib/computers/ForceLink.h"
 #include "../lib/computers/ForceTwoBodyIsotropic.h"
+#include "../lib/computers/observables/ObservableFactory.h"
 #include "../lib/Initialiser.h"
 #include "../lib/updaters/integrators/VelocityVerlet.h"
 #include "../lib/updaters/thermostats/ThermostatFactory.h"
@@ -80,6 +82,21 @@ void init_from_input(InputFile &inp, std::shared_ptr<System> system) {
 	for(auto ext_force_input : ext_forces) {
 		auto new_force = ForceFactory::make_force(ext_force_input);
 		system->add_force(new_force);
+	}
+
+	// initialise outputs
+	auto outputs = inp.get_aggregated("output");
+	for(auto output : outputs) {
+		auto new_output = OutputObservable::make(output);
+		system->add_output(new_output);
+
+		auto observables = output.get_aggregated("observable");
+		for(auto observable : observables) {
+			auto new_obs = ObservableFactory::make_observable(observable);
+			new_obs->parse_input(inp);
+
+			new_output->add_observable(new_obs);
+		}
 	}
 }
 
