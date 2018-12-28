@@ -31,7 +31,8 @@ InputFile::InputFile() {
 	_aggregable_keys = {
 		"external_force",
 		"output",
-		"observable"
+		"observable",
+		"potential",
 	};
 
 	for(auto key : _aggregable_keys) {

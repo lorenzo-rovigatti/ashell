@@ -11,6 +11,7 @@ SET(ashell_lib_SOURCES
 	computers/ForceDihedral.cpp
 	computers/ForceLink.cpp
 	computers/ForceTwoBodyIsotropic.cpp
+	computers/ForceComputerFactory.cpp
 	computers/observables/Cogli1Configuration.cpp
 	computers/observables/Configuration.cpp
 	computers/observables/ObservableFactory.cpp

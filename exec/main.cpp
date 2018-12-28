@@ -9,10 +9,8 @@
 #include "../lib/World.h"
 #include "../lib/OutputObservable.h"
 #include "../lib/boxes/BoxFactory.h"
+#include "../lib/computers/ForceComputerFactory.h"
 #include "../lib/computers/external_forces/ForceFactory.h"
-#include "../lib/computers/ForceDihedral.h"
-#include "../lib/computers/ForceLink.h"
-#include "../lib/computers/ForceTwoBodyIsotropic.h"
 #include "../lib/computers/observables/ObservableFactory.h"
 #include "../lib/Initialiser.h"
 #include "../lib/updaters/integrators/VelocityVerlet.h"
@@ -98,6 +96,15 @@ void init_from_input(InputFile &inp, std::shared_ptr<System> system) {
 			new_output->add_observable(new_obs);
 		}
 	}
+
+	auto potentials = inp.get_aggregated("potential");
+	for(auto potential : potentials) {
+		auto new_potential = ForceComputerFactory::make_potential(potential);
+		system->add_force(new_potential);
+	}
+
+//	system->add_force(std::shared_ptr<HarmonicForce>(new HarmonicForce( { 1., 1. })));
+//	system->add_force(std::shared_ptr<ForceDihedral>(new ForceDihedral()));
 }
 
 int main(int argc, char *argv[]) {
@@ -121,11 +128,6 @@ int main(int argc, char *argv[]) {
 	try {
 		my_inp.add_input_from_filename(argv[1]);
 		init_from_input(my_inp, system);
-
-//		sys_props->add_force(std::shared_ptr<LennardJonesForce>(new LennardJonesForce({1.122462048309373})));
-//		sys_props->add_force(std::shared_ptr<FENEForce>(new FENEForce({15., 2.5})));
-		system->add_force(std::shared_ptr<HarmonicForce>(new HarmonicForce( { 1., 1. })));
-		system->add_force(std::shared_ptr<ForceDihedral>(new ForceDihedral()));
 	}
 	catch(std::exception &e) {
 		BOOST_LOG_TRIVIAL(error)<< "Caught the following error during the initialisation, aborting\n" << e.what();

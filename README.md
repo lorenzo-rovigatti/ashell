@@ -42,6 +42,20 @@ Here is a list of options that can be passed to cmake during the pre-compilation
 * If the input file contains no `configuration_file` key, `ashell` will attempt to generate a random configuration using the `initial_N` and `initial_box` keys as initial number of particles and box size, respectively.
 * Use the `utilities/generate.py` script to set up a configuration of a spherical triangulated mesh. The script, which takes as argument the number of points that will compose the sphere, produces an initial configuration and a topology file.
 
+### Potentials
+
+* `lennard_jones_force`, parameters:
+	1. `rc`
+* `FENE_force`, parameters:
+	1. `k`
+	2. `r0`
+* `Harmonic force`, parameters:
+	1. `k`
+	2. `r0`
+* `force_dihedral`, parameters:
+	1. `kb`
+	2. `theta0`
+
 ## Acknowledgements
 
 * The structure of ashell has been inspired by [HOOMD-blue](http://glotzerlab.engin.umich.edu/hoomd-blue/)
