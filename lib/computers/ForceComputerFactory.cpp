@@ -9,8 +9,9 @@
 
 #include "../utils/InputFile.h"
 
-#include "ForceDihedral.h"
 #include "ForceLink.h"
+#include "ForceTriangle.h"
+#include "ForceDihedral.h"
 #include "ForceTwoBodyIsotropic.h"
 
 namespace ashell {
@@ -44,6 +45,15 @@ std::shared_ptr<ForceComputer> ForceComputerFactory::make_potential(InputFile &i
 		double rc;
 		inp.value_as_number("rc", rc, 1);
 		potential = std::shared_ptr<LennardJonesForce>(new LennardJonesForce( {rc} ));
+	}
+	else if(type == "force_triangle") {
+		double kv, V0;
+		inp.value_as_number("kv", kv, 1);
+		inp.value_as_number("V0", V0, 1);
+		auto triangle = std::shared_ptr<ForceTriangle>(new ForceTriangle());
+		triangle->set_kv(kv);
+		triangle->set_V0(V0);
+		potential = triangle;
 	}
 	else if(type == "force_dihedral") {
 		double kb, theta0;

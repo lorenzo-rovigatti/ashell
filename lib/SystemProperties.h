@@ -41,6 +41,10 @@ public:
 		return _angles;
 	}
 
+	const auto &triangles() const {
+			return _triangles;
+		}
+
 	const auto &dihedrals() const {
 		return _dihedrals;
 	}
@@ -50,6 +54,7 @@ public:
 
 	void add_link(std::shared_ptr<TopologyLink<2>> n_l);
 	void add_angle(std::shared_ptr<TopologyLink<3>> n_a);
+	void add_triangle(std::shared_ptr<TopologyLink<3>> n_t);
 	void add_dihedral(std::shared_ptr<TopologyLink<4>> n_d);
 
 private:
@@ -58,6 +63,7 @@ private:
 
 	std::vector<std::shared_ptr<TopologyLink<2>>> _links;
 	std::vector<std::shared_ptr<TopologyLink<3>>> _angles;
+	std::vector<std::shared_ptr<TopologyLink<3>>> _triangles;
 	std::vector<std::shared_ptr<TopologyLink<4>>> _dihedrals;
 
 	double _T;

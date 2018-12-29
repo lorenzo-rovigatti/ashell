@@ -163,6 +163,46 @@ void Initialiser::init_topology_from_filename(std::shared_ptr<SystemProperties> 
 
 				largest_idx = std::max(largest_idx, *std::max_element(new_link->members.begin(), new_link->members.end()));
 			}
+			else if(boost::starts_with("angle", spl_line[0])) {
+				if(spl_line.size() < 5) {
+					std::string error = boost::str(boost::format("Topology line number %d contains %d fields, should be at least 5") % curr_line % spl_line.size());
+					throw std::runtime_error(error);
+				}
+
+				uint link_type = boost::lexical_cast<uint>(spl_line[1]);
+				uint i_idx = boost::lexical_cast<uint>(spl_line[2]);
+				uint j_idx = boost::lexical_cast<uint>(spl_line[3]);
+				uint k_idx = boost::lexical_cast<uint>(spl_line[4]);
+
+				std::shared_ptr<TopologyLink<3>> new_angle = std::shared_ptr<TopologyLink<3>>(new TopologyLink<3>(link_type, {i_idx, j_idx, k_idx}));
+				for(uint i = 5; i < spl_line.size(); i++) {
+					new_angle->add_param(boost::lexical_cast<double>(spl_line[i]));
+				}
+
+				sys_props->add_angle(new_angle);
+
+				largest_idx = std::max(largest_idx, *std::max_element(new_angle->members.begin(), new_angle->members.end()));
+			}
+			else if(boost::starts_with("triangle", spl_line[0])) {
+				if(spl_line.size() < 5) {
+					std::string error = boost::str(boost::format("Topology line number %d contains %d fields, should be at least 5") % curr_line % spl_line.size());
+					throw std::runtime_error(error);
+				}
+
+				uint link_type = boost::lexical_cast<uint>(spl_line[1]);
+				uint i_idx = boost::lexical_cast<uint>(spl_line[2]);
+				uint j_idx = boost::lexical_cast<uint>(spl_line[3]);
+				uint k_idx = boost::lexical_cast<uint>(spl_line[4]);
+
+				std::shared_ptr<TopologyLink<3>> new_triangle = std::shared_ptr<TopologyLink<3>>(new TopologyLink<3>(link_type, {i_idx, j_idx, k_idx}));
+				for(uint i = 5; i < spl_line.size(); i++) {
+					new_triangle->add_param(boost::lexical_cast<double>(spl_line[i]));
+				}
+
+				sys_props->add_triangle(new_triangle);
+
+				largest_idx = std::max(largest_idx, *std::max_element(new_triangle->members.begin(), new_triangle->members.end()));
+			}
 			else if(boost::starts_with("dihedral", spl_line[0])) {
 				if(spl_line.size() < 6) {
 					std::string error = boost::str(boost::format("Topology line number %d contains %d fields, should be at least 6") % curr_line % spl_line.size());

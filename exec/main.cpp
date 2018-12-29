@@ -97,14 +97,12 @@ void init_from_input(InputFile &inp, std::shared_ptr<System> system) {
 		}
 	}
 
+	// initialise potentials
 	auto potentials = inp.get_aggregated("potential");
 	for(auto potential : potentials) {
 		auto new_potential = ForceComputerFactory::make_potential(potential);
 		system->add_force(new_potential);
 	}
-
-//	system->add_force(std::shared_ptr<HarmonicForce>(new HarmonicForce( { 1., 1. })));
-//	system->add_force(std::shared_ptr<ForceDihedral>(new ForceDihedral()));
 }
 
 int main(int argc, char *argv[]) {

@@ -87,6 +87,12 @@ with open("topology.dat", "w") as f:
             dist = np.sqrt(np.dot(diff, diff))
             to_print += " %lf" % dist
         print >> f, "link", to_print
+        
+    for t in cvx.simplices:
+        to_print = "%d %d %d %d" % (0, t[0], t[1], t[2])
+        if add_params:
+            pass
+        print >> f, "triangle", to_print
 
     for combination in it.combinations(cvx.simplices, 2):
         first = combination[0]

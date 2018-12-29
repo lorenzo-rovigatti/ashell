@@ -38,6 +38,10 @@ void SystemProperties::add_angle(std::shared_ptr<TopologyLink<3>> n_a) {
 	_angles.push_back(n_a);
 }
 
+void SystemProperties::add_triangle(std::shared_ptr<TopologyLink<3>> n_a) {
+	_triangles.push_back(n_a);
+}
+
 void SystemProperties::add_dihedral(std::shared_ptr<TopologyLink<4>> n_d) {
 	_dihedrals.push_back(n_d);
 }
