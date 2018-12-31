@@ -54,7 +54,7 @@ void StrainInvariants::_observe(ullint step) {
 
 	vec3 ch_com(0., 0., 0.);
 	double ch_volume = 0.;
-	for(uint i = 0; i < mesh.nindices; i++) {
+	for(uint i = 0; i < mesh.nindices; i += 3) {
 		vec3 p1(mesh.vertices[mesh.indices[i + 0]].x, mesh.vertices[mesh.indices[i + 0]].y, mesh.vertices[mesh.indices[i + 0]].z);
 		vec3 p2(mesh.vertices[mesh.indices[i + 1]].x, mesh.vertices[mesh.indices[i + 1]].y, mesh.vertices[mesh.indices[i + 1]].z);
 		vec3 p3(mesh.vertices[mesh.indices[i + 2]].x, mesh.vertices[mesh.indices[i + 2]].y, mesh.vertices[mesh.indices[i + 2]].z);

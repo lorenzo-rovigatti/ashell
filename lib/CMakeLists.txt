@@ -9,7 +9,7 @@ SET(ashell_lib_SOURCES
 	computers/external_forces/ForceFactory.cpp
 	computers/ForceComputer.cpp
 	computers/ForceLink.cpp
-	computers/ForceTriangle.cpp
+	computers/ForceTriangulatedMesh.cpp
 	computers/ForceDihedral.cpp
 	computers/ForceTwoBodyIsotropic.cpp
 	computers/ForceComputerFactory.cpp

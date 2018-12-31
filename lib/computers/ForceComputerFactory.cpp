@@ -10,8 +10,8 @@
 #include "../utils/InputFile.h"
 
 #include "ForceLink.h"
-#include "ForceTriangle.h"
 #include "ForceDihedral.h"
+#include "ForceTriangulatedMesh.h"
 #include "ForceTwoBodyIsotropic.h"
 
 namespace ashell {
@@ -46,14 +46,37 @@ std::shared_ptr<ForceComputer> ForceComputerFactory::make_potential(InputFile &i
 		inp.value_as_number("rc", rc, 1);
 		potential = std::shared_ptr<LennardJonesForce>(new LennardJonesForce( {rc} ));
 	}
-	else if(type == "force_triangle") {
-		double kv, V0;
+	else if(type == "force_triangulated_mesh") {
+		double kv, ka;
 		inp.value_as_number("kv", kv, 1);
-		inp.value_as_number("V0", V0, 1);
-		auto triangle = std::shared_ptr<ForceTriangle>(new ForceTriangle());
-		triangle->set_kv(kv);
-		triangle->set_V0(V0);
-		potential = triangle;
+		inp.value_as_number("ka", ka, 1);
+		auto mesh = std::shared_ptr<ForceTriangulatedMesh>(new ForceTriangulatedMesh());
+		mesh->set_kv(kv);
+		mesh->set_ka(ka);
+
+		bool V0_from_conf = false;
+		inp.value_as_bool("V0_from_conf", V0_from_conf, 0);
+		if(V0_from_conf) {
+			mesh->set_V0_from_conf();
+		}
+		else {
+			double V0;
+			inp.value_as_number("V0", V0, 1);
+			mesh->set_V0(V0);
+		}
+
+		bool A0_from_conf = false;
+		inp.value_as_bool("A0_from_conf", A0_from_conf, 0);
+		if(A0_from_conf) {
+			mesh->set_A0_from_conf();
+		}
+		else {
+			double A0;
+			inp.value_as_number("A0", A0, 1);
+			mesh->set_A0(A0);
+		}
+
+		potential = mesh;
 	}
 	else if(type == "force_dihedral") {
 		double kb, theta0;

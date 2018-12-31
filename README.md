@@ -52,6 +52,13 @@ Here is a list of options that can be passed to cmake during the pre-compilation
 * `Harmonic force`, parameters:
 	1. `k`
 	2. `r0`
+* `force_triangulated_mesh`, parameters:
+	1. `kv` force constant associated to the relative change of the total volume
+	2. `ka` force constant associated to the relative change of the total area
+	3. `V0_from_conf` boolean, if true `V0` will be initialised by using the volume of the starting configuration
+	4. `V0` used only if `V0_from_initial_conf` is absent or set to false
+	5. `A0_from_conf` boolean, if true `A0` will be initialised by using the area of the starting configuration
+	6. `A0` used only if `A0_from_initial_conf` is absent or set to false
 * `force_dihedral`, parameters:
 	1. `kb`
 	2. `theta0`
