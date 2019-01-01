@@ -16,6 +16,8 @@
 
 namespace ashell {
 
+using normal_index = std::pair<uint, uint>;
+
 class SystemProperties {
 public:
 	SystemProperties();
@@ -42,8 +44,12 @@ public:
 	}
 
 	const auto &triangles() const {
-			return _triangles;
-		}
+		return _triangles;
+	}
+
+	const auto &triangles_normal_indices() const {
+		return _triangles_normal_indices;
+	}
 
 	const auto &dihedrals() const {
 		return _dihedrals;
@@ -57,6 +63,8 @@ public:
 	void add_triangle(std::shared_ptr<TopologyLink<3>> n_t);
 	void add_dihedral(std::shared_ptr<TopologyLink<4>> n_d);
 
+	void update_topology();
+
 private:
 	std::shared_ptr<Box> _box;
 	std::shared_ptr<Particles> _particles;
@@ -64,6 +72,7 @@ private:
 	std::vector<std::shared_ptr<TopologyLink<2>>> _links;
 	std::vector<std::shared_ptr<TopologyLink<3>>> _angles;
 	std::vector<std::shared_ptr<TopologyLink<3>>> _triangles;
+	std::vector<normal_index> _triangles_normal_indices;
 	std::vector<std::shared_ptr<TopologyLink<4>>> _dihedrals;
 
 	double _T;

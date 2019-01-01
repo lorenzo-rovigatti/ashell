@@ -40,10 +40,17 @@ void SystemProperties::add_angle(std::shared_ptr<TopologyLink<3>> n_a) {
 
 void SystemProperties::add_triangle(std::shared_ptr<TopologyLink<3>> n_a) {
 	_triangles.push_back(n_a);
+	_triangles_normal_indices.push_back(normal_index(0, 1));
 }
 
 void SystemProperties::add_dihedral(std::shared_ptr<TopologyLink<4>> n_d) {
 	_dihedrals.push_back(n_d);
+}
+
+void SystemProperties::update_topology() {
+	// here we normalise the normals of the triangles so that
+	// 1) normals of neighbouring triangles are concordant
+	// 2) the volume of the object enclosed by the triangle mesh is positive
 }
 
 } /* namespace ashell */

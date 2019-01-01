@@ -238,6 +238,8 @@ void Initialiser::init_topology_from_filename(std::shared_ptr<SystemProperties> 
 	}
 	inp.close();
 
+	sys_props->update_topology();
+
 	if(largest_idx > sys_props->particles()->N()) {
 		BOOST_LOG_TRIVIAL(warning) << "The topology found in '"
 				<< filename

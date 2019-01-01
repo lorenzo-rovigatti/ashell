@@ -16,6 +16,7 @@ ForceTriangulatedMesh::ForceTriangulatedMesh(std::string name) :
 				_V0(-1.),
 				_A0(-1.) {
 
+	// TODO: normals have to be chosen all in the same direction
 }
 
 ForceTriangulatedMesh::~ForceTriangulatedMesh() {
@@ -119,6 +120,8 @@ std::pair<double, double> ForceTriangulatedMesh::_get_volume_and_area() {
 		volume += normal.dot(com) / 6.;
 		area += normal.norm() / 2.;
 	}
+	printf("%lf %lf\n", volume, area);
+	exit(1);
 
 	return std::pair<double, double>(volume, area);
 }
