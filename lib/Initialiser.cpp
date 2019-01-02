@@ -144,7 +144,7 @@ void Initialiser::init_topology_from_filename(std::shared_ptr<SystemProperties> 
 		boost::split(spl_line, line, boost::is_any_of("\t "), boost::token_compress_on);
 
 		try {
-			if(boost::starts_with("link", spl_line[0])) {
+			if(boost::starts_with("bond", spl_line[0])) {
 				if(spl_line.size() < 4) {
 					std::string error = boost::str(boost::format("Topology line number %d contains %d fields, should be at least 4") % curr_line % spl_line.size());
 					throw std::runtime_error(error);
@@ -154,12 +154,12 @@ void Initialiser::init_topology_from_filename(std::shared_ptr<SystemProperties> 
 				uint p_idx = boost::lexical_cast<uint>(spl_line[2]);
 				uint q_idx = boost::lexical_cast<uint>(spl_line[3]);
 
-				std::shared_ptr<TopologyLink<2>> new_link = std::shared_ptr<TopologyLink<2>>(new TopologyLink<2>(link_type, {p_idx, q_idx}));
+				std::shared_ptr<TopologyBond> new_link = std::shared_ptr<TopologyBond>(new TopologyBond(link_type, {p_idx, q_idx}));
 				for(uint i = 4; i < spl_line.size(); i++) {
 					new_link->add_param(boost::lexical_cast<double>(spl_line[i]));
 				}
 
-				sys_props->add_link(new_link);
+				sys_props->add_bond(new_link);
 
 				largest_idx = std::max(largest_idx, *std::max_element(new_link->members.begin(), new_link->members.end()));
 			}
@@ -174,7 +174,7 @@ void Initialiser::init_topology_from_filename(std::shared_ptr<SystemProperties> 
 				uint j_idx = boost::lexical_cast<uint>(spl_line[3]);
 				uint k_idx = boost::lexical_cast<uint>(spl_line[4]);
 
-				std::shared_ptr<TopologyLink<3>> new_angle = std::shared_ptr<TopologyLink<3>>(new TopologyLink<3>(link_type, {i_idx, j_idx, k_idx}));
+				std::shared_ptr<TopologyAngle> new_angle = std::shared_ptr<TopologyAngle>(new TopologyAngle(link_type, {i_idx, j_idx, k_idx}));
 				for(uint i = 5; i < spl_line.size(); i++) {
 					new_angle->add_param(boost::lexical_cast<double>(spl_line[i]));
 				}
@@ -194,7 +194,7 @@ void Initialiser::init_topology_from_filename(std::shared_ptr<SystemProperties> 
 				uint j_idx = boost::lexical_cast<uint>(spl_line[3]);
 				uint k_idx = boost::lexical_cast<uint>(spl_line[4]);
 
-				std::shared_ptr<TopologyLink<3>> new_triangle = std::shared_ptr<TopologyLink<3>>(new TopologyLink<3>(link_type, {i_idx, j_idx, k_idx}));
+				std::shared_ptr<TopologyTriangle> new_triangle = std::shared_ptr<TopologyTriangle>(new TopologyTriangle(link_type, {i_idx, j_idx, k_idx}));
 				for(uint i = 5; i < spl_line.size(); i++) {
 					new_triangle->add_param(boost::lexical_cast<double>(spl_line[i]));
 				}
@@ -215,7 +215,7 @@ void Initialiser::init_topology_from_filename(std::shared_ptr<SystemProperties> 
 				uint k_idx = boost::lexical_cast<uint>(spl_line[4]);
 				uint l_idx = boost::lexical_cast<uint>(spl_line[5]);
 
-				std::shared_ptr<TopologyLink<4>> new_dihedral = std::shared_ptr<TopologyLink<4>>(new TopologyLink<4>(link_type, {i_idx, j_idx, k_idx, l_idx}));
+				std::shared_ptr<TopologyDihedral> new_dihedral = std::shared_ptr<TopologyDihedral>(new TopologyDihedral(link_type, {i_idx, j_idx, k_idx, l_idx}));
 				for(uint i = 6; i < spl_line.size(); i++) {
 					new_dihedral->add_param(boost::lexical_cast<double>(spl_line[i]));
 				}

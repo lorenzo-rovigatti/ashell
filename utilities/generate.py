@@ -87,7 +87,7 @@ with open("topology.dat", "w") as f:
             diff = points[e[0]] - points[e[1]]
             dist = np.sqrt(np.dot(diff, diff))
             to_print += " %lf" % dist
-        print >> f, "link", to_print
+        print >> f, "bond", to_print
         
     for t in cvx.simplices:
         to_print = "%d %d %d %d" % (0, t[0], t[1], t[2])

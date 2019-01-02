@@ -16,10 +16,6 @@
 
 namespace ashell {
 
-ForceComputerFactory::ForceComputerFactory() {
-
-}
-
 ForceComputerFactory::~ForceComputerFactory() {
 
 }

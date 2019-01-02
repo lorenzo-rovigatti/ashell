@@ -8,9 +8,9 @@ SET(ashell_lib_SOURCES
 	computers/external_forces/ExternalForce.cpp
 	computers/external_forces/ForceFactory.cpp
 	computers/ForceComputer.cpp
+	computers/ForceDihedral.cpp
 	computers/ForceLink.cpp
 	computers/ForceTriangulatedMesh.cpp
-	computers/ForceDihedral.cpp
 	computers/ForceTwoBodyIsotropic.cpp
 	computers/ForceComputerFactory.cpp
 	computers/observables/Cogli1Configuration.cpp
@@ -32,6 +32,7 @@ SET(ashell_lib_SOURCES
 	Particles.cpp
 	System.cpp
 	SystemProperties.cpp
+	Topology.cpp
 	utils/InputFile.cpp
 	utils/MathUtils.cpp
 	utils/Timings.cpp

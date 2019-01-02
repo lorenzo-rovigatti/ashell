@@ -16,12 +16,10 @@ class InputFile;
 
 class ForceComputerFactory {
 public:
+	ForceComputerFactory() = delete;
 	virtual ~ForceComputerFactory();
 
 	static std::shared_ptr<ForceComputer> make_potential(InputFile &inp);
-
-private:
-	ForceComputerFactory();
 };
 
 } /* namespace ashell */

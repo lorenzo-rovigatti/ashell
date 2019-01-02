@@ -40,45 +40,35 @@ void ForceTriangulatedMesh::set_A0(double n_A0) {
 }
 
 void ForceTriangulatedMesh::set_V0_from_conf() {
-	auto V_A_pair = _get_volume_and_area();
-	_V0 = V_A_pair.first;
+	double unused;
+	std::tie(_V0, unused) = _get_volume_and_area();
 }
 
 void ForceTriangulatedMesh::set_A0_from_conf() {
-	auto V_A_pair = _get_volume_and_area();
-	_A0 = V_A_pair.second;
+	double unused;
+	std::tie(unused, _A0) = _get_volume_and_area();
 }
 
 void ForceTriangulatedMesh::_compute_forces(ullint step) {
-	auto V_A_pair = _get_volume_and_area();
-	double volume = V_A_pair.first;
-	double area = V_A_pair.second;
-
-	const vector_vec3 &poss = _particles->positions();
+	double volume, area;
+	std::tie(volume, area) = _get_volume_and_area();
 
 	double gamma_t = _kv * (volume - _V0) / (6. * _V0);
 	double alpha_t = _ka * (area - _A0) / (4. * _A0);
-	// and then a second loop to evalue the forces
 	for(auto &triangle : _sys_props->triangles()) {
-		uint i = triangle->members[0];
-		uint j = triangle->members[1];
-		uint k = triangle->members[2];
+		uint v0 = triangle->vertex_indices[0];
+		uint v1 = triangle->vertex_indices[1];
+		uint v2 = triangle->vertex_indices[2];
 
-		vec3 i_pos = poss[i];
-		vec3 j_pos = poss[j];
-		vec3 k_pos = poss[k];
+		vec3 &com = triangle->com;
+		vec3 &normal = triangle->normal;
+		vec3 &r_21 = triangle->r_21;
+		vec3 &r_10 = triangle->r_10;
+		vec3 &r_02 = triangle->r_02;
 
-		vec3 r_kj = _sys_props->box()->minimum_image(j_pos, k_pos);
-		vec3 r_ik = _sys_props->box()->minimum_image(k_pos, i_pos);
-		vec3 r_ji = _sys_props->box()->minimum_image(i_pos, j_pos);
-
-		// volume terms
-		vec3 normal = r_kj.cross(r_ik);
-		vec3 com = (i_pos + j_pos + k_pos) / 3.;
-
-		_forces[i] += -gamma_t * (normal / 3. + com.cross(r_kj));
-		_forces[j] += -gamma_t * (normal / 3. + com.cross(r_ik));
-		_forces[k] += -gamma_t * (normal / 3. + com.cross(r_ji));
+		_forces[v0] += -gamma_t * (normal / 3. + com.cross(r_21));
+		_forces[v1] += -gamma_t * (normal / 3. + com.cross(r_02));
+		_forces[v2] += -gamma_t * (normal / 3. + com.cross(r_10));
 
 		// TODO: update the energy of the single particles
 
@@ -86,44 +76,33 @@ void ForceTriangulatedMesh::_compute_forces(ullint step) {
 		double triangle_area = normal.norm() / 2.;
 		double alpha_t_triangle = alpha_t / triangle_area;
 
-		_forces[i] += -alpha_t_triangle * normal.cross(r_kj);
-		_forces[j] += -alpha_t_triangle * normal.cross(r_ik);
-		_forces[k] += -alpha_t_triangle * normal.cross(r_ji);
+		_forces[v0] += -alpha_t_triangle * normal.cross(r_21);
+		_forces[v1] += -alpha_t_triangle * normal.cross(r_02);
+		_forces[v2] += -alpha_t_triangle * normal.cross(r_10);
 
 		// TODO: update the energy of the single particles
+	}
+
+	if(step % 1000 == 0) {
+		printf("V: %lf\n", volume);
 	}
 
 	_energy += _kv * SQR(volume - _V0) / (2. * _V0);
 	_energy += _ka * SQR(area - _A0) / (2. * _A0);
 }
 
-std::pair<double, double> ForceTriangulatedMesh::_get_volume_and_area() {
+std::tuple<double, double> ForceTriangulatedMesh::_get_volume_and_area() {
 	const vector_vec3 &poss = _particles->positions();
 	double volume = 0.;
 	double area = 0.;
-	// we make a first loop to compute the overall volume
 	for(auto &triangle : _sys_props->triangles()) {
-		uint i = triangle->members[0];
-		uint j = triangle->members[1];
-		uint k = triangle->members[2];
+		triangle->update(poss, _sys_props->box());
 
-		vec3 i_pos = poss[i];
-		vec3 j_pos = poss[j];
-		vec3 k_pos = poss[k];
-
-		vec3 r_kj = _sys_props->box()->minimum_image(j_pos, k_pos);
-		vec3 r_ik = _sys_props->box()->minimum_image(k_pos, i_pos);
-
-		vec3 normal = r_kj.cross(r_ik);
-		vec3 com = (i_pos + j_pos + k_pos) / 3.;
-
-		volume += normal.dot(com) / 6.;
-		area += normal.norm() / 2.;
+		volume += triangle->normal.dot(triangle->com) / 6.;
+		area += triangle->normal.norm() / 2.;
 	}
-	printf("%lf %lf\n", volume, area);
-	exit(1);
 
-	return std::pair<double, double>(volume, area);
+	return std::tuple<double, double>(volume, area);
 }
 
 } /* namespace ashell */

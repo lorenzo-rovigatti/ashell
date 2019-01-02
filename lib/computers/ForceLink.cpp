@@ -25,7 +25,7 @@ template<class potential>
 void ForceLink<potential>::_compute_forces(ullint step) {
 	const vector_vec3 &poss = _particles->positions();
 
-	for(auto &link : _sys_props->links()) {
+	for(auto &link : _sys_props->bonds()) {
 		uint p = link->members[0];
 		uint q = link->members[1];
 

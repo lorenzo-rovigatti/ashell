@@ -32,7 +32,7 @@ public:
 private:
 	void _compute_forces(ullint step) override;
 
-	std::pair<double, double> _get_volume_and_area();
+	std::tuple<double, double> _get_volume_and_area();
 
 	double _kv;
 	double _ka;

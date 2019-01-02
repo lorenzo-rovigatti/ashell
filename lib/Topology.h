@@ -12,21 +12,17 @@
 
 namespace ashell {
 
-// TODO: it may be worth making this class hash-able so that it can be stored in std::set's
+class Particles;
+class Box;
+
+// TODO: it may be worth making this class hash-able so that instances can be stored in std::set's
 template<uint link_size>
 struct TopologyLink {
-	TopologyLink(uint n_type, std::initializer_list<uint> l) :
-					type(n_type),
-					size(link_size) {
-		if(l.size() != link_size) {
-			throw std::runtime_error(boost::str(boost::format("Invalid initialisation of a topological link of size %u (got %u parameters instead)") % link_size % l.size()));
-		}
-		std::copy(l.begin(), l.end(), members.begin());
-	}
+	TopologyLink(uint n_type, std::initializer_list<uint> l);
 
-	void add_param(double new_param) {
-		params.push_back(new_param);
-	}
+	virtual ~TopologyLink() {}
+
+	virtual void add_param(double new_param);
 
 	uint N_params() {
 		return params.size();
@@ -37,6 +33,25 @@ struct TopologyLink {
 	std::array<uint, link_size> members;
 	std::vector<double> params;
 };
+
+struct TopologyTriangle: public TopologyLink<3> {
+	TopologyTriangle(uint n_type, std::initializer_list<uint> l);
+
+	virtual ~TopologyTriangle() {}
+
+	void swap_normal();
+	void update(const vector_vec3 &poss, const std::shared_ptr<Box> &box);
+
+	std::array<uint, 3> vertex_indices;
+	std::array<vec3, 3> vertices;
+	vec3 r_10, r_21, r_02;
+	vec3 com;
+	vec3 normal;
+};
+
+using TopologyBond = TopologyLink<2>;
+using TopologyAngle = TopologyLink<3>;
+using TopologyDihedral = TopologyLink<4>;
 
 }
 /* namespace ashell */

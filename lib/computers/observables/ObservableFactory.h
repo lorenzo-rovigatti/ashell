@@ -16,12 +16,10 @@ class InputFile;
 
 class ObservableFactory {
 public:
+	ObservableFactory() = delete;
 	virtual ~ObservableFactory();
 
 	static std::shared_ptr<Observable> make_observable(InputFile &inp);
-
-private:
-	ObservableFactory();
 };
 
 } /* namespace ashell */

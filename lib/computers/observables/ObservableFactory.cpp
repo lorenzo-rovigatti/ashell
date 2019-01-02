@@ -15,9 +15,6 @@
 
 namespace ashell {
 
-ObservableFactory::ObservableFactory() {
-}
-
 ObservableFactory::~ObservableFactory() {
 
 }

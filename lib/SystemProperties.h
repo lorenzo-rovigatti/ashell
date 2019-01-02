@@ -35,8 +35,8 @@ public:
 		return _T;
 	}
 
-	const auto &links() const {
-		return _links;
+	const auto &bonds() const {
+		return _bonds;
 	}
 
 	const auto &angles() const {
@@ -47,10 +47,6 @@ public:
 		return _triangles;
 	}
 
-	const auto &triangles_normal_indices() const {
-		return _triangles_normal_indices;
-	}
-
 	const auto &dihedrals() const {
 		return _dihedrals;
 	}
@@ -58,10 +54,10 @@ public:
 	void set_box(std::shared_ptr<Box> n_box);
 	void set_T(double nT);
 
-	void add_link(std::shared_ptr<TopologyLink<2>> n_l);
-	void add_angle(std::shared_ptr<TopologyLink<3>> n_a);
-	void add_triangle(std::shared_ptr<TopologyLink<3>> n_t);
-	void add_dihedral(std::shared_ptr<TopologyLink<4>> n_d);
+	void add_bond(std::shared_ptr<TopologyBond> n_b);
+	void add_angle(std::shared_ptr<TopologyAngle> n_a);
+	void add_triangle(std::shared_ptr<TopologyTriangle> n_t);
+	void add_dihedral(std::shared_ptr<TopologyDihedral> n_d);
 
 	void update_topology();
 
@@ -69,11 +65,10 @@ private:
 	std::shared_ptr<Box> _box;
 	std::shared_ptr<Particles> _particles;
 
-	std::vector<std::shared_ptr<TopologyLink<2>>> _links;
-	std::vector<std::shared_ptr<TopologyLink<3>>> _angles;
-	std::vector<std::shared_ptr<TopologyLink<3>>> _triangles;
-	std::vector<normal_index> _triangles_normal_indices;
-	std::vector<std::shared_ptr<TopologyLink<4>>> _dihedrals;
+	std::vector<std::shared_ptr<TopologyBond>> _bonds;
+	std::vector<std::shared_ptr<TopologyAngle>> _angles;
+	std::vector<std::shared_ptr<TopologyTriangle>> _triangles;
+	std::vector<std::shared_ptr<TopologyDihedral>> _dihedrals;
 
 	double _T;
 };
