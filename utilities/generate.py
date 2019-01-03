@@ -53,11 +53,14 @@ print >> sys.stderr, "Triangulation completed"
 edges = list(it.chain.from_iterable([it.combinations(t, 2) for t in cvx.simplices]))
 
 length_factor = 0.8 / np.sqrt(min_dist_sqr)
-print >> sys.stderr, "Volume and area of the convex hull:", cvx.volume * length_factor**3., cvx.area * length_factor**2.
+rescaled_volume = cvx.volume * length_factor**3.
+rescaled_area = cvx.area * length_factor**2.
+print >> sys.stderr, "Volume and area of the convex hull:", rescaled_volume, rescaled_area
+r = (3. * rescaled_volume / (4. * np.pi))**0.3333333
 with open("init_conf.dat", "w") as f:
     print >> f, 0
     print >> f, n_points
-    print >> f, "cube 20"
+    print >> f, "cube", max((2. * r, 20.))
     for p in points:
         p *= length_factor
         print >> f, p[0], p[1], p[2], np.random.normal(), np.random.normal(), np.random.normal()

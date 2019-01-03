@@ -4,6 +4,7 @@ OPTION(Python "Enable Python bindings" OFF)
 OPTION(Debug "Set to ON to compile with debug symbols" OFF)
 OPTION(G "Set to ON to compile with optimisations and debug symbols" OFF)
 OPTION(INTEL "Use the Intel compiler" OFF)
+OPTION(MOSIX "Make oxDNA compatible with MOSIX" OFF)
 
 PROJECT(ashell)
 
@@ -29,6 +30,11 @@ IF(G)
 	SET(CMAKE_BUILD_TYPE RelWithDebInfo)
 	MESSAGE(STATUS "Compiling in Release+Debug symbols mode")
 ENDIF(G)
+
+IF(MOSIX)
+	ADD_DEFINITIONS(-DMOSIX)
+	MESSAGE(STATUS "Disabling timings")
+ENDIF(MOSIX)
 
 IF(CMAKE_VERSION VERSION_LESS "3.1")
 	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
