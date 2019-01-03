@@ -1,28 +1,28 @@
 /*
- * ForceLink.cpp
+ * ForceBond.cpp
  *
  *  Created on: 13 feb 2018
  *      Author: lorenzo
  */
 
-#include "../computers/ForceLink.h"
+#include "ForceBond.h"
 
 namespace ashell {
 
 template<class potential>
-ForceLink<potential>::ForceLink(std::initializer_list<double> params, std::string name) :
+ForceBond<potential>::ForceBond(std::initializer_list<double> params, std::string name) :
 				ForceComputer(name),
 				_potential(params) {
 
 }
 
 template<class potential>
-ForceLink<potential>::~ForceLink() {
+ForceBond<potential>::~ForceBond() {
 
 }
 
 template<class potential>
-void ForceLink<potential>::_compute_forces(ullint step) {
+void ForceBond<potential>::_compute_forces(ullint step) {
 	const vector_vec3 &poss = _particles->positions();
 
 	for(auto &link : _sys_props->bonds()) {

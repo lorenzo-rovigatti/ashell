@@ -8,8 +8,8 @@
 #include "ForceComputerFactory.h"
 
 #include "../utils/InputFile.h"
+#include "ForceBond.h"
 
-#include "ForceLink.h"
 #include "ForceDihedral.h"
 #include "ForceTriangulatedMesh.h"
 #include "ForceTwoBodyIsotropic.h"
