@@ -27,6 +27,7 @@ void MeshProperties::_observe(ullint step) {
 	double volume = 0.;
 	double area = 0.;
 	for(auto &triangle :  _sys_props->triangles()) {
+		triangle->update(_sys_props->particles()->positions(), _sys_props->box());
 		volume += triangle->volume;
 		area += triangle->area;
 	}

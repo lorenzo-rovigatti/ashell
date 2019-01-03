@@ -34,4 +34,8 @@ using FENEForce = ashell::ForceLink<ashell::FENE>;
 template class ashell::ForceLink<ashell::Harmonic>;
 using HarmonicForce = ashell::ForceLink<ashell::Harmonic>;
 
+#include "../computers/potentials/StressFreeBond.h"
+template class ashell::ForceLink<ashell::StressFreeBond>;
+using StressFreeBondForce = ashell::ForceLink<ashell::StressFreeBond>;
+
 #endif /* LIB_COMPUTERS_FORCELINK_H_ */

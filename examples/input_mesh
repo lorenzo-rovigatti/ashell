@@ -1,0 +1,63 @@
+T = 1.0
+dt = 0.001
+
+initial_N = 200
+initial_box = cuboid 10 10 10
+
+steps = 100000
+print_defaults_every = 1000
+print_configuration_every = 10000
+configuration_file = init_conf.dat
+topology_file = topology.dat
+random_velocities = true
+
+thermostat = andersen
+newtonian_steps = 100
+bare_diffusion_coefficient = 1.0
+
+# springs on the mesh volume and area
+potential = {
+		  type = force_triangulated_mesh
+		  kv = 0
+		  ka = 1000
+		  V0 = 52.69
+		  A0 = 68.43
+}
+
+# dihedrals
+potential = {
+		  type = force_dihedral
+		  kb = 10
+		  theta0 = 0
+}
+
+# a bond potential that has a minimum at the equilibrium length of each bond 
+potential = {
+		  type = stress_free_bond_force
+		  U = 30
+		  x0 = 2
+}
+
+# print the simulation step, the mesh convex hull volume, the volume of its approximating ellipsoid of gyration and the eigenvalues of the ellipsoid gyration matrix 
+output = {
+	   name = invariants.dat
+	   print_every = 1000
+	   observable = {
+	   			  type = step
+	   }
+	   observable = {
+	   			  type = strain_invariants
+	   }
+}
+
+# print the simulation step and the mesh volume and area
+output = {
+	   name = mesh.dat
+	   print_every = 1000
+	   observable = {
+	   			  type = step
+	   }
+	   observable = {
+	   			  type = mesh_properties
+	   }
+}

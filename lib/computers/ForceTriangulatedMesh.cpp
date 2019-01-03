@@ -82,10 +82,6 @@ void ForceTriangulatedMesh::_compute_forces(ullint step) {
 		// TODO: update the energy of the single particles
 	}
 
-	if(step % 1000 == 0) {
-		printf("V: %lf\n", volume);
-	}
-
 	_energy += _kv * SQR(volume - _V0) / (2. * _V0);
 	_energy += _ka * SQR(area - _A0) / (2. * _A0);
 }

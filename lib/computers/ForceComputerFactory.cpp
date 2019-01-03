@@ -32,10 +32,16 @@ std::shared_ptr<ForceComputer> ForceComputerFactory::make_potential(InputFile &i
 		potential = std::shared_ptr<HarmonicForce>(new HarmonicForce( {k, r0} ));
 	}
 	else if(type == "FENE_force") {
-		double k, r0;
-		inp.value_as_number("k", k, 1);
+		double U, r0;
+		inp.value_as_number("U", U, 1);
 		inp.value_as_number("r0", r0, 1);
-		potential = std::shared_ptr<FENEForce>(new FENEForce( {k, r0} ));
+		potential = std::shared_ptr<FENEForce>(new FENEForce( {U, r0} ));
+	}
+	else if(type == "stress_free_bond_force") {
+		double U, x0;
+		inp.value_as_number("U", U, 1);
+		inp.value_as_number("x0", x0, 1);
+		potential = std::shared_ptr<StressFreeBondForce>(new StressFreeBondForce( {U, x0} ));
 	}
 	else if(type == "lennard_jones_force") {
 		double rc;

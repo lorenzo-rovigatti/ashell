@@ -9,8 +9,15 @@ print_defaults_every = 100
 print_configuration_every = 1000
 #configuration_file = init_conf.dat
 #topology_file = topology.dat
-#refresh_velocities = true
+#random_velocities = true
 
 thermostat = andersen
 newtonian_steps = 100
 bare_diffusion_coefficient = 1.0
+
+# a simple LJ potential cut off at rc = 2.5
+potential = {
+	type = lennard_jones_force
+	rc = 2.5
+	sigma = 1.0
+}
