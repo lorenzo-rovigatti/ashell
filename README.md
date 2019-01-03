@@ -8,7 +8,7 @@ ashell is a proof-of-concept code I am developing to learn modern c++ and to pra
 
 * CMake >= 2.8
 * make
-* A c++11-compliant compiler (tested with GCC 5.4)
+* A c++14-compliant compiler (tested with GCC 5.4)
 * A few Boost modules:
     * Boost Python (libboost-python-dev on debian-derived distros)
     * Boost Log (libboost-log-dev) 
@@ -32,7 +32,7 @@ Here is a list of options that can be passed to cmake during the pre-compilation
 
 * `-DPython=On`			Enables Python bindings
 * `-DDebug=ON`				Compiles with debug symbols and without optimisation flags
-* `-DG=ON`				Compiles with debug symbols + optimisation flags
+* `-DG=ON`					Compiles with debug symbols + optimisation flags
 * `-DINTEL=ON`				Uses INTEL's compiler suite
 
 ## Usage

@@ -9,23 +9,6 @@ import math
 import itertools as it
 from scipy.spatial import ConvexHull
 
-MAX_ROT = 0.1
-
-a0 = 0.0518
-a1 = 2.0026
-a2 = -4.491
-
-def point_energy(points, p_idx):
-    E = 0.
-    p = points[p_idx]
-    for q_idx, q in enumerate(points):
-        if q_idx != p_idx:
-            d = p - q
-            d2 = np.dot(p, q)
-            E += 1. / d2
-
-    return E
-
 def die(msg):
     print >> sys.stderr, msg
     sys.exit(1)
@@ -33,8 +16,7 @@ def die(msg):
 if len(sys.argv) < 2: die("Usage is %s mesh_points [add_params=False]" % sys.argv[0])
 
 n_points = int(sys.argv[1])
-if n_points < 100: die("Too few mesh points (%d)" % n_points)
-if n_points < 500: print >> sys.stderr, "WARNING: RBCs with less than 500 mesh points should not be used in production"
+if n_points < 100: die("Not enough mesh points (%d < 100)" % n_points)
 
 add_params = False
 if len(sys.argv) > 2:
