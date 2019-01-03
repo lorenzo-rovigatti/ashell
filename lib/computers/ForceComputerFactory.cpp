@@ -40,7 +40,9 @@ std::shared_ptr<ForceComputer> ForceComputerFactory::make_potential(InputFile &i
 	else if(type == "lennard_jones_force") {
 		double rc;
 		inp.value_as_number("rc", rc, 1);
-		potential = std::shared_ptr<LennardJonesForce>(new LennardJonesForce( {rc} ));
+		double sigma = 1.;
+		inp.value_as_number("sigma", sigma, 0);
+		potential = std::shared_ptr<LennardJonesForce>(new LennardJonesForce( {rc, sigma} ));
 	}
 	else if(type == "force_triangulated_mesh") {
 		double kv, ka;

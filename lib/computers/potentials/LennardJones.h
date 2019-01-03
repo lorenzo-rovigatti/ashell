@@ -15,11 +15,18 @@ namespace ashell {
 class LennardJones {
 public:
 	LennardJones(std::initializer_list<double> params) {
-		if(params.size() != 1) {
-			throw std::runtime_error(boost::str(boost::format("LennardJones expects a parameter list of length 1, not %u") % params.size()));
+		if(params.size() == 0) {
+			throw std::runtime_error("LennardJones expects a parameter list of length > 0");
 		}
-		_rcut_sqr = SQR(*params.begin());
-		double inv_rcut_sqr = 1. / _rcut_sqr;
+		auto params_it = params.begin();
+
+		_rcut_sqr = SQR(*params_it);
+		_sigma_sqr = 1.;
+		if(params.size() > 2) {
+			params_it++;
+			_sigma_sqr = SQR(*params_it);
+		}
+		double inv_rcut_sqr = _sigma_sqr / _rcut_sqr;
 		double part = CUB(inv_rcut_sqr);
 		_E_cut = 4. * (SQR(part) - part);
 	}
@@ -33,7 +40,7 @@ public:
 			return false;
 		}
 
-		double inv_r_sqr = 1. / r_sqr;
+		double inv_r_sqr = _sigma_sqr / r_sqr;
 		double part = CUB(inv_r_sqr);
 		energy = 4. * (SQR(part) - part) - _E_cut;
 		force_over_r = -24. * (part - 2. * SQR(part)) / r_sqr;
@@ -42,6 +49,7 @@ public:
 	}
 
 private:
+	double _sigma_sqr;
 	double _rcut_sqr;
 	double _E_cut;
 };

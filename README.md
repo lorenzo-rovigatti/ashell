@@ -46,6 +46,7 @@ Here is a list of options that can be passed to cmake during the pre-compilation
 
 * `lennard_jones_force`, parameters:
 	1. `rc`
+	2. `sigma`
 * `FENE_force`, parameters:
 	1. `k`
 	2. `r0`
