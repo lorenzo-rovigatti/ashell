@@ -95,7 +95,7 @@ void SystemProperties::update_topology() {
 	// now we compute the volume enclosed
 	double volume = 0.;
 	for(auto &triangle : triangles()) {
-		volume += triangle->normal.dot(triangle->com) / 6.;
+		volume += triangle->volume;
 	}
 	// if the volume comes out negative we flip *all* the normals
 	if(volume < 0.) {

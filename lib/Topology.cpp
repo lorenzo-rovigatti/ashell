@@ -36,6 +36,9 @@ TopologyTriangle::TopologyTriangle(uint n_type, std::initializer_list<uint> l) :
 	vertex_indices[0] = this->members[0];
 	vertex_indices[1] = this->members[1];
 	vertex_indices[2] = this->members[2];
+
+	volume = -1.;
+	area = -1.;
 }
 
 void TopologyTriangle::swap_normal() {
@@ -55,6 +58,9 @@ void TopologyTriangle::update(const vector_vec3 &poss, const std::shared_ptr<Box
 
 	normal = r_02.cross(r_10);
 	com = (vertices[0] + vertices[1] + vertices[2]) / 3.;
+
+	volume = normal.dot(com) / 6.;
+	area = normal.norm() / 2.;
 }
 
 } /* namespace ashell */

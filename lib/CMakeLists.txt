@@ -18,6 +18,7 @@ SET(ashell_lib_SOURCES
 	computers/observables/ObservableFactory.cpp
 	computers/observables/Observable.cpp
 	computers/observables/KineticEnergy.cpp
+	computers/observables/MeshProperties.cpp
 	computers/observables/PotentialEnergy.cpp
 	computers/observables/TotalEnergy.cpp
 	computers/observables/Step.cpp

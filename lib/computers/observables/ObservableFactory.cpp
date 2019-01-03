@@ -10,6 +10,7 @@
 #include "../../utils/InputFile.h"
 
 #include "Configuration.h"
+#include "MeshProperties.h"
 #include "Step.h"
 #include "StrainInvariants.h"
 
@@ -32,6 +33,9 @@ std::shared_ptr<Observable> ObservableFactory::make_observable(InputFile &inp) {
 	}
 	else if(type == "strain_invariants") {
 		obs = std::shared_ptr<StrainInvariants>(new StrainInvariants());
+	}
+	else if(type == "mesh_properties") {
+		obs = std::shared_ptr<MeshProperties>(new MeshProperties());
 	}
 	else {
 		std::string error = boost::str(boost::format("Unknown observable type '%s'") % type);

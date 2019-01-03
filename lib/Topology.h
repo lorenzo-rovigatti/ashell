@@ -47,6 +47,8 @@ struct TopologyTriangle: public TopologyLink<3> {
 	vec3 r_10, r_21, r_02;
 	vec3 com;
 	vec3 normal;
+	double volume;
+	double area;
 };
 
 using TopologyBond = TopologyLink<2>;

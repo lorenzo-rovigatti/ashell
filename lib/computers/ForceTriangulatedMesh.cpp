@@ -73,8 +73,7 @@ void ForceTriangulatedMesh::_compute_forces(ullint step) {
 		// TODO: update the energy of the single particles
 
 		// area terms
-		double triangle_area = normal.norm() / 2.;
-		double alpha_t_triangle = alpha_t / triangle_area;
+		double alpha_t_triangle = alpha_t / triangle->area;
 
 		_forces[v0] += -alpha_t_triangle * normal.cross(r_21);
 		_forces[v1] += -alpha_t_triangle * normal.cross(r_02);
@@ -98,8 +97,8 @@ std::tuple<double, double> ForceTriangulatedMesh::_get_volume_and_area() {
 	for(auto &triangle : _sys_props->triangles()) {
 		triangle->update(poss, _sys_props->box());
 
-		volume += triangle->normal.dot(triangle->com) / 6.;
-		area += triangle->normal.norm() / 2.;
+		volume += triangle->volume;
+		area += triangle->area;
 	}
 
 	return std::tuple<double, double>(volume, area);
