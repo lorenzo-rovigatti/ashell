@@ -66,7 +66,7 @@ void StrainInvariants::_observe(ullint step) {
 	ch_com /= mesh.nindices;
 
 	// Gyration tensor
-	mat3 gyration_tensor;
+	mat3 gyration_tensor = mat3::Zero();
 	for(int i = 0, j = 0; i < (int)mesh.nindices; i += 3, j++) {
 		vec3 p1(mesh.vertices[mesh.indices[i + 0]].x, mesh.vertices[mesh.indices[i + 0]].y, mesh.vertices[mesh.indices[i + 0]].z);
 		vec3 p2(mesh.vertices[mesh.indices[i + 1]].x, mesh.vertices[mesh.indices[i + 1]].y, mesh.vertices[mesh.indices[i + 1]].z);

@@ -184,8 +184,8 @@ void Initialiser::init_topology_from_filename(std::shared_ptr<SystemProperties> 
 				largest_idx = std::max(largest_idx, *std::max_element(new_angle->members.begin(), new_angle->members.end()));
 			}
 			else if(boost::starts_with("triangle", spl_line[0])) {
-				if(spl_line.size() < 5) {
-					std::string error = boost::str(boost::format("Topology line number %d contains %d fields, should be at least 5") % curr_line % spl_line.size());
+				if(spl_line.size() < 6) {
+					std::string error = boost::str(boost::format("Topology line number %d contains %d fields, should be at least 6") % curr_line % spl_line.size());
 					throw std::runtime_error(error);
 				}
 
@@ -193,8 +193,10 @@ void Initialiser::init_topology_from_filename(std::shared_ptr<SystemProperties> 
 				uint i_idx = boost::lexical_cast<uint>(spl_line[2]);
 				uint j_idx = boost::lexical_cast<uint>(spl_line[3]);
 				uint k_idx = boost::lexical_cast<uint>(spl_line[4]);
+				bool is_right_order = boost::lexical_cast<bool>(spl_line[5]);
 
 				std::shared_ptr<TopologyTriangle> new_triangle = std::shared_ptr<TopologyTriangle>(new TopologyTriangle(link_type, {i_idx, j_idx, k_idx}));
+				if(!is_right_order) new_triangle->swap_normal();
 				for(uint i = 5; i < spl_line.size(); i++) {
 					new_triangle->add_param(boost::lexical_cast<double>(spl_line[i]));
 				}
@@ -224,7 +226,7 @@ void Initialiser::init_topology_from_filename(std::shared_ptr<SystemProperties> 
 
 				largest_idx = std::max(largest_idx, *std::max_element(new_dihedral->members.begin(), new_dihedral->members.end()));
 			}
-			else {
+			else if(!boost::starts_with(line, "#")){
 				std::string error = boost::str(boost::format("The topology file '%s' contains the invalid line '%s'") % filename % line);
 				throw std::runtime_error(error);
 			}
@@ -238,7 +240,7 @@ void Initialiser::init_topology_from_filename(std::shared_ptr<SystemProperties> 
 	}
 	inp.close();
 
-	sys_props->update_topology();
+//	sys_props->update_topology();
 
 	if(largest_idx > sys_props->particles()->N()) {
 		BOOST_LOG_TRIVIAL(warning) << "The topology found in '"

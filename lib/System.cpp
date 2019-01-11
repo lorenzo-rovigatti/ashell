@@ -109,6 +109,10 @@ void System::run(ullint steps) {
 	}
 	System::started = false;
 
+	for(auto output : _outputs) {
+		if(output->is_ready(_current_step)) output->print_output(_current_step);
+	}
+
 	for(auto output : _post_run_outputs) {
 		output->print_output(_current_step);
 	}

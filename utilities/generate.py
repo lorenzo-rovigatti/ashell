@@ -42,6 +42,7 @@ for l in out.split("\n"):
                
 # convert to numpy arrays
 points = np.array(convex_points)
+com = np.average(points, axis=0)
 
 # compute the convex hull of the ellipsoid. Note that since the ellipsoid is convex its convex hull will contain ALL its constituent points
 cvx = ConvexHull(convex_points)
@@ -66,6 +67,7 @@ with open("init_conf.dat", "w") as f:
         print >> f, p[0], p[1], p[2], np.random.normal(), np.random.normal(), np.random.normal()
 
 with open("topology.dat", "w") as f:
+    print >> f, "# V0: %lf, A0: %lf" % (rescaled_volume, rescaled_area)
     for e in edges:
         to_print = "%d %d %d" % (0, e[0], e[1])
         if add_params:
@@ -75,7 +77,17 @@ with open("topology.dat", "w") as f:
         print >> f, "bond", to_print
         
     for t in cvx.simplices:
-        to_print = "%d %d %d %d" % (0, t[0], t[1], t[2])
+        r_02 = convex_points[t[0]] - convex_points[t[2]]
+        r_10 = convex_points[t[1]] - convex_points[t[0]]
+        normal = np.cross(r_02, r_10)
+        t_com = (convex_points[t[0]] + convex_points[t[1]] + convex_points[t[2]]) / 3.
+        r_com = t_com - com
+        if np.dot(r_com, normal) > 0:
+            vertex_order = 1
+        else:
+            vertex_order = 0
+        
+        to_print = "%d %d %d %d %d" % (0, t[0], t[1], t[2], vertex_order)
         if add_params:
             pass
         print >> f, "triangle", to_print

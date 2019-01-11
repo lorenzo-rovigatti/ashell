@@ -15,8 +15,6 @@ ForceTriangulatedMesh::ForceTriangulatedMesh(std::string name) :
 				_ka(-1.),
 				_V0(-1.),
 				_A0(-1.) {
-
-	// TODO: normals have to be chosen all in the same direction
 }
 
 ForceTriangulatedMesh::~ForceTriangulatedMesh() {
